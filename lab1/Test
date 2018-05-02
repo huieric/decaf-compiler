@@ -1,0 +1,1 @@
+./bin/parser -d lex parser < ../samples/array1.decaf
