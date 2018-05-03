@@ -14,7 +14,5 @@ void main() {
   s[2] = "hello";
 
   Print(b[3], b.length(), "\n");
-  Print(c[6], c.length(), "\n");
-  Print(d[3], d.length(), "\n");
-  Print(s[2], s.length(), "\n");
+  
 }

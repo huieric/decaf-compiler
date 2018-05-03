@@ -46,76 +46,84 @@ extern int yydebug;
   enum yytokentype
   {
     INT = 258,
-    BOOL = 259,
-    STRING = 260,
-    VOID = 261,
-    NULLCONSTANT = 262,
-    BREAK = 263,
-    CLASS = 264,
-    ELSE = 265,
-    EXTENDS = 266,
-    FOR = 267,
-    IF = 268,
-    NEW = 269,
-    RETURN = 270,
-    THIS = 271,
-    WHILE = 272,
-    STATIC = 273,
-    PRINT = 274,
-    READINTEGER = 275,
-    READLINE = 276,
-    INSTANCEOF = 277,
-    LE_OP = 278,
-    GE_OP = 279,
-    EQ_OP = 280,
-    NE_OP = 281,
-    AND_OP = 282,
-    OR_OP = 283,
-    NOT_OP = 284,
-    IDENTIFIER = 285,
-    STRING_LITERAL = 286,
-    INTCONSTANT = 287,
-    DOUBLECONSTANT = 288,
-    BOOLCONSTANT = 289,
-    UMINUS = 290,
-    NOELSE = 291
+    DOUBLE = 259,
+    BOOL = 260,
+    STRING = 261,
+    VOID = 262,
+    NULLCONSTANT = 263,
+    BREAK = 264,
+    CLASS = 265,
+    ELSE = 266,
+    EXTENDS = 267,
+    FOR = 268,
+    IF = 269,
+    NEW = 270,
+    RETURN = 271,
+    THIS = 272,
+    WHILE = 273,
+    STATIC = 274,
+    PRINT = 275,
+    READINTEGER = 276,
+    READLINE = 277,
+    INSTANCEOF = 278,
+    NEWARRAY = 279,
+    IMPLEMENTS = 280,
+    INTERFACE = 281,
+    LE_OP = 282,
+    GE_OP = 283,
+    EQ_OP = 284,
+    NE_OP = 285,
+    AND_OP = 286,
+    OR_OP = 287,
+    NOT_OP = 288,
+    IDENTIFIER = 289,
+    STRING_LITERAL = 290,
+    INTCONSTANT = 291,
+    DOUBLECONSTANT = 292,
+    BOOLCONSTANT = 293,
+    UMINUS = 294,
+    NOELSE = 295
   };
 #endif
 /* Tokens.  */
 #define INT 258
-#define BOOL 259
-#define STRING 260
-#define VOID 261
-#define NULLCONSTANT 262
-#define BREAK 263
-#define CLASS 264
-#define ELSE 265
-#define EXTENDS 266
-#define FOR 267
-#define IF 268
-#define NEW 269
-#define RETURN 270
-#define THIS 271
-#define WHILE 272
-#define STATIC 273
-#define PRINT 274
-#define READINTEGER 275
-#define READLINE 276
-#define INSTANCEOF 277
-#define LE_OP 278
-#define GE_OP 279
-#define EQ_OP 280
-#define NE_OP 281
-#define AND_OP 282
-#define OR_OP 283
-#define NOT_OP 284
-#define IDENTIFIER 285
-#define STRING_LITERAL 286
-#define INTCONSTANT 287
-#define DOUBLECONSTANT 288
-#define BOOLCONSTANT 289
-#define UMINUS 290
-#define NOELSE 291
+#define DOUBLE 259
+#define BOOL 260
+#define STRING 261
+#define VOID 262
+#define NULLCONSTANT 263
+#define BREAK 264
+#define CLASS 265
+#define ELSE 266
+#define EXTENDS 267
+#define FOR 268
+#define IF 269
+#define NEW 270
+#define RETURN 271
+#define THIS 272
+#define WHILE 273
+#define STATIC 274
+#define PRINT 275
+#define READINTEGER 276
+#define READLINE 277
+#define INSTANCEOF 278
+#define NEWARRAY 279
+#define IMPLEMENTS 280
+#define INTERFACE 281
+#define LE_OP 282
+#define GE_OP 283
+#define EQ_OP 284
+#define NE_OP 285
+#define AND_OP 286
+#define OR_OP 287
+#define NOT_OP 288
+#define IDENTIFIER 289
+#define STRING_LITERAL 290
+#define INTCONSTANT 291
+#define DOUBLECONSTANT 292
+#define BOOLCONSTANT 293
+#define UMINUS 294
+#define NOELSE 295
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -158,7 +166,7 @@ union YYSTYPE
     Case *caseStmt;
     Default *defaultStmt;
 
-#line 162 "obj/y.tab.h" /* yacc.c:1909  */
+#line 170 "obj/y.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

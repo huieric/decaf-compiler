@@ -57,13 +57,13 @@ void yyerror(const char *msg);
 }
 
 /* declare tokens */
-%token INT BOOL STRING VOID NULLCONSTANT
+%token INT DOUBLE BOOL STRING VOID NULLCONSTANT
 %token BREAK CLASS ELSE EXTENDS FOR IF NEW RETURN THIS WHILE STATIC 
-%token PRINT READINTEGER READLINE INSTANCEOF
+%token PRINT READINTEGER READLINE INSTANCEOF NEWARRAY IMPLEMENTS INTERFACE
 %token LE_OP GE_OP EQ_OP NE_OP
 %token AND_OP OR_OP NOT_OP
 
-%token <identObj> IDENTIFIER
+%token <identifier> IDENTIFIER
 %token <stringConstant> STRING_LITERAL
 %token <intConstant> INTCONSTANT
 %token <doubleConstant> DOUBLECONSTANT
@@ -87,32 +87,37 @@ void yyerror(const char *msg);
  */
 %type <declList> DeclList
 %type <decl> Decl
-%type <varDecl> VariableDef
+%type <varDecl> VariableDecl
 %type <varDecl> Variable
+%type <identObj> Identifier
 %type <varDecls> VariableList
 %type <type> Type
 %type <varDecls> Formals
-%type <fnDecl> FunctionDef
-%type <classDecl> ClassDef
+%type <fnDecl> FunctionDecl
+%type <classDecl> ClassDecl
 %type <extendsClause> ExtendsClause
+%type <nTList> ImplementsClause
+%type <nTList> InterfaceList
 %type <declList> FieldList
 %type <decl> Field
+%type <ifaceDecl> InterfaceDecl
+%type <declList> PrototypeList
+%type <decl> Prototype
 %type <stmtBlock> StmtBlock
+%type <varDecls>  VariableDeclList
 %type <statements> StmtList
 %type <stmt> Stmt
-%type <expr> SimpleStmt
-%type <lvalue> LValue
-%type <call> Call
-%type <exprList> Actuals
 %type <exprList> ExprList
-%type <forStmt> ForStmt
-%type <whileStmt> WhileStmt
 %type <ifStmt> IfStmt
+%type <whileStmt> WhileStmt
+%type <forStmt> ForStmt
 %type <returnStmt> ReturnStmt
 %type <breakStmt> BreakStmt
 %type <printStmt> PrintStmt
-%type <expr> BoolExpr
 %type <expr> Expr
+%type <lvalue> LValue
+%type <call> Call
+%type <exprList> Actuals
 %type <expr> Constant
 
 /* Precedence Assignment */
@@ -148,15 +153,18 @@ DeclList
     ;
 
 Decl
-    : ClassDef { $$=$1; }
+    : VariableDecl { $$=$1; }
+    | FunctionDecl { $$=$1; }
+    | ClassDecl { $$=$1; }
+    | InterfaceDecl { $$=$1; }
     ;
 
-VariableDef
+VariableDecl
     : Variable ';' { $$=$1; }
     ;
 
 Variable
-    : Type IDENTIFIER { $$=new VarDecl($2, $1); }
+    : Type Identifier { $$=new VarDecl($2, $1); }
     ;
 
 VariableList
@@ -164,48 +172,79 @@ VariableList
     | VariableList ',' Variable { ($$=$1)->Append($3); }
     ;
 
+LValue
+    : Identifier { $$=new FieldAccess(NULL, $1); }
+    | Expr '.' Identifier { $$=new FieldAccess($1, $3); }
+    | Expr '[' Expr ']' { $$=new ArrayAccess(@$, $1, $3); }
+    ;
+    
 Type
     : INT { $$=Type::intType; }
+    | DOUBLE { $$=Type::doubleType; }
     | BOOL { $$=Type::boolType; }
     | STRING { $$=Type::stringType; }
-    | VOID { $$=Type::voidType; }
-    | CLASS IDENTIFIER { $$=new NamedType($2); }
+    | CLASS Identifier { $$=new NamedType($2); }
     | Type '[' ']' { $$=new ArrayType(@1, $1); }
     ;
 
+Identifier
+    : IDENTIFIER { $$=new Identifier(@1, $1); }
+    
 Formals
     : /* Empty */ { $$=new List<VarDecl*>; }
     | VariableList { $$=$1; }
     ;
-/* TODO */
-FunctionDef
-    : Type IDENTIFIER '(' Formals ')' StmtBlock { $$=new FnDecl($2, $1, $4); $$->SetFunctionBody($6); }
-    | STATIC Type IDENTIFIER '(' Formals ')' StmtBlock { $$=new FnDecl($3, $2, $5); $$->SetFunctionBody($7); }
+
+FunctionDecl
+    : Type Identifier '(' Formals ')' StmtBlock { $$=new FnDecl($2, $1, $4); $$->SetFunctionBody($6); }
+    | VOID Identifier '(' Formals ')' StmtBlock { $$=new FnDecl($2, Type::voidType, $4); $$->SetFunctionBody($6); }
     ;
 
-ClassDef
-    : CLASS IDENTIFIER ExtendsClause '{' FieldList '}' { $$=new ClassDecl($2, $3, NULL, $5); }
+ClassDecl
+    : CLASS Identifier ExtendsClause ImplementsClause '{' FieldList '}' { $$=new ClassDecl($2, $3, $4, $6); }
     ;
 
 ExtendsClause
     : /* Empty */ { $$=NULL; }
-    | EXTENDS IDENTIFIER { $$=new NamedType($2); }
+    | EXTENDS Identifier { $$=new NamedType($2); }
     ;
+ImplementsClause
+    : /* Empty */ { $$=new List<NamedType*>; }
+    | IMPLEMENTS InterfaceList { $$=$2; }
 
+InterfaceList
+    : Identifier { ($$=new List<NamedType*>)->Append(new NamedType($1)); }
+    | InterfaceList ',' Identifier { ($$=$1)->Append(new NamedType($3)); }
+    
 FieldList
     : /* Empty */ { $$=new List<Decl*>; }
     | FieldList Field { ($$=$1)->Append($2); }
     ;
 
 Field
-    : VariableDef { $$=$1; }
-    | FunctionDef { $$=$1; }
+    : VariableDecl { $$=$1; }
+    | FunctionDecl { $$=$1; }
     ;
 
-StmtBlock
-    : '{' StmtList '}' { $$=new StmtBlock(new List<VarDecl*>, $2); }
-    | '{' VariableList ';' StmtList '}' { $$=new StmtBlock($2, $4); }
+InterfaceDecl
+    : INTERFACE Identifier '{' PrototypeList '}' { $$=new InterfaceDecl($2, $4); }
     ;
+
+PrototypeList
+    : /* Empty */ { $$=new List<Decl*>; }
+    | PrototypeList Prototype { ($$=$1)->Append($2); }
+
+Prototype
+    : Type Identifier '(' Formals ')' ';' { $$=new FnDecl($2, $1, $4); }
+    | VOID Identifier '(' Formals ')' ';' { $$=new FnDecl($2, NULL, $4); }
+
+StmtBlock
+    : '{' VariableDeclList StmtList '}' { $$=new StmtBlock($2, $3); }
+    ;
+
+VariableDeclList
+    : /* Empty */ { $$=new List<VarDecl*>; }
+    | VariableDeclList VariableDecl { ($$=$1)->Append($2); }
 
 StmtList
     : /* Empty */ { $$=new List<Stmt*>; }
@@ -213,36 +252,15 @@ StmtList
     ;
 
 Stmt
-    : SimpleStmt ';' { $$=$1; }
+    : ';' { $$=new EmptyExpr(); }
+    | Expr ';' { $$=$1; }
     | IfStmt { $$=$1; }
     | WhileStmt { $$=$1; }
     | ForStmt { $$=$1; }
-    | BreakStmt ';' { $$=$1; }
-    | ReturnStmt ';' { $$=$1; }
-    | PrintStmt ';' { $$=$1; }
+    | BreakStmt { $$=$1; }
+    | ReturnStmt { $$=$1; }
+    | PrintStmt { $$=$1; }
     | StmtBlock { $$=$1; }
-    ;
-
-SimpleStmt
-    : LValue '=' Expr { $$=new AssignExpr($1, new Operator(@1, "="), $3); }
-    | Call { $$=$1; }
-    | /* Empty */ { $$=new EmptyExpr(); }
-    ;
-
-LValue
-    : IDENTIFIER { $$=new FieldAccess(NULL, $1); }
-    | Expr '.' IDENTIFIER { $$=new FieldAccess($1, $3); }
-    | Expr '[' Expr ']' { $$=new ArrayAccess(@$, $1, $3); }
-    ;
-
-Call
-    : IDENTIFIER '(' Actuals ')' { $$=new Call(@$, NULL, $1, $3); }
-    | Expr '.' IDENTIFIER '(' Actuals ')' { $$=new Call(@$, $1, $3, $5); }
-    ;
-
-Actuals
-    : /* Empty */ { $$=new List<Expr*>; }
-    | ExprList { $$=$1; }
     ;
 
 ExprList
@@ -250,38 +268,38 @@ ExprList
     | ExprList ',' Expr { ($$=$1)->Append($3); }
     ;
 
-ForStmt
-    : FOR '(' SimpleStmt ';' BoolExpr ';' SimpleStmt ')' Stmt { $$=new ForStmt($3, $5, $7, $9); }
+IfStmt
+    : IF '(' Expr ')' Stmt %prec NOELSE { $$=new IfStmt($3, $5, NULL); }
+    | IF '(' Expr ')' Stmt ELSE Stmt { $$=new IfStmt($3, $5, $7); }
     ;
 
 WhileStmt
-    : WHILE '(' BoolExpr ')' Stmt { $$=new WhileStmt($3, $5); }
+    : WHILE '(' Expr ')' Stmt { $$=new WhileStmt($3, $5); }
     ;
 
-IfStmt
-    : IF '(' BoolExpr ')' Stmt %prec NOELSE { $$=new IfStmt($3, $5, NULL); }
-    | IF '(' BoolExpr ')' Stmt ELSE Stmt { $$=new IfStmt($3, $5, $7); }
+ForStmt
+    : FOR '(' ';' Expr ';' ')' Stmt { $$=new ForStmt(new EmptyExpr(), $4, new EmptyExpr(), $7); }
+    | FOR '(' Expr ';' Expr ';' ')' Stmt { $$=new ForStmt($3, $5, new EmptyExpr(), $8); }
+    | FOR '(' ';' Expr ';' Expr ')' Stmt { $$=new ForStmt(new EmptyExpr(), $4, $6, $8); }
+    | FOR '(' Expr ';' Expr ';' Expr ')' Stmt { $$=new ForStmt($3, $5, $7, $9); }
     ;
 
 ReturnStmt
-    : RETURN { $$=new ReturnStmt(@$, new EmptyExpr()); }
-    | RETURN Expr { $$=new ReturnStmt(@2, $2); }
+    : RETURN ';' { $$=new ReturnStmt(@$, new EmptyExpr()); }
+    | RETURN Expr ';' { $$=new ReturnStmt(@2, $2); }
     ;
 
 BreakStmt
-    : BREAK { $$=new BreakStmt(@1); }
+    : BREAK ';' { $$=new BreakStmt(@1); }
     ;
 
 PrintStmt
-    : PRINT '(' ExprList ')' { $$=new PrintStmt($3); }
+    : PRINT '(' ExprList ')' ';' { $$=new PrintStmt($3); }
     ;
 
-BoolExpr
-    : Expr { $$=$1; }
-    ;
-/* TODO */
 Expr
-    : Constant { $$=$1; }
+    : LValue '=' Expr { $$=new AssignExpr($1, new Operator(@2, "="), $3); }
+    | Constant { $$=$1; }
     | LValue { $$=$1; }
     | THIS { $$=new This(@1); }
     | Call { $$=$1; }
@@ -303,10 +321,18 @@ Expr
     | NOT_OP Expr { $$=new LogicalExpr(new Operator(@1, "!"), $2); }
     | READINTEGER '(' ')' { $$=new ReadIntegerExpr(@$); }
     | READLINE '(' ')' { $$=new ReadLineExpr(@$); }
-    | NEW IDENTIFIER '(' ')' { $$=new NewExpr(@$, new NamedType($2)); }
-    | NEW Type '[' Expr ']' { $$=new NewArrayExpr(@$, $4, $2); }
-    | INSTANCEOF '(' Expr ',' IDENTIFIER ')' { }
-    | '(' CLASS IDENTIFIER ')' Expr { }
+    | NEW Identifier { $$=new NewExpr(@$, new NamedType($2)); }
+    | NEWARRAY '(' Expr ',' Type ')' { $$=new NewArrayExpr(@$, $3, $5); }
+    ;
+
+Call
+    : Identifier '(' Actuals ')' { $$=new Call(@$, NULL, $1, $3); }
+    | Expr '.' Identifier '(' Actuals ')' { $$=new Call(@$, $1, $3, $5); }
+    ;
+
+Actuals
+    : /* Empty */ { $$=new List<Expr*>; }
+    | ExprList { $$=$1; }
     ;
 
 Constant

@@ -7,12 +7,16 @@
 #include <vector>
 using namespace std;
 
+#define TAB_SIZE 8
+
 /* Global variables */
 static int curLineNum, curColNum;
 vector<const char*> savedLines;
 
 static void DoBeforeEachAction();
 #define YY_USER_ACTION DoBeforeEachAction();
+
+FILE *scanner_log;
 %}
 
 /* States
@@ -40,70 +44,87 @@ DOUBLE_NUM          ([0-9]+\.[0-9]*)
 DOUBLE_SCI          ({DOUBLE_NUM}{EXPONENT})
 
 %%
- /* Comment or WhiteSpace */
-{WHITESPACE}       { /* Just ignore */ }
-{NEWLINE}          { /* Just ignore */ }
+<COPY>.*           { char curLine[512]; 
+                     savedLines.push_back(strdup(yytext)); 
+                     curColNum = 1; 
+                     yy_pop_state();
+                     yyless(0); }
+<COPY><<EOF>>      { yy_pop_state(); }                     
+<*>\n              { curLineNum++; 
+                     curColNum = 1;
+                     if(YYSTATE==COPY)
+                        savedLines.push_back("");
+                     else
+                        yy_push_state(COPY); }
+[ ]+               { /* ignore all spaces */ }
+<*>[\t]            { curColNum += TAB_SIZE-curColNum%TAB_SIZE + 1; }      
+
+ /* Comment */
 {COMMENT}          { /* Just ignore */ }
 
  /* Keywords */
-"int"              { printf("(%s, TYPEINT)\n", yytext); return INT; }
-"bool"             { printf("(%s, TYPEBOOL)\n", yytext); return BOOL; }
-"string"           { printf("(%s, TYPESTRING)\n", yytext); return STRING; }
-"void"             { printf("(%s, TYPEVOID)\n", yytext); return VOID;}
-"break"            { printf("(%s, KEYBREAK)\n", yytext); return BREAK; }
-"class"            { printf("(%s, KEYCLASS)\n", yytext); return CLASS; }
-"else"             { printf("(%s, KEYELSE)\n", yytext); return ELSE; }
-"extends"          { printf("(%s, KEYEXTENDS)\n", yytext); return EXTENDS; }
-"for"              { printf("(%s, KEYFOR)\n", yytext); return FOR; }
-"if"               { printf("(%s, KEYIF)\n", yytext); return IF; }
-"new"              { printf("(%s, KEYNEW)\n", yytext); return NEW; }
-"null"             { printf("(%s, KEYNULL)\n", yytext); return NULLCONSTANT; }
-"return"           { printf("(%s, KEYRETURN)\n", yytext); return RETURN; }
-"this"             { printf("(%s, KEYTHIS)\n", yytext); return THIS; }
-"while"            { printf("(%s, KEYWHILE)\n", yytext); return WHILE; }
-"static"           { printf("(%s, KEYSTATIC)\n", yytext); return STATIC; }
-"Print"            { printf("(%s, KEYPRINT)\n", yytext); return PRINT; }
-"ReadInteger"      { printf("(%s, KEYREADINTEGER)\n", yytext); return READINTEGER; }
-"ReadLine"         { printf("(%s, KEYREADLINE)\n", yytext); return READLINE; }
-"instanceof"       { printf("(%s, KEYINSTANCEOF)\n", yytext); return INSTANCEOF; }
+"int"              { fprintf(scanner_log, "(%s, TYPEINT)\n", yytext); return INT; }
+"double"           { fprintf(scanner_log, "(%s, TYPEDOUBLE)\n", yytext); return DOUBLE; }
+"bool"             { fprintf(scanner_log, "(%s, TYPEBOOL)\n", yytext); return BOOL; }
+"string"           { fprintf(scanner_log, "(%s, TYPESTRING)\n", yytext); return STRING; }
+"void"             { fprintf(scanner_log, "(%s, TYPEVOID)\n", yytext); return VOID;}
+"break"            { fprintf(scanner_log, "(%s, KEYBREAK)\n", yytext); return BREAK; }
+"class"            { fprintf(scanner_log, "(%s, KEYCLASS)\n", yytext); return CLASS; }
+"else"             { fprintf(scanner_log, "(%s, KEYELSE)\n", yytext); return ELSE; }
+"extends"          { fprintf(scanner_log, "(%s, KEYEXTENDS)\n", yytext); return EXTENDS; }
+"for"              { fprintf(scanner_log, "(%s, KEYFOR)\n", yytext); return FOR; }
+"if"               { fprintf(scanner_log, "(%s, KEYIF)\n", yytext); return IF; }
+"new"              { fprintf(scanner_log, "(%s, KEYNEW)\n", yytext); return NEW; }
+"null"             { fprintf(scanner_log, "(%s, KEYNULL)\n", yytext); return NULLCONSTANT; }
+"return"           { fprintf(scanner_log, "(%s, KEYRETURN)\n", yytext); return RETURN; }
+"this"             { fprintf(scanner_log, "(%s, KEYTHIS)\n", yytext); return THIS; }
+"while"            { fprintf(scanner_log, "(%s, KEYWHILE)\n", yytext); return WHILE; }
+"static"           { fprintf(scanner_log, "(%s, KEYSTATIC)\n", yytext); return STATIC; }
+"Print"            { fprintf(scanner_log, "(%s, KEYPRINT)\n", yytext); return PRINT; }
+"ReadInteger"      { fprintf(scanner_log, "(%s, KEYREADINTEGER)\n", yytext); return READINTEGER; }
+"ReadLine"         { fprintf(scanner_log, "(%s, KEYREADLINE)\n", yytext); return READLINE; }
+"instanceof"       { fprintf(scanner_log, "(%s, KEYINSTANCEOF)\n", yytext); return INSTANCEOF; }
+"NewArray"         { fprintf(scanner_log, "(%s, KEYNEWARRAY)\n", yytext); return NEWARRAY; }
+"implements"       { fprintf(scanner_log, "(%s, KEYIMPLEMENTS)\n", yytext); return IMPLEMENTS; }
+"interface"        { fprintf(scanner_log, "(%s, KEYINTERFACE)\n", yytext); return INTERFACE; }
 
  /* Operator and Separator */
-"+"                { printf("(%s, OPADD)\n", yytext); return '+'; }
-"-"                { printf("(%s, OPSUB)\n", yytext); return '-'; }
-"*"                { printf("(%s, OPMUL)\n", yytext); return '*'; }
-"/"                { printf("(%s, OPDIV)\n", yytext); return '/'; }
-"%"                { printf("(%s, OPMOD)\n", yytext); return '%'; }
-"="                { printf("(%s, OPASSIGN)\n", yytext); return '='; }
-"<"                { printf("(%s, LESS)\n", yytext); return '<'; }
-"<="               { printf("(%s, LESSEQUAL)\n", yytext); return LE_OP; }
-">"                { printf("(%s, GREATER)\n", yytext); return '>'; }
-">="               { printf("(%s, GREATEREQUAL)\n", yytext); return GE_OP; }
-"=="               { printf("(%s, EQUAL)\n", yytext); return EQ_OP; }
-"!="               { printf("(%s, NOTEQUAL)\n", yytext); return NE_OP; }
-"&&"               { printf("(%s, LOGICALAND)\n", yytext); return AND_OP; }
-"||"               { printf("(%s, LOGICALOR)\n", yytext); return OR_OP; }
-"!"                { printf("(%s, LOGICALNOT)\n", yytext); return NOT_OP; }
-";"                { printf("(%s, SEMICOLON)\n", yytext); return yytext[0]; }
-","                { printf("(%s, COMMA)\n", yytext); return yytext[0]; }
-"."                { printf("(%s, PTR)\n", yytext); return yytext[0]; }
-"["                { printf("(%s, LEFTBRACKET)\n", yytext); return yytext[0]; }
-"]"                { printf("(%s, RIGHTBRACKET)\n", yytext); return yytext[0]; }
-"("                { printf("(%s, LEFTPAREN)\n", yytext); return yytext[0]; }
-")"                { printf("(%s, RIGHTPAREN)\n", yytext); return yytext[0]; }
-"{"                { printf("(%s, LEFTBRACE)\n", yytext); return yytext[0]; }
-"}"                { printf("(%s, RIGHTBRACE)\n", yytext); return yytext[0]; }
+"+"                { fprintf(scanner_log, "(%s, OPADD)\n", yytext); return '+'; }
+"-"                { fprintf(scanner_log, "(%s, OPSUB)\n", yytext); return '-'; }
+"*"                { fprintf(scanner_log, "(%s, OPMUL)\n", yytext); return '*'; }
+"/"                { fprintf(scanner_log, "(%s, OPDIV)\n", yytext); return '/'; }
+"%"                { fprintf(scanner_log, "(%s, OPMOD)\n", yytext); return '%'; }
+"="                { fprintf(scanner_log, "(%s, OPASSIGN)\n", yytext); return '='; }
+"<"                { fprintf(scanner_log, "(%s, LESS)\n", yytext); return '<'; }
+"<="               { fprintf(scanner_log, "(%s, LESSEQUAL)\n", yytext); return LE_OP; }
+">"                { fprintf(scanner_log, "(%s, GREATER)\n", yytext); return '>'; }
+">="               { fprintf(scanner_log, "(%s, GREATEREQUAL)\n", yytext); return GE_OP; }
+"=="               { fprintf(scanner_log, "(%s, EQUAL)\n", yytext); return EQ_OP; }
+"!="               { fprintf(scanner_log, "(%s, NOTEQUAL)\n", yytext); return NE_OP; }
+"&&"               { fprintf(scanner_log, "(%s, LOGICALAND)\n", yytext); return AND_OP; }
+"||"               { fprintf(scanner_log, "(%s, LOGICALOR)\n", yytext); return OR_OP; }
+"!"                { fprintf(scanner_log, "(%s, LOGICALNOT)\n", yytext); return NOT_OP; }
+";"                { fprintf(scanner_log, "(%s, SEMICOLON)\n", yytext); return yytext[0]; }
+","                { fprintf(scanner_log, "(%s, COMMA)\n", yytext); return yytext[0]; }
+"."                { fprintf(scanner_log, "(%s, PTR)\n", yytext); return yytext[0]; }
+"["                { fprintf(scanner_log, "(%s, LEFTBRACKET)\n", yytext); return yytext[0]; }
+"]"                { fprintf(scanner_log, "(%s, RIGHTBRACKET)\n", yytext); return yytext[0]; }
+"("                { fprintf(scanner_log, "(%s, LEFTPAREN)\n", yytext); return yytext[0]; }
+")"                { fprintf(scanner_log, "(%s, RIGHTPAREN)\n", yytext); return yytext[0]; }
+"{"                { fprintf(scanner_log, "(%s, LEFTBRACE)\n", yytext); return yytext[0]; }
+"}"                { fprintf(scanner_log, "(%s, RIGHTBRACE)\n", yytext); return yytext[0]; }
 
  /* Constants */
-"true"             { printf("(%s, CONSTANTTRUE)\n", yytext); yylval.boolConstant = (yytext[0]=='t'); return BOOLCONSTANT; }
-"false"            { printf("(%s, CONSTANTFALSE)\n", yytext); yylval.boolConstant = (yytext[0]=='t');  return BOOLCONSTANT; }
-{DEC_INTEGER}      { printf("(%s, CONSTANTINTD)\n", yytext); yylval.intConstant = strtol(yytext, NULL, 10); return INTCONSTANT; }
-{HEX_INTEGER}      { printf("(%s, CONSTANTINTH)\n", yytext); yylval.intConstant = strtol(yytext, NULL, 16); return INTCONSTANT; }
-{STRING_LITERAL}   { printf("(%s, CONSTANTSTR)\n", yytext); yylval.stringConstant = strdup(yytext); return STRING_LITERAL; }
-{DOUBLE_NUM}       { printf("(%s, CONSTANTDOUBLE)\n", yytext); yylval.doubleConstant = atof(yytext); return DOUBLECONSTANT; }
-{DOUBLE_SCI}       { printf("(%s, CONSTANTDOUBLESCI)\n", yytext); yylval.doubleConstant = atof(yytext); return DOUBLECONSTANT; }
+"true"             { fprintf(scanner_log, "(%s, CONSTANTTRUE)\n", yytext); yylval.boolConstant = (yytext[0]=='t'); return BOOLCONSTANT; }
+"false"            { fprintf(scanner_log, "(%s, CONSTANTFALSE)\n", yytext); yylval.boolConstant = (yytext[0]=='t');  return BOOLCONSTANT; }
+{DEC_INTEGER}      { fprintf(scanner_log, "(%s, CONSTANTINTD)\n", yytext); yylval.intConstant = strtol(yytext, NULL, 10); return INTCONSTANT; }
+{HEX_INTEGER}      { fprintf(scanner_log, "(%s, CONSTANTINTH)\n", yytext); yylval.intConstant = strtol(yytext, NULL, 16); return INTCONSTANT; }
+{STRING_LITERAL}   { fprintf(scanner_log, "(%s, CONSTANTSTR)\n", yytext); yylval.stringConstant = strdup(yytext); return STRING_LITERAL; }
+{DOUBLE_NUM}       { fprintf(scanner_log, "(%s, CONSTANTDOUBLE)\n", yytext); yylval.doubleConstant = atof(yytext); return DOUBLECONSTANT; }
+{DOUBLE_SCI}       { fprintf(scanner_log, "(%s, CONSTANTDOUBLESCI)\n", yytext); yylval.doubleConstant = atof(yytext); return DOUBLECONSTANT; }
 
  /* Identifier */
-{IDENTIFIER}       { printf("(%s, IDENTIFIER)\n", yytext); 
+{IDENTIFIER}       { fprintf(scanner_log, "(%s, IDENTIFIER)\n", yytext); 
                      if(strlen(yytext)>MaxIdentLen)
                         ReportError::LongIdentifier(&yylloc, yytext);
                      strncpy(yylval.identifier, yytext, MaxIdentLen);
@@ -111,7 +132,7 @@ DOUBLE_SCI          ({DOUBLE_NUM}{EXPONENT})
                      return IDENTIFIER; }
 
  /* Default rule */
-.                 { printf("*** Error : Unredognized characters\n"); ReportError::UnrecogChar(&yylloc, yytext[0]); }
+.                 { fprintf(scanner_log, "*** Error : Unredognized characters\n"); ReportError::UnrecogChar(&yylloc, yytext[0]); }
 %%
 
 /* Function: InitScanner
@@ -131,7 +152,7 @@ void InitScanner() {
     BEGIN(N);
     yy_push_state(COPY); // copy first line at start
     curLineNum = 1;
-    curColNum = 1;
+    curColNum = 1;    
 }
 
 /* Function: DoBeforeEachAction

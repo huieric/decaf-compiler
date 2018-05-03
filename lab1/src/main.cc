@@ -22,5 +22,7 @@ int main(int argc, char *argv[]) {
     InitScanner();
     InitParser();
     yyparse();
+    if(scanner_log)
+        fclose(scanner_log);
     return(ReportError::NumErrors()==0? 0 : -1);
 }

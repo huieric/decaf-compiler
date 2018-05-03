@@ -8,7 +8,9 @@
 #include <stdarg.h>
 #include <string.h>
 #include <vector>
+#include <string>
 using std::vector;
+using std::string;
 
 static vector<const char*> debugKeys;
 static const int BufferSize = 2048;
@@ -62,15 +64,25 @@ void ParseCommandLine(int argc, char *argv[]) {
   if (argc == 1)
     return;
   
-  if (strcmp(argv[1], "-d") != 0) { // first arg is not -d
-    printf("Incorrect Use:   ");
-    for (int i = 1; i < argc; i++) printf("%s ", argv[i]);
-    printf("\n");
-    printf("Correct Usage:   -d <debug-key-1> <debug-key-2> ... \n");
-    exit(2);
-  }
+  // if (strcmp(argv[1], "-d") != 0) { // first arg is not -d
+  //   printf("Incorrect Use:   ");
+  //   for (int i = 1; i < argc; i++) printf("%s ", argv[i]);
+  //   printf("\n");
+  //   printf("Correct Usage:   -d <debug-key-1> <debug-key-2> ... \n");
+  //   exit(2);
+  // }
 
-  for (int i = 2; i < argc; i++)
-    SetDebugForKey(argv[i], true);
+  // for (int i = 2; i < argc; i++)
+  //   SetDebugForKey(argv[i], true);
+
+  string source_file = argv[1];
+  unsigned from = source_file.find_last_of("/") + 1;
+  unsigned to = source_file.find_last_of(".");
+  string object_file = source_file.substr(from, to-from) + ".S";
+  string scanner_log_name = source_file.substr(from, to - from) + "_scanner.log";
+  
+  scanner_log = fopen(scanner_log_name.c_str(), "w");
+  freopen(argv[1], "r", stdin);
+  freopen(object_file.c_str(), "w", stdout);
 }
 
