@@ -183,7 +183,7 @@ Type
     | DOUBLE { $$=Type::doubleType; }
     | BOOL { $$=Type::boolType; }
     | STRING { $$=Type::stringType; }
-    | CLASS Identifier { $$=new NamedType($2); }
+    | Identifier { $$=new NamedType($1); }
     | Type '[' ']' { $$=new ArrayType(@1, $1); }
     ;
 
@@ -248,7 +248,7 @@ VariableDeclList
 
 StmtList
     : /* Empty */ { $$=new List<Stmt*>; }
-    | StmtList Stmt { ($$=$1)->Append($2); }
+    | Stmt StmtList { ($$=$2)->InsertAt($1, 0); }
     ;
 
 Stmt

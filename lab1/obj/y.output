@@ -4,6 +4,9 @@ Terminals unused in grammar
    INSTANCEOF
 
 
+State 91 conflicts: 1 reduce/reduce
+
+
 Grammar
 
     0 $accept: Program $end
@@ -33,7 +36,7 @@ Grammar
    16     | DOUBLE
    17     | BOOL
    18     | STRING
-   19     | CLASS Identifier
+   19     | Identifier
    20     | Type '[' ']'
 
    21 Identifier: IDENTIFIER
@@ -75,7 +78,7 @@ Grammar
    44                 | VariableDeclList VariableDecl
 
    45 StmtList: %empty
-   46         | StmtList Stmt
+   46         | Stmt StmtList
 
    47 Stmt: ';'
    48     | Expr ';'
@@ -174,7 +177,7 @@ STRING (261) 18
 VOID (262) 25 41
 NULLCONSTANT (263) 102
 BREAK (264) 67
-CLASS (265) 19 26
+CLASS (265) 26
 ELSE (266) 59
 EXTENDS (267) 28
 FOR (268) 61 62 63 64
@@ -291,23 +294,25 @@ State 0
 
     0 $accept: . Program $end
 
-    INT        shift, and go to state 1
-    DOUBLE     shift, and go to state 2
-    BOOL       shift, and go to state 3
-    STRING     shift, and go to state 4
-    VOID       shift, and go to state 5
-    CLASS      shift, and go to state 6
-    INTERFACE  shift, and go to state 7
+    INT         shift, and go to state 1
+    DOUBLE      shift, and go to state 2
+    BOOL        shift, and go to state 3
+    STRING      shift, and go to state 4
+    VOID        shift, and go to state 5
+    CLASS       shift, and go to state 6
+    INTERFACE   shift, and go to state 7
+    IDENTIFIER  shift, and go to state 8
 
-    Program        go to state 8
-    DeclList       go to state 9
-    Decl           go to state 10
-    VariableDecl   go to state 11
-    Variable       go to state 12
-    Type           go to state 13
-    FunctionDecl   go to state 14
-    ClassDecl      go to state 15
-    InterfaceDecl  go to state 16
+    Program        go to state 9
+    DeclList       go to state 10
+    Decl           go to state 11
+    VariableDecl   go to state 12
+    Variable       go to state 13
+    Type           go to state 14
+    Identifier     go to state 15
+    FunctionDecl   go to state 16
+    ClassDecl      go to state 17
+    InterfaceDecl  go to state 18
 
 
 State 1
@@ -342,216 +347,222 @@ State 5
 
    25 FunctionDecl: VOID . Identifier '(' Formals ')' StmtBlock
 
-    IDENTIFIER  shift, and go to state 17
+    IDENTIFIER  shift, and go to state 8
 
-    Identifier  go to state 18
+    Identifier  go to state 19
 
 
 State 6
 
-   19 Type: CLASS . Identifier
    26 ClassDecl: CLASS . Identifier ExtendsClause ImplementsClause '{' FieldList '}'
 
-    IDENTIFIER  shift, and go to state 17
+    IDENTIFIER  shift, and go to state 8
 
-    Identifier  go to state 19
+    Identifier  go to state 20
 
 
 State 7
 
    37 InterfaceDecl: INTERFACE . Identifier '{' PrototypeList '}'
 
-    IDENTIFIER  shift, and go to state 17
+    IDENTIFIER  shift, and go to state 8
 
-    Identifier  go to state 20
+    Identifier  go to state 21
 
 
 State 8
-
-    0 $accept: Program . $end
-
-    $end  shift, and go to state 21
-
-
-State 9
-
-    1 Program: DeclList .
-    2 DeclList: DeclList . Decl
-
-    INT        shift, and go to state 1
-    DOUBLE     shift, and go to state 2
-    BOOL       shift, and go to state 3
-    STRING     shift, and go to state 4
-    VOID       shift, and go to state 5
-    CLASS      shift, and go to state 6
-    INTERFACE  shift, and go to state 7
-
-    $default  reduce using rule 1 (Program)
-
-    Decl           go to state 22
-    VariableDecl   go to state 11
-    Variable       go to state 12
-    Type           go to state 13
-    FunctionDecl   go to state 14
-    ClassDecl      go to state 15
-    InterfaceDecl  go to state 16
-
-
-State 10
-
-    3 DeclList: Decl .
-
-    $default  reduce using rule 3 (DeclList)
-
-
-State 11
-
-    4 Decl: VariableDecl .
-
-    $default  reduce using rule 4 (Decl)
-
-
-State 12
-
-    8 VariableDecl: Variable . ';'
-
-    ';'  shift, and go to state 23
-
-
-State 13
-
-    9 Variable: Type . Identifier
-   20 Type: Type . '[' ']'
-   24 FunctionDecl: Type . Identifier '(' Formals ')' StmtBlock
-
-    IDENTIFIER  shift, and go to state 17
-    '['         shift, and go to state 24
-
-    Identifier  go to state 25
-
-
-State 14
-
-    5 Decl: FunctionDecl .
-
-    $default  reduce using rule 5 (Decl)
-
-
-State 15
-
-    6 Decl: ClassDecl .
-
-    $default  reduce using rule 6 (Decl)
-
-
-State 16
-
-    7 Decl: InterfaceDecl .
-
-    $default  reduce using rule 7 (Decl)
-
-
-State 17
 
    21 Identifier: IDENTIFIER .
 
     $default  reduce using rule 21 (Identifier)
 
 
+State 9
+
+    0 $accept: Program . $end
+
+    $end  shift, and go to state 22
+
+
+State 10
+
+    1 Program: DeclList .
+    2 DeclList: DeclList . Decl
+
+    INT         shift, and go to state 1
+    DOUBLE      shift, and go to state 2
+    BOOL        shift, and go to state 3
+    STRING      shift, and go to state 4
+    VOID        shift, and go to state 5
+    CLASS       shift, and go to state 6
+    INTERFACE   shift, and go to state 7
+    IDENTIFIER  shift, and go to state 8
+
+    $default  reduce using rule 1 (Program)
+
+    Decl           go to state 23
+    VariableDecl   go to state 12
+    Variable       go to state 13
+    Type           go to state 14
+    Identifier     go to state 15
+    FunctionDecl   go to state 16
+    ClassDecl      go to state 17
+    InterfaceDecl  go to state 18
+
+
+State 11
+
+    3 DeclList: Decl .
+
+    $default  reduce using rule 3 (DeclList)
+
+
+State 12
+
+    4 Decl: VariableDecl .
+
+    $default  reduce using rule 4 (Decl)
+
+
+State 13
+
+    8 VariableDecl: Variable . ';'
+
+    ';'  shift, and go to state 24
+
+
+State 14
+
+    9 Variable: Type . Identifier
+   20 Type: Type . '[' ']'
+   24 FunctionDecl: Type . Identifier '(' Formals ')' StmtBlock
+
+    IDENTIFIER  shift, and go to state 8
+    '['         shift, and go to state 25
+
+    Identifier  go to state 26
+
+
+State 15
+
+   19 Type: Identifier .
+
+    $default  reduce using rule 19 (Type)
+
+
+State 16
+
+    5 Decl: FunctionDecl .
+
+    $default  reduce using rule 5 (Decl)
+
+
+State 17
+
+    6 Decl: ClassDecl .
+
+    $default  reduce using rule 6 (Decl)
+
+
 State 18
 
-   25 FunctionDecl: VOID Identifier . '(' Formals ')' StmtBlock
+    7 Decl: InterfaceDecl .
 
-    '('  shift, and go to state 26
+    $default  reduce using rule 7 (Decl)
 
 
 State 19
 
-   19 Type: CLASS Identifier .
-   26 ClassDecl: CLASS Identifier . ExtendsClause ImplementsClause '{' FieldList '}'
+   25 FunctionDecl: VOID Identifier . '(' Formals ')' StmtBlock
 
-    EXTENDS  shift, and go to state 27
-
-    IMPLEMENTS  reduce using rule 27 (ExtendsClause)
-    '{'         reduce using rule 27 (ExtendsClause)
-    $default    reduce using rule 19 (Type)
-
-    ExtendsClause  go to state 28
+    '('  shift, and go to state 27
 
 
 State 20
 
-   37 InterfaceDecl: INTERFACE Identifier . '{' PrototypeList '}'
+   26 ClassDecl: CLASS Identifier . ExtendsClause ImplementsClause '{' FieldList '}'
 
-    '{'  shift, and go to state 29
+    EXTENDS  shift, and go to state 28
+
+    $default  reduce using rule 27 (ExtendsClause)
+
+    ExtendsClause  go to state 29
 
 
 State 21
+
+   37 InterfaceDecl: INTERFACE Identifier . '{' PrototypeList '}'
+
+    '{'  shift, and go to state 30
+
+
+State 22
 
     0 $accept: Program $end .
 
     $default  accept
 
 
-State 22
+State 23
 
     2 DeclList: DeclList Decl .
 
     $default  reduce using rule 2 (DeclList)
 
 
-State 23
+State 24
 
     8 VariableDecl: Variable ';' .
 
     $default  reduce using rule 8 (VariableDecl)
 
 
-State 24
+State 25
 
    20 Type: Type '[' . ']'
 
-    ']'  shift, and go to state 30
-
-
-State 25
-
-    9 Variable: Type Identifier .
-   24 FunctionDecl: Type Identifier . '(' Formals ')' StmtBlock
-
-    '('  shift, and go to state 31
-
-    $default  reduce using rule 9 (Variable)
+    ']'  shift, and go to state 31
 
 
 State 26
 
+    9 Variable: Type Identifier .
+   24 FunctionDecl: Type Identifier . '(' Formals ')' StmtBlock
+
+    '('  shift, and go to state 32
+
+    $default  reduce using rule 9 (Variable)
+
+
+State 27
+
    25 FunctionDecl: VOID Identifier '(' . Formals ')' StmtBlock
 
-    INT     shift, and go to state 1
-    DOUBLE  shift, and go to state 2
-    BOOL    shift, and go to state 3
-    STRING  shift, and go to state 4
-    CLASS   shift, and go to state 32
+    INT         shift, and go to state 1
+    DOUBLE      shift, and go to state 2
+    BOOL        shift, and go to state 3
+    STRING      shift, and go to state 4
+    IDENTIFIER  shift, and go to state 8
 
     $default  reduce using rule 22 (Formals)
 
     Variable      go to state 33
     VariableList  go to state 34
     Type          go to state 35
+    Identifier    go to state 15
     Formals       go to state 36
 
 
-State 27
+State 28
 
    28 ExtendsClause: EXTENDS . Identifier
 
-    IDENTIFIER  shift, and go to state 17
+    IDENTIFIER  shift, and go to state 8
 
     Identifier  go to state 37
 
 
-State 28
+State 29
 
    26 ClassDecl: CLASS Identifier ExtendsClause . ImplementsClause '{' FieldList '}'
 
@@ -562,7 +573,7 @@ State 28
     ImplementsClause  go to state 39
 
 
-State 29
+State 30
 
    37 InterfaceDecl: INTERFACE Identifier '{' . PrototypeList '}'
 
@@ -571,38 +582,30 @@ State 29
     PrototypeList  go to state 40
 
 
-State 30
+State 31
 
    20 Type: Type '[' ']' .
 
     $default  reduce using rule 20 (Type)
 
 
-State 31
+State 32
 
    24 FunctionDecl: Type Identifier '(' . Formals ')' StmtBlock
 
-    INT     shift, and go to state 1
-    DOUBLE  shift, and go to state 2
-    BOOL    shift, and go to state 3
-    STRING  shift, and go to state 4
-    CLASS   shift, and go to state 32
+    INT         shift, and go to state 1
+    DOUBLE      shift, and go to state 2
+    BOOL        shift, and go to state 3
+    STRING      shift, and go to state 4
+    IDENTIFIER  shift, and go to state 8
 
     $default  reduce using rule 22 (Formals)
 
     Variable      go to state 33
     VariableList  go to state 34
     Type          go to state 35
+    Identifier    go to state 15
     Formals       go to state 41
-
-
-State 32
-
-   19 Type: CLASS . Identifier
-
-    IDENTIFIER  shift, and go to state 17
-
-    Identifier  go to state 42
 
 
 State 33
@@ -617,7 +620,7 @@ State 34
    11 VariableList: VariableList . ',' Variable
    23 Formals: VariableList .
 
-    ','  shift, and go to state 43
+    ','  shift, and go to state 42
 
     $default  reduce using rule 23 (Formals)
 
@@ -627,17 +630,17 @@ State 35
     9 Variable: Type . Identifier
    20 Type: Type . '[' ']'
 
-    IDENTIFIER  shift, and go to state 17
-    '['         shift, and go to state 24
+    IDENTIFIER  shift, and go to state 8
+    '['         shift, and go to state 25
 
-    Identifier  go to state 44
+    Identifier  go to state 43
 
 
 State 36
 
    25 FunctionDecl: VOID Identifier '(' Formals . ')' StmtBlock
 
-    ')'  shift, and go to state 45
+    ')'  shift, and go to state 44
 
 
 State 37
@@ -651,17 +654,17 @@ State 38
 
    30 ImplementsClause: IMPLEMENTS . InterfaceList
 
-    IDENTIFIER  shift, and go to state 17
+    IDENTIFIER  shift, and go to state 8
 
-    Identifier     go to state 46
-    InterfaceList  go to state 47
+    Identifier     go to state 45
+    InterfaceList  go to state 46
 
 
 State 39
 
    26 ClassDecl: CLASS Identifier ExtendsClause ImplementsClause . '{' FieldList '}'
 
-    '{'  shift, and go to state 48
+    '{'  shift, and go to state 47
 
 
 State 40
@@ -669,667 +672,683 @@ State 40
    37 InterfaceDecl: INTERFACE Identifier '{' PrototypeList . '}'
    39 PrototypeList: PrototypeList . Prototype
 
-    INT     shift, and go to state 1
-    DOUBLE  shift, and go to state 2
-    BOOL    shift, and go to state 3
-    STRING  shift, and go to state 4
-    VOID    shift, and go to state 49
-    CLASS   shift, and go to state 32
-    '}'     shift, and go to state 50
+    INT         shift, and go to state 1
+    DOUBLE      shift, and go to state 2
+    BOOL        shift, and go to state 3
+    STRING      shift, and go to state 4
+    VOID        shift, and go to state 48
+    IDENTIFIER  shift, and go to state 8
+    '}'         shift, and go to state 49
 
-    Type       go to state 51
-    Prototype  go to state 52
+    Type        go to state 50
+    Identifier  go to state 15
+    Prototype   go to state 51
 
 
 State 41
 
    24 FunctionDecl: Type Identifier '(' Formals . ')' StmtBlock
 
-    ')'  shift, and go to state 53
+    ')'  shift, and go to state 52
 
 
 State 42
 
-   19 Type: CLASS Identifier .
+   11 VariableList: VariableList ',' . Variable
 
-    $default  reduce using rule 19 (Type)
+    INT         shift, and go to state 1
+    DOUBLE      shift, and go to state 2
+    BOOL        shift, and go to state 3
+    STRING      shift, and go to state 4
+    IDENTIFIER  shift, and go to state 8
+
+    Variable    go to state 53
+    Type        go to state 35
+    Identifier  go to state 15
 
 
 State 43
-
-   11 VariableList: VariableList ',' . Variable
-
-    INT     shift, and go to state 1
-    DOUBLE  shift, and go to state 2
-    BOOL    shift, and go to state 3
-    STRING  shift, and go to state 4
-    CLASS   shift, and go to state 32
-
-    Variable  go to state 54
-    Type      go to state 35
-
-
-State 44
 
     9 Variable: Type Identifier .
 
     $default  reduce using rule 9 (Variable)
 
 
-State 45
+State 44
 
    25 FunctionDecl: VOID Identifier '(' Formals ')' . StmtBlock
 
-    '{'  shift, and go to state 55
+    '{'  shift, and go to state 54
 
-    StmtBlock  go to state 56
+    StmtBlock  go to state 55
 
 
-State 46
+State 45
 
    31 InterfaceList: Identifier .
 
     $default  reduce using rule 31 (InterfaceList)
 
 
-State 47
+State 46
 
    30 ImplementsClause: IMPLEMENTS InterfaceList .
    32 InterfaceList: InterfaceList . ',' Identifier
 
-    ','  shift, and go to state 57
+    ','  shift, and go to state 56
 
     $default  reduce using rule 30 (ImplementsClause)
 
 
-State 48
+State 47
 
    26 ClassDecl: CLASS Identifier ExtendsClause ImplementsClause '{' . FieldList '}'
 
     $default  reduce using rule 33 (FieldList)
 
-    FieldList  go to state 58
+    FieldList  go to state 57
 
 
-State 49
+State 48
 
    41 Prototype: VOID . Identifier '(' Formals ')' ';'
 
-    IDENTIFIER  shift, and go to state 17
+    IDENTIFIER  shift, and go to state 8
 
-    Identifier  go to state 59
+    Identifier  go to state 58
 
 
-State 50
+State 49
 
    37 InterfaceDecl: INTERFACE Identifier '{' PrototypeList '}' .
 
     $default  reduce using rule 37 (InterfaceDecl)
 
 
-State 51
+State 50
 
    20 Type: Type . '[' ']'
    40 Prototype: Type . Identifier '(' Formals ')' ';'
 
-    IDENTIFIER  shift, and go to state 17
-    '['         shift, and go to state 24
+    IDENTIFIER  shift, and go to state 8
+    '['         shift, and go to state 25
 
-    Identifier  go to state 60
+    Identifier  go to state 59
 
 
-State 52
+State 51
 
    39 PrototypeList: PrototypeList Prototype .
 
     $default  reduce using rule 39 (PrototypeList)
 
 
-State 53
+State 52
 
    24 FunctionDecl: Type Identifier '(' Formals ')' . StmtBlock
 
-    '{'  shift, and go to state 55
+    '{'  shift, and go to state 54
 
-    StmtBlock  go to state 61
+    StmtBlock  go to state 60
 
 
-State 54
+State 53
 
    11 VariableList: VariableList ',' Variable .
 
     $default  reduce using rule 11 (VariableList)
 
 
-State 55
+State 54
 
    42 StmtBlock: '{' . VariableDeclList StmtList '}'
 
     $default  reduce using rule 43 (VariableDeclList)
 
-    VariableDeclList  go to state 62
+    VariableDeclList  go to state 61
 
 
-State 56
+State 55
 
    25 FunctionDecl: VOID Identifier '(' Formals ')' StmtBlock .
 
     $default  reduce using rule 25 (FunctionDecl)
 
 
-State 57
+State 56
 
    32 InterfaceList: InterfaceList ',' . Identifier
 
-    IDENTIFIER  shift, and go to state 17
+    IDENTIFIER  shift, and go to state 8
 
-    Identifier  go to state 63
+    Identifier  go to state 62
 
 
-State 58
+State 57
 
    26 ClassDecl: CLASS Identifier ExtendsClause ImplementsClause '{' FieldList . '}'
    34 FieldList: FieldList . Field
 
-    INT     shift, and go to state 1
-    DOUBLE  shift, and go to state 2
-    BOOL    shift, and go to state 3
-    STRING  shift, and go to state 4
-    VOID    shift, and go to state 5
-    CLASS   shift, and go to state 32
-    '}'     shift, and go to state 64
+    INT         shift, and go to state 1
+    DOUBLE      shift, and go to state 2
+    BOOL        shift, and go to state 3
+    STRING      shift, and go to state 4
+    VOID        shift, and go to state 5
+    IDENTIFIER  shift, and go to state 8
+    '}'         shift, and go to state 63
 
-    VariableDecl  go to state 65
-    Variable      go to state 12
-    Type          go to state 13
-    FunctionDecl  go to state 66
-    Field         go to state 67
+    VariableDecl  go to state 64
+    Variable      go to state 13
+    Type          go to state 14
+    Identifier    go to state 15
+    FunctionDecl  go to state 65
+    Field         go to state 66
+
+
+State 58
+
+   41 Prototype: VOID Identifier . '(' Formals ')' ';'
+
+    '('  shift, and go to state 67
 
 
 State 59
 
-   41 Prototype: VOID Identifier . '(' Formals ')' ';'
+   40 Prototype: Type Identifier . '(' Formals ')' ';'
 
     '('  shift, and go to state 68
 
 
 State 60
 
-   40 Prototype: Type Identifier . '(' Formals ')' ';'
-
-    '('  shift, and go to state 69
-
-
-State 61
-
    24 FunctionDecl: Type Identifier '(' Formals ')' StmtBlock .
 
     $default  reduce using rule 24 (FunctionDecl)
 
 
-State 62
+State 61
 
    42 StmtBlock: '{' VariableDeclList . StmtList '}'
    44 VariableDeclList: VariableDeclList . VariableDecl
 
-    INT     shift, and go to state 1
-    DOUBLE  shift, and go to state 2
-    BOOL    shift, and go to state 3
-    STRING  shift, and go to state 4
-    CLASS   shift, and go to state 32
+    INT             shift, and go to state 1
+    DOUBLE          shift, and go to state 2
+    BOOL            shift, and go to state 3
+    STRING          shift, and go to state 4
+    NULLCONSTANT    shift, and go to state 69
+    BREAK           shift, and go to state 70
+    FOR             shift, and go to state 71
+    IF              shift, and go to state 72
+    NEW             shift, and go to state 73
+    RETURN          shift, and go to state 74
+    THIS            shift, and go to state 75
+    WHILE           shift, and go to state 76
+    PRINT           shift, and go to state 77
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    ';'             shift, and go to state 87
+    '('             shift, and go to state 88
+    '{'             shift, and go to state 54
 
     $default  reduce using rule 45 (StmtList)
 
-    VariableDecl  go to state 70
-    Variable      go to state 12
+    VariableDecl  go to state 89
+    Variable      go to state 13
+    LValue        go to state 90
     Type          go to state 35
-    StmtList      go to state 71
+    Identifier    go to state 91
+    StmtBlock     go to state 92
+    StmtList      go to state 93
+    Stmt          go to state 94
+    IfStmt        go to state 95
+    WhileStmt     go to state 96
+    ForStmt       go to state 97
+    ReturnStmt    go to state 98
+    BreakStmt     go to state 99
+    PrintStmt     go to state 100
+    Expr          go to state 101
+    Call          go to state 102
+    Constant      go to state 103
 
 
-State 63
+State 62
 
    32 InterfaceList: InterfaceList ',' Identifier .
 
     $default  reduce using rule 32 (InterfaceList)
 
 
-State 64
+State 63
 
    26 ClassDecl: CLASS Identifier ExtendsClause ImplementsClause '{' FieldList '}' .
 
     $default  reduce using rule 26 (ClassDecl)
 
 
-State 65
+State 64
 
    35 Field: VariableDecl .
 
     $default  reduce using rule 35 (Field)
 
 
-State 66
+State 65
 
    36 Field: FunctionDecl .
 
     $default  reduce using rule 36 (Field)
 
 
-State 67
+State 66
 
    34 FieldList: FieldList Field .
 
     $default  reduce using rule 34 (FieldList)
 
 
-State 68
+State 67
 
    41 Prototype: VOID Identifier '(' . Formals ')' ';'
 
-    INT     shift, and go to state 1
-    DOUBLE  shift, and go to state 2
-    BOOL    shift, and go to state 3
-    STRING  shift, and go to state 4
-    CLASS   shift, and go to state 32
+    INT         shift, and go to state 1
+    DOUBLE      shift, and go to state 2
+    BOOL        shift, and go to state 3
+    STRING      shift, and go to state 4
+    IDENTIFIER  shift, and go to state 8
 
     $default  reduce using rule 22 (Formals)
 
     Variable      go to state 33
     VariableList  go to state 34
     Type          go to state 35
-    Formals       go to state 72
+    Identifier    go to state 15
+    Formals       go to state 104
 
 
-State 69
+State 68
 
    40 Prototype: Type Identifier '(' . Formals ')' ';'
 
-    INT     shift, and go to state 1
-    DOUBLE  shift, and go to state 2
-    BOOL    shift, and go to state 3
-    STRING  shift, and go to state 4
-    CLASS   shift, and go to state 32
+    INT         shift, and go to state 1
+    DOUBLE      shift, and go to state 2
+    BOOL        shift, and go to state 3
+    STRING      shift, and go to state 4
+    IDENTIFIER  shift, and go to state 8
 
     $default  reduce using rule 22 (Formals)
 
     Variable      go to state 33
     VariableList  go to state 34
     Type          go to state 35
-    Formals       go to state 73
+    Identifier    go to state 15
+    Formals       go to state 105
 
 
-State 70
-
-   44 VariableDeclList: VariableDeclList VariableDecl .
-
-    $default  reduce using rule 44 (VariableDeclList)
-
-
-State 71
-
-   42 StmtBlock: '{' VariableDeclList StmtList . '}'
-   46 StmtList: StmtList . Stmt
-
-    NULLCONSTANT    shift, and go to state 74
-    BREAK           shift, and go to state 75
-    FOR             shift, and go to state 76
-    IF              shift, and go to state 77
-    NEW             shift, and go to state 78
-    RETURN          shift, and go to state 79
-    THIS            shift, and go to state 80
-    WHILE           shift, and go to state 81
-    PRINT           shift, and go to state 82
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    ';'             shift, and go to state 92
-    '('             shift, and go to state 93
-    '{'             shift, and go to state 55
-    '}'             shift, and go to state 94
-
-    LValue      go to state 95
-    Identifier  go to state 96
-    StmtBlock   go to state 97
-    Stmt        go to state 98
-    IfStmt      go to state 99
-    WhileStmt   go to state 100
-    ForStmt     go to state 101
-    ReturnStmt  go to state 102
-    BreakStmt   go to state 103
-    PrintStmt   go to state 104
-    Expr        go to state 105
-    Call        go to state 106
-    Constant    go to state 107
-
-
-State 72
-
-   41 Prototype: VOID Identifier '(' Formals . ')' ';'
-
-    ')'  shift, and go to state 108
-
-
-State 73
-
-   40 Prototype: Type Identifier '(' Formals . ')' ';'
-
-    ')'  shift, and go to state 109
-
-
-State 74
+State 69
 
   102 Constant: NULLCONSTANT .
 
     $default  reduce using rule 102 (Constant)
 
 
-State 75
+State 70
 
    67 BreakStmt: BREAK . ';'
 
-    ';'  shift, and go to state 110
+    ';'  shift, and go to state 106
 
 
-State 76
+State 71
 
    61 ForStmt: FOR . '(' ';' Expr ';' ')' Stmt
    62        | FOR . '(' Expr ';' Expr ';' ')' Stmt
    63        | FOR . '(' ';' Expr ';' Expr ')' Stmt
    64        | FOR . '(' Expr ';' Expr ';' Expr ')' Stmt
 
-    '('  shift, and go to state 111
+    '('  shift, and go to state 107
 
 
-State 77
+State 72
 
    58 IfStmt: IF . '(' Expr ')' Stmt
    59       | IF . '(' Expr ')' Stmt ELSE Stmt
 
-    '('  shift, and go to state 112
+    '('  shift, and go to state 108
 
 
-State 78
+State 73
 
    92 Expr: NEW . Identifier
 
-    IDENTIFIER  shift, and go to state 17
+    IDENTIFIER  shift, and go to state 8
 
-    Identifier  go to state 113
+    Identifier  go to state 109
 
 
-State 79
+State 74
 
    65 ReturnStmt: RETURN . ';'
    66           | RETURN . Expr ';'
 
-    NULLCONSTANT    shift, and go to state 74
-    NEW             shift, and go to state 78
-    THIS            shift, and go to state 80
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    ';'             shift, and go to state 114
-    '('             shift, and go to state 93
+    NULLCONSTANT    shift, and go to state 69
+    NEW             shift, and go to state 73
+    THIS            shift, and go to state 75
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    ';'             shift, and go to state 110
+    '('             shift, and go to state 88
 
-    LValue      go to state 95
-    Identifier  go to state 96
-    Expr        go to state 115
-    Call        go to state 106
-    Constant    go to state 107
+    LValue      go to state 90
+    Identifier  go to state 111
+    Expr        go to state 112
+    Call        go to state 102
+    Constant    go to state 103
 
 
-State 80
+State 75
 
    72 Expr: THIS .
 
     $default  reduce using rule 72 (Expr)
 
 
-State 81
+State 76
 
    60 WhileStmt: WHILE . '(' Expr ')' Stmt
+
+    '('  shift, and go to state 113
+
+
+State 77
+
+   68 PrintStmt: PRINT . '(' ExprList ')' ';'
+
+    '('  shift, and go to state 114
+
+
+State 78
+
+   90 Expr: READINTEGER . '(' ')'
+
+    '('  shift, and go to state 115
+
+
+State 79
+
+   91 Expr: READLINE . '(' ')'
 
     '('  shift, and go to state 116
 
 
-State 82
+State 80
 
-   68 PrintStmt: PRINT . '(' ExprList ')' ';'
+   93 Expr: NEWARRAY . '(' Expr ',' Type ')'
 
     '('  shift, and go to state 117
 
 
-State 83
-
-   90 Expr: READINTEGER . '(' ')'
-
-    '('  shift, and go to state 118
-
-
-State 84
-
-   91 Expr: READLINE . '(' ')'
-
-    '('  shift, and go to state 119
-
-
-State 85
-
-   93 Expr: NEWARRAY . '(' Expr ',' Type ')'
-
-    '('  shift, and go to state 120
-
-
-State 86
+State 81
 
    89 Expr: NOT_OP . Expr
 
-    NULLCONSTANT    shift, and go to state 74
-    NEW             shift, and go to state 78
-    THIS            shift, and go to state 80
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    '('             shift, and go to state 93
+    NULLCONSTANT    shift, and go to state 69
+    NEW             shift, and go to state 73
+    THIS            shift, and go to state 75
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    '('             shift, and go to state 88
 
-    LValue      go to state 95
-    Identifier  go to state 96
-    Expr        go to state 121
-    Call        go to state 106
-    Constant    go to state 107
+    LValue      go to state 90
+    Identifier  go to state 111
+    Expr        go to state 118
+    Call        go to state 102
+    Constant    go to state 103
 
 
-State 87
+State 82
 
   101 Constant: STRING_LITERAL .
 
     $default  reduce using rule 101 (Constant)
 
 
-State 88
+State 83
 
    98 Constant: INTCONSTANT .
 
     $default  reduce using rule 98 (Constant)
 
 
-State 89
+State 84
 
    99 Constant: DOUBLECONSTANT .
 
     $default  reduce using rule 99 (Constant)
 
 
-State 90
+State 85
 
   100 Constant: BOOLCONSTANT .
 
     $default  reduce using rule 100 (Constant)
 
 
-State 91
+State 86
 
    80 Expr: '-' . Expr
 
-    NULLCONSTANT    shift, and go to state 74
-    NEW             shift, and go to state 78
-    THIS            shift, and go to state 80
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    '('             shift, and go to state 93
+    NULLCONSTANT    shift, and go to state 69
+    NEW             shift, and go to state 73
+    THIS            shift, and go to state 75
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    '('             shift, and go to state 88
 
-    LValue      go to state 95
-    Identifier  go to state 96
-    Expr        go to state 122
-    Call        go to state 106
-    Constant    go to state 107
+    LValue      go to state 90
+    Identifier  go to state 111
+    Expr        go to state 119
+    Call        go to state 102
+    Constant    go to state 103
 
 
-State 92
+State 87
 
    47 Stmt: ';' .
 
     $default  reduce using rule 47 (Stmt)
 
 
-State 93
+State 88
 
    74 Expr: '(' . Expr ')'
 
-    NULLCONSTANT    shift, and go to state 74
-    NEW             shift, and go to state 78
-    THIS            shift, and go to state 80
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    '('             shift, and go to state 93
+    NULLCONSTANT    shift, and go to state 69
+    NEW             shift, and go to state 73
+    THIS            shift, and go to state 75
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    '('             shift, and go to state 88
 
-    LValue      go to state 95
-    Identifier  go to state 96
-    Expr        go to state 123
-    Call        go to state 106
-    Constant    go to state 107
-
-
-State 94
-
-   42 StmtBlock: '{' VariableDeclList StmtList '}' .
-
-    $default  reduce using rule 42 (StmtBlock)
+    LValue      go to state 90
+    Identifier  go to state 111
+    Expr        go to state 120
+    Call        go to state 102
+    Constant    go to state 103
 
 
-State 95
+State 89
+
+   44 VariableDeclList: VariableDeclList VariableDecl .
+
+    $default  reduce using rule 44 (VariableDeclList)
+
+
+State 90
 
    69 Expr: LValue . '=' Expr
    71     | LValue .
 
-    '='  shift, and go to state 124
+    '='  shift, and go to state 121
 
     $default  reduce using rule 71 (Expr)
 
 
-State 96
+State 91
 
    12 LValue: Identifier .
+   19 Type: Identifier .
    94 Call: Identifier . '(' Actuals ')'
 
-    '('  shift, and go to state 125
+    '('  shift, and go to state 122
 
-    $default  reduce using rule 12 (LValue)
+    IDENTIFIER  reduce using rule 19 (Type)
+    '['         reduce using rule 12 (LValue)
+    '['         [reduce using rule 19 (Type)]
+    $default    reduce using rule 12 (LValue)
 
 
-State 97
+State 92
 
    55 Stmt: StmtBlock .
 
     $default  reduce using rule 55 (Stmt)
 
 
-State 98
+State 93
 
-   46 StmtList: StmtList Stmt .
+   42 StmtBlock: '{' VariableDeclList StmtList . '}'
 
-    $default  reduce using rule 46 (StmtList)
+    '}'  shift, and go to state 123
 
 
-State 99
+State 94
+
+   46 StmtList: Stmt . StmtList
+
+    NULLCONSTANT    shift, and go to state 69
+    BREAK           shift, and go to state 70
+    FOR             shift, and go to state 71
+    IF              shift, and go to state 72
+    NEW             shift, and go to state 73
+    RETURN          shift, and go to state 74
+    THIS            shift, and go to state 75
+    WHILE           shift, and go to state 76
+    PRINT           shift, and go to state 77
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    ';'             shift, and go to state 87
+    '('             shift, and go to state 88
+    '{'             shift, and go to state 54
+
+    $default  reduce using rule 45 (StmtList)
+
+    LValue      go to state 90
+    Identifier  go to state 111
+    StmtBlock   go to state 92
+    StmtList    go to state 124
+    Stmt        go to state 94
+    IfStmt      go to state 95
+    WhileStmt   go to state 96
+    ForStmt     go to state 97
+    ReturnStmt  go to state 98
+    BreakStmt   go to state 99
+    PrintStmt   go to state 100
+    Expr        go to state 101
+    Call        go to state 102
+    Constant    go to state 103
+
+
+State 95
 
    49 Stmt: IfStmt .
 
     $default  reduce using rule 49 (Stmt)
 
 
-State 100
+State 96
 
    50 Stmt: WhileStmt .
 
     $default  reduce using rule 50 (Stmt)
 
 
-State 101
+State 97
 
    51 Stmt: ForStmt .
 
     $default  reduce using rule 51 (Stmt)
 
 
-State 102
+State 98
 
    53 Stmt: ReturnStmt .
 
     $default  reduce using rule 53 (Stmt)
 
 
-State 103
+State 99
 
    52 Stmt: BreakStmt .
 
     $default  reduce using rule 52 (Stmt)
 
 
-State 104
+State 100
 
    54 Stmt: PrintStmt .
 
     $default  reduce using rule 54 (Stmt)
 
 
-State 105
+State 101
 
    13 LValue: Expr . '.' Identifier
    14       | Expr . '[' Expr ']'
@@ -1349,131 +1368,141 @@ State 105
    88     | Expr . OR_OP Expr
    95 Call: Expr . '.' Identifier '(' Actuals ')'
 
-    LE_OP   shift, and go to state 126
-    GE_OP   shift, and go to state 127
-    EQ_OP   shift, and go to state 128
-    NE_OP   shift, and go to state 129
-    AND_OP  shift, and go to state 130
-    OR_OP   shift, and go to state 131
-    '<'     shift, and go to state 132
-    '>'     shift, and go to state 133
-    '+'     shift, and go to state 134
-    '-'     shift, and go to state 135
-    '*'     shift, and go to state 136
-    '/'     shift, and go to state 137
-    '%'     shift, and go to state 138
-    '['     shift, and go to state 139
-    '.'     shift, and go to state 140
-    ';'     shift, and go to state 141
+    LE_OP   shift, and go to state 125
+    GE_OP   shift, and go to state 126
+    EQ_OP   shift, and go to state 127
+    NE_OP   shift, and go to state 128
+    AND_OP  shift, and go to state 129
+    OR_OP   shift, and go to state 130
+    '<'     shift, and go to state 131
+    '>'     shift, and go to state 132
+    '+'     shift, and go to state 133
+    '-'     shift, and go to state 134
+    '*'     shift, and go to state 135
+    '/'     shift, and go to state 136
+    '%'     shift, and go to state 137
+    '['     shift, and go to state 138
+    '.'     shift, and go to state 139
+    ';'     shift, and go to state 140
 
 
-State 106
+State 102
 
    73 Expr: Call .
 
     $default  reduce using rule 73 (Expr)
 
 
-State 107
+State 103
 
    70 Expr: Constant .
 
     $default  reduce using rule 70 (Expr)
 
 
-State 108
+State 104
 
-   41 Prototype: VOID Identifier '(' Formals ')' . ';'
+   41 Prototype: VOID Identifier '(' Formals . ')' ';'
 
-    ';'  shift, and go to state 142
-
-
-State 109
-
-   40 Prototype: Type Identifier '(' Formals ')' . ';'
-
-    ';'  shift, and go to state 143
+    ')'  shift, and go to state 141
 
 
-State 110
+State 105
+
+   40 Prototype: Type Identifier '(' Formals . ')' ';'
+
+    ')'  shift, and go to state 142
+
+
+State 106
 
    67 BreakStmt: BREAK ';' .
 
     $default  reduce using rule 67 (BreakStmt)
 
 
-State 111
+State 107
 
    61 ForStmt: FOR '(' . ';' Expr ';' ')' Stmt
    62        | FOR '(' . Expr ';' Expr ';' ')' Stmt
    63        | FOR '(' . ';' Expr ';' Expr ')' Stmt
    64        | FOR '(' . Expr ';' Expr ';' Expr ')' Stmt
 
-    NULLCONSTANT    shift, and go to state 74
-    NEW             shift, and go to state 78
-    THIS            shift, and go to state 80
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    ';'             shift, and go to state 144
-    '('             shift, and go to state 93
+    NULLCONSTANT    shift, and go to state 69
+    NEW             shift, and go to state 73
+    THIS            shift, and go to state 75
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    ';'             shift, and go to state 143
+    '('             shift, and go to state 88
 
-    LValue      go to state 95
-    Identifier  go to state 96
-    Expr        go to state 145
-    Call        go to state 106
-    Constant    go to state 107
+    LValue      go to state 90
+    Identifier  go to state 111
+    Expr        go to state 144
+    Call        go to state 102
+    Constant    go to state 103
 
 
-State 112
+State 108
 
    58 IfStmt: IF '(' . Expr ')' Stmt
    59       | IF '(' . Expr ')' Stmt ELSE Stmt
 
-    NULLCONSTANT    shift, and go to state 74
-    NEW             shift, and go to state 78
-    THIS            shift, and go to state 80
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    '('             shift, and go to state 93
+    NULLCONSTANT    shift, and go to state 69
+    NEW             shift, and go to state 73
+    THIS            shift, and go to state 75
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    '('             shift, and go to state 88
 
-    LValue      go to state 95
-    Identifier  go to state 96
-    Expr        go to state 146
-    Call        go to state 106
-    Constant    go to state 107
+    LValue      go to state 90
+    Identifier  go to state 111
+    Expr        go to state 145
+    Call        go to state 102
+    Constant    go to state 103
 
 
-State 113
+State 109
 
    92 Expr: NEW Identifier .
 
     $default  reduce using rule 92 (Expr)
 
 
-State 114
+State 110
 
    65 ReturnStmt: RETURN ';' .
 
     $default  reduce using rule 65 (ReturnStmt)
 
 
-State 115
+State 111
+
+   12 LValue: Identifier .
+   94 Call: Identifier . '(' Actuals ')'
+
+    '('  shift, and go to state 122
+
+    $default  reduce using rule 12 (LValue)
+
+
+State 112
 
    13 LValue: Expr . '.' Identifier
    14       | Expr . '[' Expr ']'
@@ -1493,118 +1522,118 @@ State 115
    88     | Expr . OR_OP Expr
    95 Call: Expr . '.' Identifier '(' Actuals ')'
 
-    LE_OP   shift, and go to state 126
-    GE_OP   shift, and go to state 127
-    EQ_OP   shift, and go to state 128
-    NE_OP   shift, and go to state 129
-    AND_OP  shift, and go to state 130
-    OR_OP   shift, and go to state 131
-    '<'     shift, and go to state 132
-    '>'     shift, and go to state 133
-    '+'     shift, and go to state 134
-    '-'     shift, and go to state 135
-    '*'     shift, and go to state 136
-    '/'     shift, and go to state 137
-    '%'     shift, and go to state 138
-    '['     shift, and go to state 139
-    '.'     shift, and go to state 140
-    ';'     shift, and go to state 147
+    LE_OP   shift, and go to state 125
+    GE_OP   shift, and go to state 126
+    EQ_OP   shift, and go to state 127
+    NE_OP   shift, and go to state 128
+    AND_OP  shift, and go to state 129
+    OR_OP   shift, and go to state 130
+    '<'     shift, and go to state 131
+    '>'     shift, and go to state 132
+    '+'     shift, and go to state 133
+    '-'     shift, and go to state 134
+    '*'     shift, and go to state 135
+    '/'     shift, and go to state 136
+    '%'     shift, and go to state 137
+    '['     shift, and go to state 138
+    '.'     shift, and go to state 139
+    ';'     shift, and go to state 146
+
+
+State 113
+
+   60 WhileStmt: WHILE '(' . Expr ')' Stmt
+
+    NULLCONSTANT    shift, and go to state 69
+    NEW             shift, and go to state 73
+    THIS            shift, and go to state 75
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    '('             shift, and go to state 88
+
+    LValue      go to state 90
+    Identifier  go to state 111
+    Expr        go to state 147
+    Call        go to state 102
+    Constant    go to state 103
+
+
+State 114
+
+   68 PrintStmt: PRINT '(' . ExprList ')' ';'
+
+    NULLCONSTANT    shift, and go to state 69
+    NEW             shift, and go to state 73
+    THIS            shift, and go to state 75
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    '('             shift, and go to state 88
+
+    LValue      go to state 90
+    Identifier  go to state 111
+    ExprList    go to state 148
+    Expr        go to state 149
+    Call        go to state 102
+    Constant    go to state 103
+
+
+State 115
+
+   90 Expr: READINTEGER '(' . ')'
+
+    ')'  shift, and go to state 150
 
 
 State 116
 
-   60 WhileStmt: WHILE '(' . Expr ')' Stmt
-
-    NULLCONSTANT    shift, and go to state 74
-    NEW             shift, and go to state 78
-    THIS            shift, and go to state 80
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    '('             shift, and go to state 93
-
-    LValue      go to state 95
-    Identifier  go to state 96
-    Expr        go to state 148
-    Call        go to state 106
-    Constant    go to state 107
-
-
-State 117
-
-   68 PrintStmt: PRINT '(' . ExprList ')' ';'
-
-    NULLCONSTANT    shift, and go to state 74
-    NEW             shift, and go to state 78
-    THIS            shift, and go to state 80
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    '('             shift, and go to state 93
-
-    LValue      go to state 95
-    Identifier  go to state 96
-    ExprList    go to state 149
-    Expr        go to state 150
-    Call        go to state 106
-    Constant    go to state 107
-
-
-State 118
-
-   90 Expr: READINTEGER '(' . ')'
+   91 Expr: READLINE '(' . ')'
 
     ')'  shift, and go to state 151
 
 
-State 119
-
-   91 Expr: READLINE '(' . ')'
-
-    ')'  shift, and go to state 152
-
-
-State 120
+State 117
 
    93 Expr: NEWARRAY '(' . Expr ',' Type ')'
 
-    NULLCONSTANT    shift, and go to state 74
-    NEW             shift, and go to state 78
-    THIS            shift, and go to state 80
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    '('             shift, and go to state 93
+    NULLCONSTANT    shift, and go to state 69
+    NEW             shift, and go to state 73
+    THIS            shift, and go to state 75
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    '('             shift, and go to state 88
 
-    LValue      go to state 95
-    Identifier  go to state 96
-    Expr        go to state 153
-    Call        go to state 106
-    Constant    go to state 107
+    LValue      go to state 90
+    Identifier  go to state 111
+    Expr        go to state 152
+    Call        go to state 102
+    Constant    go to state 103
 
 
-State 121
+State 118
 
    13 LValue: Expr . '.' Identifier
    14       | Expr . '[' Expr ']'
@@ -1624,13 +1653,13 @@ State 121
    89     | NOT_OP Expr .
    95 Call: Expr . '.' Identifier '(' Actuals ')'
 
-    '['  shift, and go to state 139
-    '.'  shift, and go to state 140
+    '['  shift, and go to state 138
+    '.'  shift, and go to state 139
 
     $default  reduce using rule 89 (Expr)
 
 
-State 122
+State 119
 
    13 LValue: Expr . '.' Identifier
    14       | Expr . '[' Expr ']'
@@ -1650,13 +1679,13 @@ State 122
    88     | Expr . OR_OP Expr
    95 Call: Expr . '.' Identifier '(' Actuals ')'
 
-    '['  shift, and go to state 139
-    '.'  shift, and go to state 140
+    '['  shift, and go to state 138
+    '.'  shift, and go to state 139
 
     $default  reduce using rule 80 (Expr)
 
 
-State 123
+State 120
 
    13 LValue: Expr . '.' Identifier
    14       | Expr . '[' Expr ']'
@@ -1676,503 +1705,517 @@ State 123
    88     | Expr . OR_OP Expr
    95 Call: Expr . '.' Identifier '(' Actuals ')'
 
-    LE_OP   shift, and go to state 126
-    GE_OP   shift, and go to state 127
-    EQ_OP   shift, and go to state 128
-    NE_OP   shift, and go to state 129
-    AND_OP  shift, and go to state 130
-    OR_OP   shift, and go to state 131
-    '<'     shift, and go to state 132
-    '>'     shift, and go to state 133
-    '+'     shift, and go to state 134
-    '-'     shift, and go to state 135
-    '*'     shift, and go to state 136
-    '/'     shift, and go to state 137
-    '%'     shift, and go to state 138
-    '['     shift, and go to state 139
-    '.'     shift, and go to state 140
-    ')'     shift, and go to state 154
+    LE_OP   shift, and go to state 125
+    GE_OP   shift, and go to state 126
+    EQ_OP   shift, and go to state 127
+    NE_OP   shift, and go to state 128
+    AND_OP  shift, and go to state 129
+    OR_OP   shift, and go to state 130
+    '<'     shift, and go to state 131
+    '>'     shift, and go to state 132
+    '+'     shift, and go to state 133
+    '-'     shift, and go to state 134
+    '*'     shift, and go to state 135
+    '/'     shift, and go to state 136
+    '%'     shift, and go to state 137
+    '['     shift, and go to state 138
+    '.'     shift, and go to state 139
+    ')'     shift, and go to state 153
+
+
+State 121
+
+   69 Expr: LValue '=' . Expr
+
+    NULLCONSTANT    shift, and go to state 69
+    NEW             shift, and go to state 73
+    THIS            shift, and go to state 75
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    '('             shift, and go to state 88
+
+    LValue      go to state 90
+    Identifier  go to state 111
+    Expr        go to state 154
+    Call        go to state 102
+    Constant    go to state 103
+
+
+State 122
+
+   94 Call: Identifier '(' . Actuals ')'
+
+    NULLCONSTANT    shift, and go to state 69
+    NEW             shift, and go to state 73
+    THIS            shift, and go to state 75
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    '('             shift, and go to state 88
+
+    $default  reduce using rule 96 (Actuals)
+
+    LValue      go to state 90
+    Identifier  go to state 111
+    ExprList    go to state 155
+    Expr        go to state 149
+    Call        go to state 102
+    Actuals     go to state 156
+    Constant    go to state 103
+
+
+State 123
+
+   42 StmtBlock: '{' VariableDeclList StmtList '}' .
+
+    $default  reduce using rule 42 (StmtBlock)
 
 
 State 124
 
-   69 Expr: LValue '=' . Expr
+   46 StmtList: Stmt StmtList .
 
-    NULLCONSTANT    shift, and go to state 74
-    NEW             shift, and go to state 78
-    THIS            shift, and go to state 80
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    '('             shift, and go to state 93
-
-    LValue      go to state 95
-    Identifier  go to state 96
-    Expr        go to state 155
-    Call        go to state 106
-    Constant    go to state 107
+    $default  reduce using rule 46 (StmtList)
 
 
 State 125
 
-   94 Call: Identifier '(' . Actuals ')'
+   82 Expr: Expr LE_OP . Expr
 
-    NULLCONSTANT    shift, and go to state 74
-    NEW             shift, and go to state 78
-    THIS            shift, and go to state 80
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    '('             shift, and go to state 93
+    NULLCONSTANT    shift, and go to state 69
+    NEW             shift, and go to state 73
+    THIS            shift, and go to state 75
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    '('             shift, and go to state 88
 
-    $default  reduce using rule 96 (Actuals)
-
-    LValue      go to state 95
-    Identifier  go to state 96
-    ExprList    go to state 156
-    Expr        go to state 150
-    Call        go to state 106
-    Actuals     go to state 157
-    Constant    go to state 107
+    LValue      go to state 90
+    Identifier  go to state 111
+    Expr        go to state 157
+    Call        go to state 102
+    Constant    go to state 103
 
 
 State 126
 
-   82 Expr: Expr LE_OP . Expr
+   84 Expr: Expr GE_OP . Expr
 
-    NULLCONSTANT    shift, and go to state 74
-    NEW             shift, and go to state 78
-    THIS            shift, and go to state 80
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    '('             shift, and go to state 93
+    NULLCONSTANT    shift, and go to state 69
+    NEW             shift, and go to state 73
+    THIS            shift, and go to state 75
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    '('             shift, and go to state 88
 
-    LValue      go to state 95
-    Identifier  go to state 96
+    LValue      go to state 90
+    Identifier  go to state 111
     Expr        go to state 158
-    Call        go to state 106
-    Constant    go to state 107
+    Call        go to state 102
+    Constant    go to state 103
 
 
 State 127
 
-   84 Expr: Expr GE_OP . Expr
+   85 Expr: Expr EQ_OP . Expr
 
-    NULLCONSTANT    shift, and go to state 74
-    NEW             shift, and go to state 78
-    THIS            shift, and go to state 80
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    '('             shift, and go to state 93
+    NULLCONSTANT    shift, and go to state 69
+    NEW             shift, and go to state 73
+    THIS            shift, and go to state 75
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    '('             shift, and go to state 88
 
-    LValue      go to state 95
-    Identifier  go to state 96
+    LValue      go to state 90
+    Identifier  go to state 111
     Expr        go to state 159
-    Call        go to state 106
-    Constant    go to state 107
+    Call        go to state 102
+    Constant    go to state 103
 
 
 State 128
 
-   85 Expr: Expr EQ_OP . Expr
+   86 Expr: Expr NE_OP . Expr
 
-    NULLCONSTANT    shift, and go to state 74
-    NEW             shift, and go to state 78
-    THIS            shift, and go to state 80
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    '('             shift, and go to state 93
+    NULLCONSTANT    shift, and go to state 69
+    NEW             shift, and go to state 73
+    THIS            shift, and go to state 75
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    '('             shift, and go to state 88
 
-    LValue      go to state 95
-    Identifier  go to state 96
+    LValue      go to state 90
+    Identifier  go to state 111
     Expr        go to state 160
-    Call        go to state 106
-    Constant    go to state 107
+    Call        go to state 102
+    Constant    go to state 103
 
 
 State 129
 
-   86 Expr: Expr NE_OP . Expr
+   87 Expr: Expr AND_OP . Expr
 
-    NULLCONSTANT    shift, and go to state 74
-    NEW             shift, and go to state 78
-    THIS            shift, and go to state 80
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    '('             shift, and go to state 93
+    NULLCONSTANT    shift, and go to state 69
+    NEW             shift, and go to state 73
+    THIS            shift, and go to state 75
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    '('             shift, and go to state 88
 
-    LValue      go to state 95
-    Identifier  go to state 96
+    LValue      go to state 90
+    Identifier  go to state 111
     Expr        go to state 161
-    Call        go to state 106
-    Constant    go to state 107
+    Call        go to state 102
+    Constant    go to state 103
 
 
 State 130
 
-   87 Expr: Expr AND_OP . Expr
+   88 Expr: Expr OR_OP . Expr
 
-    NULLCONSTANT    shift, and go to state 74
-    NEW             shift, and go to state 78
-    THIS            shift, and go to state 80
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    '('             shift, and go to state 93
+    NULLCONSTANT    shift, and go to state 69
+    NEW             shift, and go to state 73
+    THIS            shift, and go to state 75
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    '('             shift, and go to state 88
 
-    LValue      go to state 95
-    Identifier  go to state 96
+    LValue      go to state 90
+    Identifier  go to state 111
     Expr        go to state 162
-    Call        go to state 106
-    Constant    go to state 107
+    Call        go to state 102
+    Constant    go to state 103
 
 
 State 131
 
-   88 Expr: Expr OR_OP . Expr
+   81 Expr: Expr '<' . Expr
 
-    NULLCONSTANT    shift, and go to state 74
-    NEW             shift, and go to state 78
-    THIS            shift, and go to state 80
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    '('             shift, and go to state 93
+    NULLCONSTANT    shift, and go to state 69
+    NEW             shift, and go to state 73
+    THIS            shift, and go to state 75
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    '('             shift, and go to state 88
 
-    LValue      go to state 95
-    Identifier  go to state 96
+    LValue      go to state 90
+    Identifier  go to state 111
     Expr        go to state 163
-    Call        go to state 106
-    Constant    go to state 107
+    Call        go to state 102
+    Constant    go to state 103
 
 
 State 132
 
-   81 Expr: Expr '<' . Expr
+   83 Expr: Expr '>' . Expr
 
-    NULLCONSTANT    shift, and go to state 74
-    NEW             shift, and go to state 78
-    THIS            shift, and go to state 80
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    '('             shift, and go to state 93
+    NULLCONSTANT    shift, and go to state 69
+    NEW             shift, and go to state 73
+    THIS            shift, and go to state 75
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    '('             shift, and go to state 88
 
-    LValue      go to state 95
-    Identifier  go to state 96
+    LValue      go to state 90
+    Identifier  go to state 111
     Expr        go to state 164
-    Call        go to state 106
-    Constant    go to state 107
+    Call        go to state 102
+    Constant    go to state 103
 
 
 State 133
 
-   83 Expr: Expr '>' . Expr
+   75 Expr: Expr '+' . Expr
 
-    NULLCONSTANT    shift, and go to state 74
-    NEW             shift, and go to state 78
-    THIS            shift, and go to state 80
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    '('             shift, and go to state 93
+    NULLCONSTANT    shift, and go to state 69
+    NEW             shift, and go to state 73
+    THIS            shift, and go to state 75
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    '('             shift, and go to state 88
 
-    LValue      go to state 95
-    Identifier  go to state 96
+    LValue      go to state 90
+    Identifier  go to state 111
     Expr        go to state 165
-    Call        go to state 106
-    Constant    go to state 107
+    Call        go to state 102
+    Constant    go to state 103
 
 
 State 134
 
-   75 Expr: Expr '+' . Expr
+   76 Expr: Expr '-' . Expr
 
-    NULLCONSTANT    shift, and go to state 74
-    NEW             shift, and go to state 78
-    THIS            shift, and go to state 80
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    '('             shift, and go to state 93
+    NULLCONSTANT    shift, and go to state 69
+    NEW             shift, and go to state 73
+    THIS            shift, and go to state 75
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    '('             shift, and go to state 88
 
-    LValue      go to state 95
-    Identifier  go to state 96
+    LValue      go to state 90
+    Identifier  go to state 111
     Expr        go to state 166
-    Call        go to state 106
-    Constant    go to state 107
+    Call        go to state 102
+    Constant    go to state 103
 
 
 State 135
 
-   76 Expr: Expr '-' . Expr
+   77 Expr: Expr '*' . Expr
 
-    NULLCONSTANT    shift, and go to state 74
-    NEW             shift, and go to state 78
-    THIS            shift, and go to state 80
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    '('             shift, and go to state 93
+    NULLCONSTANT    shift, and go to state 69
+    NEW             shift, and go to state 73
+    THIS            shift, and go to state 75
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    '('             shift, and go to state 88
 
-    LValue      go to state 95
-    Identifier  go to state 96
+    LValue      go to state 90
+    Identifier  go to state 111
     Expr        go to state 167
-    Call        go to state 106
-    Constant    go to state 107
+    Call        go to state 102
+    Constant    go to state 103
 
 
 State 136
 
-   77 Expr: Expr '*' . Expr
+   78 Expr: Expr '/' . Expr
 
-    NULLCONSTANT    shift, and go to state 74
-    NEW             shift, and go to state 78
-    THIS            shift, and go to state 80
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    '('             shift, and go to state 93
+    NULLCONSTANT    shift, and go to state 69
+    NEW             shift, and go to state 73
+    THIS            shift, and go to state 75
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    '('             shift, and go to state 88
 
-    LValue      go to state 95
-    Identifier  go to state 96
+    LValue      go to state 90
+    Identifier  go to state 111
     Expr        go to state 168
-    Call        go to state 106
-    Constant    go to state 107
+    Call        go to state 102
+    Constant    go to state 103
 
 
 State 137
 
-   78 Expr: Expr '/' . Expr
+   79 Expr: Expr '%' . Expr
 
-    NULLCONSTANT    shift, and go to state 74
-    NEW             shift, and go to state 78
-    THIS            shift, and go to state 80
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    '('             shift, and go to state 93
+    NULLCONSTANT    shift, and go to state 69
+    NEW             shift, and go to state 73
+    THIS            shift, and go to state 75
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    '('             shift, and go to state 88
 
-    LValue      go to state 95
-    Identifier  go to state 96
+    LValue      go to state 90
+    Identifier  go to state 111
     Expr        go to state 169
-    Call        go to state 106
-    Constant    go to state 107
+    Call        go to state 102
+    Constant    go to state 103
 
 
 State 138
 
-   79 Expr: Expr '%' . Expr
+   14 LValue: Expr '[' . Expr ']'
 
-    NULLCONSTANT    shift, and go to state 74
-    NEW             shift, and go to state 78
-    THIS            shift, and go to state 80
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    '('             shift, and go to state 93
+    NULLCONSTANT    shift, and go to state 69
+    NEW             shift, and go to state 73
+    THIS            shift, and go to state 75
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    '('             shift, and go to state 88
 
-    LValue      go to state 95
-    Identifier  go to state 96
+    LValue      go to state 90
+    Identifier  go to state 111
     Expr        go to state 170
-    Call        go to state 106
-    Constant    go to state 107
+    Call        go to state 102
+    Constant    go to state 103
 
 
 State 139
 
-   14 LValue: Expr '[' . Expr ']'
-
-    NULLCONSTANT    shift, and go to state 74
-    NEW             shift, and go to state 78
-    THIS            shift, and go to state 80
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    '('             shift, and go to state 93
-
-    LValue      go to state 95
-    Identifier  go to state 96
-    Expr        go to state 171
-    Call        go to state 106
-    Constant    go to state 107
-
-
-State 140
-
    13 LValue: Expr '.' . Identifier
    95 Call: Expr '.' . Identifier '(' Actuals ')'
 
-    IDENTIFIER  shift, and go to state 17
+    IDENTIFIER  shift, and go to state 8
 
-    Identifier  go to state 172
+    Identifier  go to state 171
 
 
-State 141
+State 140
 
    48 Stmt: Expr ';' .
 
     $default  reduce using rule 48 (Stmt)
 
 
+State 141
+
+   41 Prototype: VOID Identifier '(' Formals ')' . ';'
+
+    ';'  shift, and go to state 172
+
+
 State 142
 
-   41 Prototype: VOID Identifier '(' Formals ')' ';' .
+   40 Prototype: Type Identifier '(' Formals ')' . ';'
 
-    $default  reduce using rule 41 (Prototype)
+    ';'  shift, and go to state 173
 
 
 State 143
 
-   40 Prototype: Type Identifier '(' Formals ')' ';' .
-
-    $default  reduce using rule 40 (Prototype)
-
-
-State 144
-
    61 ForStmt: FOR '(' ';' . Expr ';' ')' Stmt
    63        | FOR '(' ';' . Expr ';' Expr ')' Stmt
 
-    NULLCONSTANT    shift, and go to state 74
-    NEW             shift, and go to state 78
-    THIS            shift, and go to state 80
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    '('             shift, and go to state 93
+    NULLCONSTANT    shift, and go to state 69
+    NEW             shift, and go to state 73
+    THIS            shift, and go to state 75
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    '('             shift, and go to state 88
 
-    LValue      go to state 95
-    Identifier  go to state 96
-    Expr        go to state 173
-    Call        go to state 106
-    Constant    go to state 107
+    LValue      go to state 90
+    Identifier  go to state 111
+    Expr        go to state 174
+    Call        go to state 102
+    Constant    go to state 103
 
 
-State 145
+State 144
 
    13 LValue: Expr . '.' Identifier
    14       | Expr . '[' Expr ']'
@@ -2193,25 +2236,25 @@ State 145
    88     | Expr . OR_OP Expr
    95 Call: Expr . '.' Identifier '(' Actuals ')'
 
-    LE_OP   shift, and go to state 126
-    GE_OP   shift, and go to state 127
-    EQ_OP   shift, and go to state 128
-    NE_OP   shift, and go to state 129
-    AND_OP  shift, and go to state 130
-    OR_OP   shift, and go to state 131
-    '<'     shift, and go to state 132
-    '>'     shift, and go to state 133
-    '+'     shift, and go to state 134
-    '-'     shift, and go to state 135
-    '*'     shift, and go to state 136
-    '/'     shift, and go to state 137
-    '%'     shift, and go to state 138
-    '['     shift, and go to state 139
-    '.'     shift, and go to state 140
-    ';'     shift, and go to state 174
+    LE_OP   shift, and go to state 125
+    GE_OP   shift, and go to state 126
+    EQ_OP   shift, and go to state 127
+    NE_OP   shift, and go to state 128
+    AND_OP  shift, and go to state 129
+    OR_OP   shift, and go to state 130
+    '<'     shift, and go to state 131
+    '>'     shift, and go to state 132
+    '+'     shift, and go to state 133
+    '-'     shift, and go to state 134
+    '*'     shift, and go to state 135
+    '/'     shift, and go to state 136
+    '%'     shift, and go to state 137
+    '['     shift, and go to state 138
+    '.'     shift, and go to state 139
+    ';'     shift, and go to state 175
 
 
-State 146
+State 145
 
    13 LValue: Expr . '.' Identifier
    14       | Expr . '[' Expr ']'
@@ -2232,32 +2275,32 @@ State 146
    88     | Expr . OR_OP Expr
    95 Call: Expr . '.' Identifier '(' Actuals ')'
 
-    LE_OP   shift, and go to state 126
-    GE_OP   shift, and go to state 127
-    EQ_OP   shift, and go to state 128
-    NE_OP   shift, and go to state 129
-    AND_OP  shift, and go to state 130
-    OR_OP   shift, and go to state 131
-    '<'     shift, and go to state 132
-    '>'     shift, and go to state 133
-    '+'     shift, and go to state 134
-    '-'     shift, and go to state 135
-    '*'     shift, and go to state 136
-    '/'     shift, and go to state 137
-    '%'     shift, and go to state 138
-    '['     shift, and go to state 139
-    '.'     shift, and go to state 140
-    ')'     shift, and go to state 175
+    LE_OP   shift, and go to state 125
+    GE_OP   shift, and go to state 126
+    EQ_OP   shift, and go to state 127
+    NE_OP   shift, and go to state 128
+    AND_OP  shift, and go to state 129
+    OR_OP   shift, and go to state 130
+    '<'     shift, and go to state 131
+    '>'     shift, and go to state 132
+    '+'     shift, and go to state 133
+    '-'     shift, and go to state 134
+    '*'     shift, and go to state 135
+    '/'     shift, and go to state 136
+    '%'     shift, and go to state 137
+    '['     shift, and go to state 138
+    '.'     shift, and go to state 139
+    ')'     shift, and go to state 176
 
 
-State 147
+State 146
 
    66 ReturnStmt: RETURN Expr ';' .
 
     $default  reduce using rule 66 (ReturnStmt)
 
 
-State 148
+State 147
 
    13 LValue: Expr . '.' Identifier
    14       | Expr . '[' Expr ']'
@@ -2277,34 +2320,34 @@ State 148
    88     | Expr . OR_OP Expr
    95 Call: Expr . '.' Identifier '(' Actuals ')'
 
-    LE_OP   shift, and go to state 126
-    GE_OP   shift, and go to state 127
-    EQ_OP   shift, and go to state 128
-    NE_OP   shift, and go to state 129
-    AND_OP  shift, and go to state 130
-    OR_OP   shift, and go to state 131
-    '<'     shift, and go to state 132
-    '>'     shift, and go to state 133
-    '+'     shift, and go to state 134
-    '-'     shift, and go to state 135
-    '*'     shift, and go to state 136
-    '/'     shift, and go to state 137
-    '%'     shift, and go to state 138
-    '['     shift, and go to state 139
-    '.'     shift, and go to state 140
-    ')'     shift, and go to state 176
+    LE_OP   shift, and go to state 125
+    GE_OP   shift, and go to state 126
+    EQ_OP   shift, and go to state 127
+    NE_OP   shift, and go to state 128
+    AND_OP  shift, and go to state 129
+    OR_OP   shift, and go to state 130
+    '<'     shift, and go to state 131
+    '>'     shift, and go to state 132
+    '+'     shift, and go to state 133
+    '-'     shift, and go to state 134
+    '*'     shift, and go to state 135
+    '/'     shift, and go to state 136
+    '%'     shift, and go to state 137
+    '['     shift, and go to state 138
+    '.'     shift, and go to state 139
+    ')'     shift, and go to state 177
 
 
-State 149
+State 148
 
    57 ExprList: ExprList . ',' Expr
    68 PrintStmt: PRINT '(' ExprList . ')' ';'
 
-    ')'  shift, and go to state 177
-    ','  shift, and go to state 178
+    ')'  shift, and go to state 178
+    ','  shift, and go to state 179
 
 
-State 150
+State 149
 
    13 LValue: Expr . '.' Identifier
    14       | Expr . '[' Expr ']'
@@ -2324,40 +2367,40 @@ State 150
    88     | Expr . OR_OP Expr
    95 Call: Expr . '.' Identifier '(' Actuals ')'
 
-    LE_OP   shift, and go to state 126
-    GE_OP   shift, and go to state 127
-    EQ_OP   shift, and go to state 128
-    NE_OP   shift, and go to state 129
-    AND_OP  shift, and go to state 130
-    OR_OP   shift, and go to state 131
-    '<'     shift, and go to state 132
-    '>'     shift, and go to state 133
-    '+'     shift, and go to state 134
-    '-'     shift, and go to state 135
-    '*'     shift, and go to state 136
-    '/'     shift, and go to state 137
-    '%'     shift, and go to state 138
-    '['     shift, and go to state 139
-    '.'     shift, and go to state 140
+    LE_OP   shift, and go to state 125
+    GE_OP   shift, and go to state 126
+    EQ_OP   shift, and go to state 127
+    NE_OP   shift, and go to state 128
+    AND_OP  shift, and go to state 129
+    OR_OP   shift, and go to state 130
+    '<'     shift, and go to state 131
+    '>'     shift, and go to state 132
+    '+'     shift, and go to state 133
+    '-'     shift, and go to state 134
+    '*'     shift, and go to state 135
+    '/'     shift, and go to state 136
+    '%'     shift, and go to state 137
+    '['     shift, and go to state 138
+    '.'     shift, and go to state 139
 
     $default  reduce using rule 56 (ExprList)
 
 
-State 151
+State 150
 
    90 Expr: READINTEGER '(' ')' .
 
     $default  reduce using rule 90 (Expr)
 
 
-State 152
+State 151
 
    91 Expr: READLINE '(' ')' .
 
     $default  reduce using rule 91 (Expr)
 
 
-State 153
+State 152
 
    13 LValue: Expr . '.' Identifier
    14       | Expr . '[' Expr ']'
@@ -2377,32 +2420,32 @@ State 153
    93     | NEWARRAY '(' Expr . ',' Type ')'
    95 Call: Expr . '.' Identifier '(' Actuals ')'
 
-    LE_OP   shift, and go to state 126
-    GE_OP   shift, and go to state 127
-    EQ_OP   shift, and go to state 128
-    NE_OP   shift, and go to state 129
-    AND_OP  shift, and go to state 130
-    OR_OP   shift, and go to state 131
-    '<'     shift, and go to state 132
-    '>'     shift, and go to state 133
-    '+'     shift, and go to state 134
-    '-'     shift, and go to state 135
-    '*'     shift, and go to state 136
-    '/'     shift, and go to state 137
-    '%'     shift, and go to state 138
-    '['     shift, and go to state 139
-    '.'     shift, and go to state 140
-    ','     shift, and go to state 179
+    LE_OP   shift, and go to state 125
+    GE_OP   shift, and go to state 126
+    EQ_OP   shift, and go to state 127
+    NE_OP   shift, and go to state 128
+    AND_OP  shift, and go to state 129
+    OR_OP   shift, and go to state 130
+    '<'     shift, and go to state 131
+    '>'     shift, and go to state 132
+    '+'     shift, and go to state 133
+    '-'     shift, and go to state 134
+    '*'     shift, and go to state 135
+    '/'     shift, and go to state 136
+    '%'     shift, and go to state 137
+    '['     shift, and go to state 138
+    '.'     shift, and go to state 139
+    ','     shift, and go to state 180
 
 
-State 154
+State 153
 
    74 Expr: '(' Expr ')' .
 
     $default  reduce using rule 74 (Expr)
 
 
-State 155
+State 154
 
    13 LValue: Expr . '.' Identifier
    14       | Expr . '[' Expr ']'
@@ -2422,43 +2465,43 @@ State 155
    88     | Expr . OR_OP Expr
    95 Call: Expr . '.' Identifier '(' Actuals ')'
 
-    LE_OP   shift, and go to state 126
-    GE_OP   shift, and go to state 127
-    EQ_OP   shift, and go to state 128
-    NE_OP   shift, and go to state 129
-    AND_OP  shift, and go to state 130
-    OR_OP   shift, and go to state 131
-    '<'     shift, and go to state 132
-    '>'     shift, and go to state 133
-    '+'     shift, and go to state 134
-    '-'     shift, and go to state 135
-    '*'     shift, and go to state 136
-    '/'     shift, and go to state 137
-    '%'     shift, and go to state 138
-    '['     shift, and go to state 139
-    '.'     shift, and go to state 140
+    LE_OP   shift, and go to state 125
+    GE_OP   shift, and go to state 126
+    EQ_OP   shift, and go to state 127
+    NE_OP   shift, and go to state 128
+    AND_OP  shift, and go to state 129
+    OR_OP   shift, and go to state 130
+    '<'     shift, and go to state 131
+    '>'     shift, and go to state 132
+    '+'     shift, and go to state 133
+    '-'     shift, and go to state 134
+    '*'     shift, and go to state 135
+    '/'     shift, and go to state 136
+    '%'     shift, and go to state 137
+    '['     shift, and go to state 138
+    '.'     shift, and go to state 139
 
     $default  reduce using rule 69 (Expr)
 
 
-State 156
+State 155
 
    57 ExprList: ExprList . ',' Expr
    97 Actuals: ExprList .
 
-    ','  shift, and go to state 178
+    ','  shift, and go to state 179
 
     $default  reduce using rule 97 (Actuals)
 
 
-State 157
+State 156
 
    94 Call: Identifier '(' Actuals . ')'
 
-    ')'  shift, and go to state 180
+    ')'  shift, and go to state 181
 
 
-State 158
+State 157
 
    13 LValue: Expr . '.' Identifier
    14       | Expr . '[' Expr ']'
@@ -2478,13 +2521,13 @@ State 158
    88     | Expr . OR_OP Expr
    95 Call: Expr . '.' Identifier '(' Actuals ')'
 
-    '+'  shift, and go to state 134
-    '-'  shift, and go to state 135
-    '*'  shift, and go to state 136
-    '/'  shift, and go to state 137
-    '%'  shift, and go to state 138
-    '['  shift, and go to state 139
-    '.'  shift, and go to state 140
+    '+'  shift, and go to state 133
+    '-'  shift, and go to state 134
+    '*'  shift, and go to state 135
+    '/'  shift, and go to state 136
+    '%'  shift, and go to state 137
+    '['  shift, and go to state 138
+    '.'  shift, and go to state 139
 
     LE_OP  error (nonassociative)
     GE_OP  error (nonassociative)
@@ -2494,7 +2537,7 @@ State 158
     $default  reduce using rule 82 (Expr)
 
 
-State 159
+State 158
 
    13 LValue: Expr . '.' Identifier
    14       | Expr . '[' Expr ']'
@@ -2514,13 +2557,13 @@ State 159
    88     | Expr . OR_OP Expr
    95 Call: Expr . '.' Identifier '(' Actuals ')'
 
-    '+'  shift, and go to state 134
-    '-'  shift, and go to state 135
-    '*'  shift, and go to state 136
-    '/'  shift, and go to state 137
-    '%'  shift, and go to state 138
-    '['  shift, and go to state 139
-    '.'  shift, and go to state 140
+    '+'  shift, and go to state 133
+    '-'  shift, and go to state 134
+    '*'  shift, and go to state 135
+    '/'  shift, and go to state 136
+    '%'  shift, and go to state 137
+    '['  shift, and go to state 138
+    '.'  shift, and go to state 139
 
     LE_OP  error (nonassociative)
     GE_OP  error (nonassociative)
@@ -2530,7 +2573,7 @@ State 159
     $default  reduce using rule 84 (Expr)
 
 
-State 160
+State 159
 
    13 LValue: Expr . '.' Identifier
    14       | Expr . '[' Expr ']'
@@ -2550,17 +2593,17 @@ State 160
    88     | Expr . OR_OP Expr
    95 Call: Expr . '.' Identifier '(' Actuals ')'
 
-    LE_OP  shift, and go to state 126
-    GE_OP  shift, and go to state 127
-    '<'    shift, and go to state 132
-    '>'    shift, and go to state 133
-    '+'    shift, and go to state 134
-    '-'    shift, and go to state 135
-    '*'    shift, and go to state 136
-    '/'    shift, and go to state 137
-    '%'    shift, and go to state 138
-    '['    shift, and go to state 139
-    '.'    shift, and go to state 140
+    LE_OP  shift, and go to state 125
+    GE_OP  shift, and go to state 126
+    '<'    shift, and go to state 131
+    '>'    shift, and go to state 132
+    '+'    shift, and go to state 133
+    '-'    shift, and go to state 134
+    '*'    shift, and go to state 135
+    '/'    shift, and go to state 136
+    '%'    shift, and go to state 137
+    '['    shift, and go to state 138
+    '.'    shift, and go to state 139
 
     EQ_OP  error (nonassociative)
     NE_OP  error (nonassociative)
@@ -2568,7 +2611,7 @@ State 160
     $default  reduce using rule 85 (Expr)
 
 
-State 161
+State 160
 
    13 LValue: Expr . '.' Identifier
    14       | Expr . '[' Expr ']'
@@ -2588,17 +2631,17 @@ State 161
    88     | Expr . OR_OP Expr
    95 Call: Expr . '.' Identifier '(' Actuals ')'
 
-    LE_OP  shift, and go to state 126
-    GE_OP  shift, and go to state 127
-    '<'    shift, and go to state 132
-    '>'    shift, and go to state 133
-    '+'    shift, and go to state 134
-    '-'    shift, and go to state 135
-    '*'    shift, and go to state 136
-    '/'    shift, and go to state 137
-    '%'    shift, and go to state 138
-    '['    shift, and go to state 139
-    '.'    shift, and go to state 140
+    LE_OP  shift, and go to state 125
+    GE_OP  shift, and go to state 126
+    '<'    shift, and go to state 131
+    '>'    shift, and go to state 132
+    '+'    shift, and go to state 133
+    '-'    shift, and go to state 134
+    '*'    shift, and go to state 135
+    '/'    shift, and go to state 136
+    '%'    shift, and go to state 137
+    '['    shift, and go to state 138
+    '.'    shift, and go to state 139
 
     EQ_OP  error (nonassociative)
     NE_OP  error (nonassociative)
@@ -2606,7 +2649,7 @@ State 161
     $default  reduce using rule 86 (Expr)
 
 
-State 162
+State 161
 
    13 LValue: Expr . '.' Identifier
    14       | Expr . '[' Expr ']'
@@ -2626,24 +2669,24 @@ State 162
    88     | Expr . OR_OP Expr
    95 Call: Expr . '.' Identifier '(' Actuals ')'
 
-    LE_OP  shift, and go to state 126
-    GE_OP  shift, and go to state 127
-    EQ_OP  shift, and go to state 128
-    NE_OP  shift, and go to state 129
-    '<'    shift, and go to state 132
-    '>'    shift, and go to state 133
-    '+'    shift, and go to state 134
-    '-'    shift, and go to state 135
-    '*'    shift, and go to state 136
-    '/'    shift, and go to state 137
-    '%'    shift, and go to state 138
-    '['    shift, and go to state 139
-    '.'    shift, and go to state 140
+    LE_OP  shift, and go to state 125
+    GE_OP  shift, and go to state 126
+    EQ_OP  shift, and go to state 127
+    NE_OP  shift, and go to state 128
+    '<'    shift, and go to state 131
+    '>'    shift, and go to state 132
+    '+'    shift, and go to state 133
+    '-'    shift, and go to state 134
+    '*'    shift, and go to state 135
+    '/'    shift, and go to state 136
+    '%'    shift, and go to state 137
+    '['    shift, and go to state 138
+    '.'    shift, and go to state 139
 
     $default  reduce using rule 87 (Expr)
 
 
-State 163
+State 162
 
    13 LValue: Expr . '.' Identifier
    14       | Expr . '[' Expr ']'
@@ -2663,25 +2706,25 @@ State 163
    88     | Expr OR_OP Expr .
    95 Call: Expr . '.' Identifier '(' Actuals ')'
 
-    LE_OP   shift, and go to state 126
-    GE_OP   shift, and go to state 127
-    EQ_OP   shift, and go to state 128
-    NE_OP   shift, and go to state 129
-    AND_OP  shift, and go to state 130
-    '<'     shift, and go to state 132
-    '>'     shift, and go to state 133
-    '+'     shift, and go to state 134
-    '-'     shift, and go to state 135
-    '*'     shift, and go to state 136
-    '/'     shift, and go to state 137
-    '%'     shift, and go to state 138
-    '['     shift, and go to state 139
-    '.'     shift, and go to state 140
+    LE_OP   shift, and go to state 125
+    GE_OP   shift, and go to state 126
+    EQ_OP   shift, and go to state 127
+    NE_OP   shift, and go to state 128
+    AND_OP  shift, and go to state 129
+    '<'     shift, and go to state 131
+    '>'     shift, and go to state 132
+    '+'     shift, and go to state 133
+    '-'     shift, and go to state 134
+    '*'     shift, and go to state 135
+    '/'     shift, and go to state 136
+    '%'     shift, and go to state 137
+    '['     shift, and go to state 138
+    '.'     shift, and go to state 139
 
     $default  reduce using rule 88 (Expr)
 
 
-State 164
+State 163
 
    13 LValue: Expr . '.' Identifier
    14       | Expr . '[' Expr ']'
@@ -2701,13 +2744,13 @@ State 164
    88     | Expr . OR_OP Expr
    95 Call: Expr . '.' Identifier '(' Actuals ')'
 
-    '+'  shift, and go to state 134
-    '-'  shift, and go to state 135
-    '*'  shift, and go to state 136
-    '/'  shift, and go to state 137
-    '%'  shift, and go to state 138
-    '['  shift, and go to state 139
-    '.'  shift, and go to state 140
+    '+'  shift, and go to state 133
+    '-'  shift, and go to state 134
+    '*'  shift, and go to state 135
+    '/'  shift, and go to state 136
+    '%'  shift, and go to state 137
+    '['  shift, and go to state 138
+    '.'  shift, and go to state 139
 
     LE_OP  error (nonassociative)
     GE_OP  error (nonassociative)
@@ -2717,7 +2760,7 @@ State 164
     $default  reduce using rule 81 (Expr)
 
 
-State 165
+State 164
 
    13 LValue: Expr . '.' Identifier
    14       | Expr . '[' Expr ']'
@@ -2737,13 +2780,13 @@ State 165
    88     | Expr . OR_OP Expr
    95 Call: Expr . '.' Identifier '(' Actuals ')'
 
-    '+'  shift, and go to state 134
-    '-'  shift, and go to state 135
-    '*'  shift, and go to state 136
-    '/'  shift, and go to state 137
-    '%'  shift, and go to state 138
-    '['  shift, and go to state 139
-    '.'  shift, and go to state 140
+    '+'  shift, and go to state 133
+    '-'  shift, and go to state 134
+    '*'  shift, and go to state 135
+    '/'  shift, and go to state 136
+    '%'  shift, and go to state 137
+    '['  shift, and go to state 138
+    '.'  shift, and go to state 139
 
     LE_OP  error (nonassociative)
     GE_OP  error (nonassociative)
@@ -2753,7 +2796,7 @@ State 165
     $default  reduce using rule 83 (Expr)
 
 
-State 166
+State 165
 
    13 LValue: Expr . '.' Identifier
    14       | Expr . '[' Expr ']'
@@ -2773,16 +2816,16 @@ State 166
    88     | Expr . OR_OP Expr
    95 Call: Expr . '.' Identifier '(' Actuals ')'
 
-    '*'  shift, and go to state 136
-    '/'  shift, and go to state 137
-    '%'  shift, and go to state 138
-    '['  shift, and go to state 139
-    '.'  shift, and go to state 140
+    '*'  shift, and go to state 135
+    '/'  shift, and go to state 136
+    '%'  shift, and go to state 137
+    '['  shift, and go to state 138
+    '.'  shift, and go to state 139
 
     $default  reduce using rule 75 (Expr)
 
 
-State 167
+State 166
 
    13 LValue: Expr . '.' Identifier
    14       | Expr . '[' Expr ']'
@@ -2802,16 +2845,16 @@ State 167
    88     | Expr . OR_OP Expr
    95 Call: Expr . '.' Identifier '(' Actuals ')'
 
-    '*'  shift, and go to state 136
-    '/'  shift, and go to state 137
-    '%'  shift, and go to state 138
-    '['  shift, and go to state 139
-    '.'  shift, and go to state 140
+    '*'  shift, and go to state 135
+    '/'  shift, and go to state 136
+    '%'  shift, and go to state 137
+    '['  shift, and go to state 138
+    '.'  shift, and go to state 139
 
     $default  reduce using rule 76 (Expr)
 
 
-State 168
+State 167
 
    13 LValue: Expr . '.' Identifier
    14       | Expr . '[' Expr ']'
@@ -2831,13 +2874,13 @@ State 168
    88     | Expr . OR_OP Expr
    95 Call: Expr . '.' Identifier '(' Actuals ')'
 
-    '['  shift, and go to state 139
-    '.'  shift, and go to state 140
+    '['  shift, and go to state 138
+    '.'  shift, and go to state 139
 
     $default  reduce using rule 77 (Expr)
 
 
-State 169
+State 168
 
    13 LValue: Expr . '.' Identifier
    14       | Expr . '[' Expr ']'
@@ -2857,13 +2900,13 @@ State 169
    88     | Expr . OR_OP Expr
    95 Call: Expr . '.' Identifier '(' Actuals ')'
 
-    '['  shift, and go to state 139
-    '.'  shift, and go to state 140
+    '['  shift, and go to state 138
+    '.'  shift, and go to state 139
 
     $default  reduce using rule 78 (Expr)
 
 
-State 170
+State 169
 
    13 LValue: Expr . '.' Identifier
    14       | Expr . '[' Expr ']'
@@ -2883,13 +2926,13 @@ State 170
    88     | Expr . OR_OP Expr
    95 Call: Expr . '.' Identifier '(' Actuals ')'
 
-    '['  shift, and go to state 139
-    '.'  shift, and go to state 140
+    '['  shift, and go to state 138
+    '.'  shift, and go to state 139
 
     $default  reduce using rule 79 (Expr)
 
 
-State 171
+State 170
 
    13 LValue: Expr . '.' Identifier
    14       | Expr . '[' Expr ']'
@@ -2909,35 +2952,49 @@ State 171
    88     | Expr . OR_OP Expr
    95 Call: Expr . '.' Identifier '(' Actuals ')'
 
-    LE_OP   shift, and go to state 126
-    GE_OP   shift, and go to state 127
-    EQ_OP   shift, and go to state 128
-    NE_OP   shift, and go to state 129
-    AND_OP  shift, and go to state 130
-    OR_OP   shift, and go to state 131
-    '<'     shift, and go to state 132
-    '>'     shift, and go to state 133
-    '+'     shift, and go to state 134
-    '-'     shift, and go to state 135
-    '*'     shift, and go to state 136
-    '/'     shift, and go to state 137
-    '%'     shift, and go to state 138
-    '['     shift, and go to state 139
-    '.'     shift, and go to state 140
-    ']'     shift, and go to state 181
+    LE_OP   shift, and go to state 125
+    GE_OP   shift, and go to state 126
+    EQ_OP   shift, and go to state 127
+    NE_OP   shift, and go to state 128
+    AND_OP  shift, and go to state 129
+    OR_OP   shift, and go to state 130
+    '<'     shift, and go to state 131
+    '>'     shift, and go to state 132
+    '+'     shift, and go to state 133
+    '-'     shift, and go to state 134
+    '*'     shift, and go to state 135
+    '/'     shift, and go to state 136
+    '%'     shift, and go to state 137
+    '['     shift, and go to state 138
+    '.'     shift, and go to state 139
+    ']'     shift, and go to state 182
 
 
-State 172
+State 171
 
    13 LValue: Expr '.' Identifier .
    95 Call: Expr '.' Identifier . '(' Actuals ')'
 
-    '('  shift, and go to state 182
+    '('  shift, and go to state 183
 
     $default  reduce using rule 13 (LValue)
 
 
+State 172
+
+   41 Prototype: VOID Identifier '(' Formals ')' ';' .
+
+    $default  reduce using rule 41 (Prototype)
+
+
 State 173
+
+   40 Prototype: Type Identifier '(' Formals ')' ';' .
+
+    $default  reduce using rule 40 (Prototype)
+
+
+State 174
 
    13 LValue: Expr . '.' Identifier
    14       | Expr . '[' Expr ']'
@@ -2958,255 +3015,256 @@ State 173
    88     | Expr . OR_OP Expr
    95 Call: Expr . '.' Identifier '(' Actuals ')'
 
-    LE_OP   shift, and go to state 126
-    GE_OP   shift, and go to state 127
-    EQ_OP   shift, and go to state 128
-    NE_OP   shift, and go to state 129
-    AND_OP  shift, and go to state 130
-    OR_OP   shift, and go to state 131
-    '<'     shift, and go to state 132
-    '>'     shift, and go to state 133
-    '+'     shift, and go to state 134
-    '-'     shift, and go to state 135
-    '*'     shift, and go to state 136
-    '/'     shift, and go to state 137
-    '%'     shift, and go to state 138
-    '['     shift, and go to state 139
-    '.'     shift, and go to state 140
-    ';'     shift, and go to state 183
-
-
-State 174
-
-   62 ForStmt: FOR '(' Expr ';' . Expr ';' ')' Stmt
-   64        | FOR '(' Expr ';' . Expr ';' Expr ')' Stmt
-
-    NULLCONSTANT    shift, and go to state 74
-    NEW             shift, and go to state 78
-    THIS            shift, and go to state 80
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    '('             shift, and go to state 93
-
-    LValue      go to state 95
-    Identifier  go to state 96
-    Expr        go to state 184
-    Call        go to state 106
-    Constant    go to state 107
+    LE_OP   shift, and go to state 125
+    GE_OP   shift, and go to state 126
+    EQ_OP   shift, and go to state 127
+    NE_OP   shift, and go to state 128
+    AND_OP  shift, and go to state 129
+    OR_OP   shift, and go to state 130
+    '<'     shift, and go to state 131
+    '>'     shift, and go to state 132
+    '+'     shift, and go to state 133
+    '-'     shift, and go to state 134
+    '*'     shift, and go to state 135
+    '/'     shift, and go to state 136
+    '%'     shift, and go to state 137
+    '['     shift, and go to state 138
+    '.'     shift, and go to state 139
+    ';'     shift, and go to state 184
 
 
 State 175
 
-   58 IfStmt: IF '(' Expr ')' . Stmt
-   59       | IF '(' Expr ')' . Stmt ELSE Stmt
+   62 ForStmt: FOR '(' Expr ';' . Expr ';' ')' Stmt
+   64        | FOR '(' Expr ';' . Expr ';' Expr ')' Stmt
 
-    NULLCONSTANT    shift, and go to state 74
-    BREAK           shift, and go to state 75
-    FOR             shift, and go to state 76
-    IF              shift, and go to state 77
-    NEW             shift, and go to state 78
-    RETURN          shift, and go to state 79
-    THIS            shift, and go to state 80
-    WHILE           shift, and go to state 81
-    PRINT           shift, and go to state 82
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    ';'             shift, and go to state 92
-    '('             shift, and go to state 93
-    '{'             shift, and go to state 55
+    NULLCONSTANT    shift, and go to state 69
+    NEW             shift, and go to state 73
+    THIS            shift, and go to state 75
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    '('             shift, and go to state 88
 
-    LValue      go to state 95
-    Identifier  go to state 96
-    StmtBlock   go to state 97
-    Stmt        go to state 185
-    IfStmt      go to state 99
-    WhileStmt   go to state 100
-    ForStmt     go to state 101
-    ReturnStmt  go to state 102
-    BreakStmt   go to state 103
-    PrintStmt   go to state 104
-    Expr        go to state 105
-    Call        go to state 106
-    Constant    go to state 107
+    LValue      go to state 90
+    Identifier  go to state 111
+    Expr        go to state 185
+    Call        go to state 102
+    Constant    go to state 103
 
 
 State 176
 
-   60 WhileStmt: WHILE '(' Expr ')' . Stmt
+   58 IfStmt: IF '(' Expr ')' . Stmt
+   59       | IF '(' Expr ')' . Stmt ELSE Stmt
 
-    NULLCONSTANT    shift, and go to state 74
-    BREAK           shift, and go to state 75
-    FOR             shift, and go to state 76
-    IF              shift, and go to state 77
-    NEW             shift, and go to state 78
-    RETURN          shift, and go to state 79
-    THIS            shift, and go to state 80
-    WHILE           shift, and go to state 81
-    PRINT           shift, and go to state 82
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    ';'             shift, and go to state 92
-    '('             shift, and go to state 93
-    '{'             shift, and go to state 55
+    NULLCONSTANT    shift, and go to state 69
+    BREAK           shift, and go to state 70
+    FOR             shift, and go to state 71
+    IF              shift, and go to state 72
+    NEW             shift, and go to state 73
+    RETURN          shift, and go to state 74
+    THIS            shift, and go to state 75
+    WHILE           shift, and go to state 76
+    PRINT           shift, and go to state 77
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    ';'             shift, and go to state 87
+    '('             shift, and go to state 88
+    '{'             shift, and go to state 54
 
-    LValue      go to state 95
-    Identifier  go to state 96
-    StmtBlock   go to state 97
+    LValue      go to state 90
+    Identifier  go to state 111
+    StmtBlock   go to state 92
     Stmt        go to state 186
-    IfStmt      go to state 99
-    WhileStmt   go to state 100
-    ForStmt     go to state 101
-    ReturnStmt  go to state 102
-    BreakStmt   go to state 103
-    PrintStmt   go to state 104
-    Expr        go to state 105
-    Call        go to state 106
-    Constant    go to state 107
+    IfStmt      go to state 95
+    WhileStmt   go to state 96
+    ForStmt     go to state 97
+    ReturnStmt  go to state 98
+    BreakStmt   go to state 99
+    PrintStmt   go to state 100
+    Expr        go to state 101
+    Call        go to state 102
+    Constant    go to state 103
 
 
 State 177
 
-   68 PrintStmt: PRINT '(' ExprList ')' . ';'
+   60 WhileStmt: WHILE '(' Expr ')' . Stmt
 
-    ';'  shift, and go to state 187
+    NULLCONSTANT    shift, and go to state 69
+    BREAK           shift, and go to state 70
+    FOR             shift, and go to state 71
+    IF              shift, and go to state 72
+    NEW             shift, and go to state 73
+    RETURN          shift, and go to state 74
+    THIS            shift, and go to state 75
+    WHILE           shift, and go to state 76
+    PRINT           shift, and go to state 77
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    ';'             shift, and go to state 87
+    '('             shift, and go to state 88
+    '{'             shift, and go to state 54
+
+    LValue      go to state 90
+    Identifier  go to state 111
+    StmtBlock   go to state 92
+    Stmt        go to state 187
+    IfStmt      go to state 95
+    WhileStmt   go to state 96
+    ForStmt     go to state 97
+    ReturnStmt  go to state 98
+    BreakStmt   go to state 99
+    PrintStmt   go to state 100
+    Expr        go to state 101
+    Call        go to state 102
+    Constant    go to state 103
 
 
 State 178
 
-   57 ExprList: ExprList ',' . Expr
+   68 PrintStmt: PRINT '(' ExprList ')' . ';'
 
-    NULLCONSTANT    shift, and go to state 74
-    NEW             shift, and go to state 78
-    THIS            shift, and go to state 80
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    '('             shift, and go to state 93
-
-    LValue      go to state 95
-    Identifier  go to state 96
-    Expr        go to state 188
-    Call        go to state 106
-    Constant    go to state 107
+    ';'  shift, and go to state 188
 
 
 State 179
 
-   93 Expr: NEWARRAY '(' Expr ',' . Type ')'
+   57 ExprList: ExprList ',' . Expr
 
-    INT     shift, and go to state 1
-    DOUBLE  shift, and go to state 2
-    BOOL    shift, and go to state 3
-    STRING  shift, and go to state 4
-    CLASS   shift, and go to state 32
+    NULLCONSTANT    shift, and go to state 69
+    NEW             shift, and go to state 73
+    THIS            shift, and go to state 75
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    '('             shift, and go to state 88
 
-    Type  go to state 189
+    LValue      go to state 90
+    Identifier  go to state 111
+    Expr        go to state 189
+    Call        go to state 102
+    Constant    go to state 103
 
 
 State 180
+
+   93 Expr: NEWARRAY '(' Expr ',' . Type ')'
+
+    INT         shift, and go to state 1
+    DOUBLE      shift, and go to state 2
+    BOOL        shift, and go to state 3
+    STRING      shift, and go to state 4
+    IDENTIFIER  shift, and go to state 8
+
+    Type        go to state 190
+    Identifier  go to state 15
+
+
+State 181
 
    94 Call: Identifier '(' Actuals ')' .
 
     $default  reduce using rule 94 (Call)
 
 
-State 181
+State 182
 
    14 LValue: Expr '[' Expr ']' .
 
     $default  reduce using rule 14 (LValue)
 
 
-State 182
+State 183
 
    95 Call: Expr '.' Identifier '(' . Actuals ')'
 
-    NULLCONSTANT    shift, and go to state 74
-    NEW             shift, and go to state 78
-    THIS            shift, and go to state 80
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    '('             shift, and go to state 93
+    NULLCONSTANT    shift, and go to state 69
+    NEW             shift, and go to state 73
+    THIS            shift, and go to state 75
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    '('             shift, and go to state 88
 
     $default  reduce using rule 96 (Actuals)
 
-    LValue      go to state 95
-    Identifier  go to state 96
-    ExprList    go to state 156
-    Expr        go to state 150
-    Call        go to state 106
-    Actuals     go to state 190
-    Constant    go to state 107
+    LValue      go to state 90
+    Identifier  go to state 111
+    ExprList    go to state 155
+    Expr        go to state 149
+    Call        go to state 102
+    Actuals     go to state 191
+    Constant    go to state 103
 
 
-State 183
+State 184
 
    61 ForStmt: FOR '(' ';' Expr ';' . ')' Stmt
    63        | FOR '(' ';' Expr ';' . Expr ')' Stmt
 
-    NULLCONSTANT    shift, and go to state 74
-    NEW             shift, and go to state 78
-    THIS            shift, and go to state 80
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    ')'             shift, and go to state 191
-    '('             shift, and go to state 93
+    NULLCONSTANT    shift, and go to state 69
+    NEW             shift, and go to state 73
+    THIS            shift, and go to state 75
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    ')'             shift, and go to state 192
+    '('             shift, and go to state 88
 
-    LValue      go to state 95
-    Identifier  go to state 96
-    Expr        go to state 192
-    Call        go to state 106
-    Constant    go to state 107
+    LValue      go to state 90
+    Identifier  go to state 111
+    Expr        go to state 193
+    Call        go to state 102
+    Constant    go to state 103
 
 
-State 184
+State 185
 
    13 LValue: Expr . '.' Identifier
    14       | Expr . '[' Expr ']'
@@ -3227,49 +3285,49 @@ State 184
    88     | Expr . OR_OP Expr
    95 Call: Expr . '.' Identifier '(' Actuals ')'
 
-    LE_OP   shift, and go to state 126
-    GE_OP   shift, and go to state 127
-    EQ_OP   shift, and go to state 128
-    NE_OP   shift, and go to state 129
-    AND_OP  shift, and go to state 130
-    OR_OP   shift, and go to state 131
-    '<'     shift, and go to state 132
-    '>'     shift, and go to state 133
-    '+'     shift, and go to state 134
-    '-'     shift, and go to state 135
-    '*'     shift, and go to state 136
-    '/'     shift, and go to state 137
-    '%'     shift, and go to state 138
-    '['     shift, and go to state 139
-    '.'     shift, and go to state 140
-    ';'     shift, and go to state 193
+    LE_OP   shift, and go to state 125
+    GE_OP   shift, and go to state 126
+    EQ_OP   shift, and go to state 127
+    NE_OP   shift, and go to state 128
+    AND_OP  shift, and go to state 129
+    OR_OP   shift, and go to state 130
+    '<'     shift, and go to state 131
+    '>'     shift, and go to state 132
+    '+'     shift, and go to state 133
+    '-'     shift, and go to state 134
+    '*'     shift, and go to state 135
+    '/'     shift, and go to state 136
+    '%'     shift, and go to state 137
+    '['     shift, and go to state 138
+    '.'     shift, and go to state 139
+    ';'     shift, and go to state 194
 
 
-State 185
+State 186
 
    58 IfStmt: IF '(' Expr ')' Stmt .
    59       | IF '(' Expr ')' Stmt . ELSE Stmt
 
-    ELSE  shift, and go to state 194
+    ELSE  shift, and go to state 195
 
     $default  reduce using rule 58 (IfStmt)
 
 
-State 186
+State 187
 
    60 WhileStmt: WHILE '(' Expr ')' Stmt .
 
     $default  reduce using rule 60 (WhileStmt)
 
 
-State 187
+State 188
 
    68 PrintStmt: PRINT '(' ExprList ')' ';' .
 
     $default  reduce using rule 68 (PrintStmt)
 
 
-State 188
+State 189
 
    13 LValue: Expr . '.' Identifier
    14       | Expr . '[' Expr ']'
@@ -3289,84 +3347,84 @@ State 188
    88     | Expr . OR_OP Expr
    95 Call: Expr . '.' Identifier '(' Actuals ')'
 
-    LE_OP   shift, and go to state 126
-    GE_OP   shift, and go to state 127
-    EQ_OP   shift, and go to state 128
-    NE_OP   shift, and go to state 129
-    AND_OP  shift, and go to state 130
-    OR_OP   shift, and go to state 131
-    '<'     shift, and go to state 132
-    '>'     shift, and go to state 133
-    '+'     shift, and go to state 134
-    '-'     shift, and go to state 135
-    '*'     shift, and go to state 136
-    '/'     shift, and go to state 137
-    '%'     shift, and go to state 138
-    '['     shift, and go to state 139
-    '.'     shift, and go to state 140
+    LE_OP   shift, and go to state 125
+    GE_OP   shift, and go to state 126
+    EQ_OP   shift, and go to state 127
+    NE_OP   shift, and go to state 128
+    AND_OP  shift, and go to state 129
+    OR_OP   shift, and go to state 130
+    '<'     shift, and go to state 131
+    '>'     shift, and go to state 132
+    '+'     shift, and go to state 133
+    '-'     shift, and go to state 134
+    '*'     shift, and go to state 135
+    '/'     shift, and go to state 136
+    '%'     shift, and go to state 137
+    '['     shift, and go to state 138
+    '.'     shift, and go to state 139
 
     $default  reduce using rule 57 (ExprList)
 
 
-State 189
+State 190
 
    20 Type: Type . '[' ']'
    93 Expr: NEWARRAY '(' Expr ',' Type . ')'
 
-    '['  shift, and go to state 24
-    ')'  shift, and go to state 195
-
-
-State 190
-
-   95 Call: Expr '.' Identifier '(' Actuals . ')'
-
+    '['  shift, and go to state 25
     ')'  shift, and go to state 196
 
 
 State 191
 
-   61 ForStmt: FOR '(' ';' Expr ';' ')' . Stmt
+   95 Call: Expr '.' Identifier '(' Actuals . ')'
 
-    NULLCONSTANT    shift, and go to state 74
-    BREAK           shift, and go to state 75
-    FOR             shift, and go to state 76
-    IF              shift, and go to state 77
-    NEW             shift, and go to state 78
-    RETURN          shift, and go to state 79
-    THIS            shift, and go to state 80
-    WHILE           shift, and go to state 81
-    PRINT           shift, and go to state 82
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    ';'             shift, and go to state 92
-    '('             shift, and go to state 93
-    '{'             shift, and go to state 55
-
-    LValue      go to state 95
-    Identifier  go to state 96
-    StmtBlock   go to state 97
-    Stmt        go to state 197
-    IfStmt      go to state 99
-    WhileStmt   go to state 100
-    ForStmt     go to state 101
-    ReturnStmt  go to state 102
-    BreakStmt   go to state 103
-    PrintStmt   go to state 104
-    Expr        go to state 105
-    Call        go to state 106
-    Constant    go to state 107
+    ')'  shift, and go to state 197
 
 
 State 192
+
+   61 ForStmt: FOR '(' ';' Expr ';' ')' . Stmt
+
+    NULLCONSTANT    shift, and go to state 69
+    BREAK           shift, and go to state 70
+    FOR             shift, and go to state 71
+    IF              shift, and go to state 72
+    NEW             shift, and go to state 73
+    RETURN          shift, and go to state 74
+    THIS            shift, and go to state 75
+    WHILE           shift, and go to state 76
+    PRINT           shift, and go to state 77
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    ';'             shift, and go to state 87
+    '('             shift, and go to state 88
+    '{'             shift, and go to state 54
+
+    LValue      go to state 90
+    Identifier  go to state 111
+    StmtBlock   go to state 92
+    Stmt        go to state 198
+    IfStmt      go to state 95
+    WhileStmt   go to state 96
+    ForStmt     go to state 97
+    ReturnStmt  go to state 98
+    BreakStmt   go to state 99
+    PrintStmt   go to state 100
+    Expr        go to state 101
+    Call        go to state 102
+    Constant    go to state 103
+
+
+State 193
 
    13 LValue: Expr . '.' Identifier
    14       | Expr . '[' Expr ']'
@@ -3386,200 +3444,200 @@ State 192
    88     | Expr . OR_OP Expr
    95 Call: Expr . '.' Identifier '(' Actuals ')'
 
-    LE_OP   shift, and go to state 126
-    GE_OP   shift, and go to state 127
-    EQ_OP   shift, and go to state 128
-    NE_OP   shift, and go to state 129
-    AND_OP  shift, and go to state 130
-    OR_OP   shift, and go to state 131
-    '<'     shift, and go to state 132
-    '>'     shift, and go to state 133
-    '+'     shift, and go to state 134
-    '-'     shift, and go to state 135
-    '*'     shift, and go to state 136
-    '/'     shift, and go to state 137
-    '%'     shift, and go to state 138
-    '['     shift, and go to state 139
-    '.'     shift, and go to state 140
-    ')'     shift, and go to state 198
-
-
-State 193
-
-   62 ForStmt: FOR '(' Expr ';' Expr ';' . ')' Stmt
-   64        | FOR '(' Expr ';' Expr ';' . Expr ')' Stmt
-
-    NULLCONSTANT    shift, and go to state 74
-    NEW             shift, and go to state 78
-    THIS            shift, and go to state 80
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    ')'             shift, and go to state 199
-    '('             shift, and go to state 93
-
-    LValue      go to state 95
-    Identifier  go to state 96
-    Expr        go to state 200
-    Call        go to state 106
-    Constant    go to state 107
+    LE_OP   shift, and go to state 125
+    GE_OP   shift, and go to state 126
+    EQ_OP   shift, and go to state 127
+    NE_OP   shift, and go to state 128
+    AND_OP  shift, and go to state 129
+    OR_OP   shift, and go to state 130
+    '<'     shift, and go to state 131
+    '>'     shift, and go to state 132
+    '+'     shift, and go to state 133
+    '-'     shift, and go to state 134
+    '*'     shift, and go to state 135
+    '/'     shift, and go to state 136
+    '%'     shift, and go to state 137
+    '['     shift, and go to state 138
+    '.'     shift, and go to state 139
+    ')'     shift, and go to state 199
 
 
 State 194
 
-   59 IfStmt: IF '(' Expr ')' Stmt ELSE . Stmt
+   62 ForStmt: FOR '(' Expr ';' Expr ';' . ')' Stmt
+   64        | FOR '(' Expr ';' Expr ';' . Expr ')' Stmt
 
-    NULLCONSTANT    shift, and go to state 74
-    BREAK           shift, and go to state 75
-    FOR             shift, and go to state 76
-    IF              shift, and go to state 77
-    NEW             shift, and go to state 78
-    RETURN          shift, and go to state 79
-    THIS            shift, and go to state 80
-    WHILE           shift, and go to state 81
-    PRINT           shift, and go to state 82
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    ';'             shift, and go to state 92
-    '('             shift, and go to state 93
-    '{'             shift, and go to state 55
+    NULLCONSTANT    shift, and go to state 69
+    NEW             shift, and go to state 73
+    THIS            shift, and go to state 75
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    ')'             shift, and go to state 200
+    '('             shift, and go to state 88
 
-    LValue      go to state 95
-    Identifier  go to state 96
-    StmtBlock   go to state 97
-    Stmt        go to state 201
-    IfStmt      go to state 99
-    WhileStmt   go to state 100
-    ForStmt     go to state 101
-    ReturnStmt  go to state 102
-    BreakStmt   go to state 103
-    PrintStmt   go to state 104
-    Expr        go to state 105
-    Call        go to state 106
-    Constant    go to state 107
+    LValue      go to state 90
+    Identifier  go to state 111
+    Expr        go to state 201
+    Call        go to state 102
+    Constant    go to state 103
 
 
 State 195
+
+   59 IfStmt: IF '(' Expr ')' Stmt ELSE . Stmt
+
+    NULLCONSTANT    shift, and go to state 69
+    BREAK           shift, and go to state 70
+    FOR             shift, and go to state 71
+    IF              shift, and go to state 72
+    NEW             shift, and go to state 73
+    RETURN          shift, and go to state 74
+    THIS            shift, and go to state 75
+    WHILE           shift, and go to state 76
+    PRINT           shift, and go to state 77
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    ';'             shift, and go to state 87
+    '('             shift, and go to state 88
+    '{'             shift, and go to state 54
+
+    LValue      go to state 90
+    Identifier  go to state 111
+    StmtBlock   go to state 92
+    Stmt        go to state 202
+    IfStmt      go to state 95
+    WhileStmt   go to state 96
+    ForStmt     go to state 97
+    ReturnStmt  go to state 98
+    BreakStmt   go to state 99
+    PrintStmt   go to state 100
+    Expr        go to state 101
+    Call        go to state 102
+    Constant    go to state 103
+
+
+State 196
 
    93 Expr: NEWARRAY '(' Expr ',' Type ')' .
 
     $default  reduce using rule 93 (Expr)
 
 
-State 196
+State 197
 
    95 Call: Expr '.' Identifier '(' Actuals ')' .
 
     $default  reduce using rule 95 (Call)
 
 
-State 197
+State 198
 
    61 ForStmt: FOR '(' ';' Expr ';' ')' Stmt .
 
     $default  reduce using rule 61 (ForStmt)
 
 
-State 198
+State 199
 
    63 ForStmt: FOR '(' ';' Expr ';' Expr ')' . Stmt
 
-    NULLCONSTANT    shift, and go to state 74
-    BREAK           shift, and go to state 75
-    FOR             shift, and go to state 76
-    IF              shift, and go to state 77
-    NEW             shift, and go to state 78
-    RETURN          shift, and go to state 79
-    THIS            shift, and go to state 80
-    WHILE           shift, and go to state 81
-    PRINT           shift, and go to state 82
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    ';'             shift, and go to state 92
-    '('             shift, and go to state 93
-    '{'             shift, and go to state 55
+    NULLCONSTANT    shift, and go to state 69
+    BREAK           shift, and go to state 70
+    FOR             shift, and go to state 71
+    IF              shift, and go to state 72
+    NEW             shift, and go to state 73
+    RETURN          shift, and go to state 74
+    THIS            shift, and go to state 75
+    WHILE           shift, and go to state 76
+    PRINT           shift, and go to state 77
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    ';'             shift, and go to state 87
+    '('             shift, and go to state 88
+    '{'             shift, and go to state 54
 
-    LValue      go to state 95
-    Identifier  go to state 96
-    StmtBlock   go to state 97
-    Stmt        go to state 202
-    IfStmt      go to state 99
-    WhileStmt   go to state 100
-    ForStmt     go to state 101
-    ReturnStmt  go to state 102
-    BreakStmt   go to state 103
-    PrintStmt   go to state 104
-    Expr        go to state 105
-    Call        go to state 106
-    Constant    go to state 107
-
-
-State 199
-
-   62 ForStmt: FOR '(' Expr ';' Expr ';' ')' . Stmt
-
-    NULLCONSTANT    shift, and go to state 74
-    BREAK           shift, and go to state 75
-    FOR             shift, and go to state 76
-    IF              shift, and go to state 77
-    NEW             shift, and go to state 78
-    RETURN          shift, and go to state 79
-    THIS            shift, and go to state 80
-    WHILE           shift, and go to state 81
-    PRINT           shift, and go to state 82
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    ';'             shift, and go to state 92
-    '('             shift, and go to state 93
-    '{'             shift, and go to state 55
-
-    LValue      go to state 95
-    Identifier  go to state 96
-    StmtBlock   go to state 97
+    LValue      go to state 90
+    Identifier  go to state 111
+    StmtBlock   go to state 92
     Stmt        go to state 203
-    IfStmt      go to state 99
-    WhileStmt   go to state 100
-    ForStmt     go to state 101
-    ReturnStmt  go to state 102
-    BreakStmt   go to state 103
-    PrintStmt   go to state 104
-    Expr        go to state 105
-    Call        go to state 106
-    Constant    go to state 107
+    IfStmt      go to state 95
+    WhileStmt   go to state 96
+    ForStmt     go to state 97
+    ReturnStmt  go to state 98
+    BreakStmt   go to state 99
+    PrintStmt   go to state 100
+    Expr        go to state 101
+    Call        go to state 102
+    Constant    go to state 103
 
 
 State 200
+
+   62 ForStmt: FOR '(' Expr ';' Expr ';' ')' . Stmt
+
+    NULLCONSTANT    shift, and go to state 69
+    BREAK           shift, and go to state 70
+    FOR             shift, and go to state 71
+    IF              shift, and go to state 72
+    NEW             shift, and go to state 73
+    RETURN          shift, and go to state 74
+    THIS            shift, and go to state 75
+    WHILE           shift, and go to state 76
+    PRINT           shift, and go to state 77
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    ';'             shift, and go to state 87
+    '('             shift, and go to state 88
+    '{'             shift, and go to state 54
+
+    LValue      go to state 90
+    Identifier  go to state 111
+    StmtBlock   go to state 92
+    Stmt        go to state 204
+    IfStmt      go to state 95
+    WhileStmt   go to state 96
+    ForStmt     go to state 97
+    ReturnStmt  go to state 98
+    BreakStmt   go to state 99
+    PrintStmt   go to state 100
+    Expr        go to state 101
+    Call        go to state 102
+    Constant    go to state 103
+
+
+State 201
 
    13 LValue: Expr . '.' Identifier
    14       | Expr . '[' Expr ']'
@@ -3599,88 +3657,88 @@ State 200
    88     | Expr . OR_OP Expr
    95 Call: Expr . '.' Identifier '(' Actuals ')'
 
-    LE_OP   shift, and go to state 126
-    GE_OP   shift, and go to state 127
-    EQ_OP   shift, and go to state 128
-    NE_OP   shift, and go to state 129
-    AND_OP  shift, and go to state 130
-    OR_OP   shift, and go to state 131
-    '<'     shift, and go to state 132
-    '>'     shift, and go to state 133
-    '+'     shift, and go to state 134
-    '-'     shift, and go to state 135
-    '*'     shift, and go to state 136
-    '/'     shift, and go to state 137
-    '%'     shift, and go to state 138
-    '['     shift, and go to state 139
-    '.'     shift, and go to state 140
-    ')'     shift, and go to state 204
+    LE_OP   shift, and go to state 125
+    GE_OP   shift, and go to state 126
+    EQ_OP   shift, and go to state 127
+    NE_OP   shift, and go to state 128
+    AND_OP  shift, and go to state 129
+    OR_OP   shift, and go to state 130
+    '<'     shift, and go to state 131
+    '>'     shift, and go to state 132
+    '+'     shift, and go to state 133
+    '-'     shift, and go to state 134
+    '*'     shift, and go to state 135
+    '/'     shift, and go to state 136
+    '%'     shift, and go to state 137
+    '['     shift, and go to state 138
+    '.'     shift, and go to state 139
+    ')'     shift, and go to state 205
 
 
-State 201
+State 202
 
    59 IfStmt: IF '(' Expr ')' Stmt ELSE Stmt .
 
     $default  reduce using rule 59 (IfStmt)
 
 
-State 202
+State 203
 
    63 ForStmt: FOR '(' ';' Expr ';' Expr ')' Stmt .
 
     $default  reduce using rule 63 (ForStmt)
 
 
-State 203
+State 204
 
    62 ForStmt: FOR '(' Expr ';' Expr ';' ')' Stmt .
 
     $default  reduce using rule 62 (ForStmt)
 
 
-State 204
+State 205
 
    64 ForStmt: FOR '(' Expr ';' Expr ';' Expr ')' . Stmt
 
-    NULLCONSTANT    shift, and go to state 74
-    BREAK           shift, and go to state 75
-    FOR             shift, and go to state 76
-    IF              shift, and go to state 77
-    NEW             shift, and go to state 78
-    RETURN          shift, and go to state 79
-    THIS            shift, and go to state 80
-    WHILE           shift, and go to state 81
-    PRINT           shift, and go to state 82
-    READINTEGER     shift, and go to state 83
-    READLINE        shift, and go to state 84
-    NEWARRAY        shift, and go to state 85
-    NOT_OP          shift, and go to state 86
-    IDENTIFIER      shift, and go to state 17
-    STRING_LITERAL  shift, and go to state 87
-    INTCONSTANT     shift, and go to state 88
-    DOUBLECONSTANT  shift, and go to state 89
-    BOOLCONSTANT    shift, and go to state 90
-    '-'             shift, and go to state 91
-    ';'             shift, and go to state 92
-    '('             shift, and go to state 93
-    '{'             shift, and go to state 55
+    NULLCONSTANT    shift, and go to state 69
+    BREAK           shift, and go to state 70
+    FOR             shift, and go to state 71
+    IF              shift, and go to state 72
+    NEW             shift, and go to state 73
+    RETURN          shift, and go to state 74
+    THIS            shift, and go to state 75
+    WHILE           shift, and go to state 76
+    PRINT           shift, and go to state 77
+    READINTEGER     shift, and go to state 78
+    READLINE        shift, and go to state 79
+    NEWARRAY        shift, and go to state 80
+    NOT_OP          shift, and go to state 81
+    IDENTIFIER      shift, and go to state 8
+    STRING_LITERAL  shift, and go to state 82
+    INTCONSTANT     shift, and go to state 83
+    DOUBLECONSTANT  shift, and go to state 84
+    BOOLCONSTANT    shift, and go to state 85
+    '-'             shift, and go to state 86
+    ';'             shift, and go to state 87
+    '('             shift, and go to state 88
+    '{'             shift, and go to state 54
 
-    LValue      go to state 95
-    Identifier  go to state 96
-    StmtBlock   go to state 97
-    Stmt        go to state 205
-    IfStmt      go to state 99
-    WhileStmt   go to state 100
-    ForStmt     go to state 101
-    ReturnStmt  go to state 102
-    BreakStmt   go to state 103
-    PrintStmt   go to state 104
-    Expr        go to state 105
-    Call        go to state 106
-    Constant    go to state 107
+    LValue      go to state 90
+    Identifier  go to state 111
+    StmtBlock   go to state 92
+    Stmt        go to state 206
+    IfStmt      go to state 95
+    WhileStmt   go to state 96
+    ForStmt     go to state 97
+    ReturnStmt  go to state 98
+    BreakStmt   go to state 99
+    PrintStmt   go to state 100
+    Expr        go to state 101
+    Call        go to state 102
+    Constant    go to state 103
 
 
-State 205
+State 206
 
    64 ForStmt: FOR '(' Expr ';' Expr ';' Expr ')' Stmt .
 
