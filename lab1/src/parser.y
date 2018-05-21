@@ -10,6 +10,8 @@
 #include "errors.h"
 
 void yyerror(const char *msg);
+
+FILE *parser_log;
 %}
 
 /* yylval
@@ -144,6 +146,7 @@ Program
                         program->Check();
                     if(ReportError::NumErrors()==0)
                         program->Emit();
+                    program->printTree();
                }
     ;
 
@@ -360,5 +363,5 @@ Constant
  */
 void InitParser() {
     PrintDebug("parser", "Initializing parser");
-    yydebug = true;
+    yydebug = false;
 }
