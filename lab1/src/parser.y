@@ -142,11 +142,15 @@ Program
     : DeclList {
                     Program *program = new Program($1);
                     program->SetParent(NULL);
+                    for(int i = 0; i < $1->NumElements(); i++) {
+                        program->addChild($1->Nth(i));
+                    }
+                    program->setNodeName("Program");
                     if(ReportError::NumErrors()==0)
                         program->Check();
                     if(ReportError::NumErrors()==0)
                         program->Emit();
-                    program->printTree();
+                    program->printTree(0);
                }
     ;
 
@@ -163,11 +167,19 @@ Decl
     ;
 
 VariableDecl
-    : Variable ';' { $$=$1; }
+    : Variable ';' { $$=$1; 
+                     $$->addChild($1);
+                     $$->addChild(new Node(";"));
+                     $$->setNodeName("VariableDecl");
+                   }
     ;
 
 Variable
-    : Type Identifier { $$=new VarDecl($2, $1); }
+    : Type Identifier { $$=new VarDecl($2, $1); 
+                        $$->addChild($1);
+                        $$->addChild($2);
+                        $$->setNodeName("Variable");
+                      }
     ;
 
 VariableList
@@ -176,22 +188,59 @@ VariableList
     ;
 
 LValue
-    : Identifier { $$=new FieldAccess(NULL, $1); }
-    | Expr '.' Identifier { $$=new FieldAccess($1, $3); }
-    | Expr '[' Expr ']' { $$=new ArrayAccess(@$, $1, $3); }
+    : Identifier { $$=new FieldAccess(NULL, $1); 
+                   $$->addChild($1);
+                   $$->setNodeName("LValue");
+                 }
+    | Expr '.' Identifier { $$=new FieldAccess($1, $3); 
+                            $$->addChild($1);
+                            $$->addChild(new Node("."));
+                            $$->addChild($3);
+                            $$->setNodeName("LValue");
+                          }
+    | Expr '[' Expr ']' { $$=new ArrayAccess(@$, $1, $3); 
+                          $$->addChild($1);
+                          $$->addChild(new Node("["));
+                          $$->addChild($3);
+                          $$->addChild(new Node("]"));
+                          $$->setNodeName("LValue");
+                        }
     ;
     
 Type
-    : INT { $$=Type::intType; }
-    | DOUBLE { $$=Type::doubleType; }
-    | BOOL { $$=Type::boolType; }
-    | STRING { $$=Type::stringType; }
-    | Identifier { $$=new NamedType($1); }
-    | Type '[' ']' { $$=new ArrayType(@1, $1); }
+    : INT { $$=Type::intType; 
+            $$->addChild(new Node("INT"));
+            $$->setNodeName("Type");
+          }
+    | DOUBLE { $$=Type::doubleType; 
+               $$->addChild(new Node("DOUBLE"));
+               $$->setNodeName("Type");
+             }
+    | BOOL { $$=Type::boolType; 
+             $$->addChild(new Node("BOOL"));
+             $$->setNodeName("Type");
+           }
+    | STRING { $$=Type::stringType; 
+               $$->addChild(new Node("STRING"));
+               $$->setNodeName("Type");
+             }
+    | Identifier { $$=new NamedType($1); 
+                   $$->addChild(new Node("Identifier"));
+                   $$->setNodeName("Type");
+                 }
+    | Type '[' ']' { $$=new ArrayType(@1, $1); 
+                     $$->addChild($1);
+                     $$->addChild(new Node("["));
+                     $$->addChild(new Node("]"));
+                     $$->setNodeName("Type");
+                   }
     ;
 
 Identifier
-    : IDENTIFIER { $$=new Identifier(@1, $1); }
+    : IDENTIFIER { $$=new Identifier(@1, $1);
+                   $$->setNodeName("Identifier");
+                 }
+    ;
     
 Formals
     : /* Empty */ { $$=new List<VarDecl*>; }
@@ -199,25 +248,58 @@ Formals
     ;
 
 FunctionDecl
-    : Type Identifier '(' Formals ')' StmtBlock { $$=new FnDecl($2, $1, $4); $$->SetFunctionBody($6); }
-    | VOID Identifier '(' Formals ')' StmtBlock { $$=new FnDecl($2, Type::voidType, $4); $$->SetFunctionBody($6); }
+    : Type Identifier '(' Formals ')' StmtBlock { $$=new FnDecl($2, $1, $4); $$->SetFunctionBody($6); 
+                                                  $$->addChild($1);
+                                                  $$->addChild($2);
+                                                  $$->addChild(new Node("("));
+                                                  if($4->NumElements() > 0) {
+                                                      for(int i = 0; i < $4->NumElements()-1; i++) {
+                                                        $$->addChild($4->Nth(i));
+                                                        $$->addChild(new Node(","));
+                                                    }
+                                                    $$->addChild($4->Nth($4->NumElements()-1));
+                                                  }                                                  
+                                                  $$->addChild(new Node(")"));
+                                                  $$->addChild($6);
+                                                  $$->setNodeName("FunctionDecl");
+                                                }
+    | VOID Identifier '(' Formals ')' StmtBlock { $$=new FnDecl($2, Type::voidType, $4); $$->SetFunctionBody($6); 
+                                                  $$->addChild(new Node("VOID"));
+                                                  $$->addChild($2);
+                                                  $$->addChild(new Node("("));
+                                                  if($4->NumElements() > 0) {
+                                                      for(int i = 0; i < $4->NumElements()-1; i++) {
+                                                        $$->addChild($4->Nth(i));
+                                                        $$->addChild(new Node(","));
+                                                    }
+                                                    $$->addChild($4->Nth($4->NumElements()-1));
+                                                  }                                            
+                                                  $$->addChild(new Node(")"));
+                                                  $$->addChild($6);
+                                                  $$->setNodeName("FunctionDecl");
+                                                }
     ;
 
 ClassDecl
-    : CLASS Identifier ExtendsClause ImplementsClause '{' FieldList '}' { $$=new ClassDecl($2, $3, $4, $6); }
+    : CLASS Identifier ExtendsClause ImplementsClause '{' FieldList '}' { $$=new ClassDecl($2, $3, $4, $6); 
+                                                                          
+                                                                        }
     ;
 
 ExtendsClause
     : /* Empty */ { $$=NULL; }
     | EXTENDS Identifier { $$=new NamedType($2); }
     ;
+
 ImplementsClause
     : /* Empty */ { $$=new List<NamedType*>; }
     | IMPLEMENTS InterfaceList { $$=$2; }
+    ;
 
 InterfaceList
     : Identifier { ($$=new List<NamedType*>)->Append(new NamedType($1)); }
     | InterfaceList ',' Identifier { ($$=$1)->Append(new NamedType($3)); }
+    ;
     
 FieldList
     : /* Empty */ { $$=new List<Decl*>; }
@@ -236,18 +318,31 @@ InterfaceDecl
 PrototypeList
     : /* Empty */ { $$=new List<Decl*>; }
     | PrototypeList Prototype { ($$=$1)->Append($2); }
+    ;
 
 Prototype
     : Type Identifier '(' Formals ')' ';' { $$=new FnDecl($2, $1, $4); }
     | VOID Identifier '(' Formals ')' ';' { $$=new FnDecl($2, NULL, $4); }
+    ;
 
 StmtBlock
-    : '{' VariableDeclList StmtList '}' { $$=new StmtBlock($2, $3); }
+    : '{' VariableDeclList StmtList '}' { $$=new StmtBlock($2, $3); 
+                                          $$->addChild(new Node("{"));
+                                          for(int i = 0; i < $2->NumElements(); i++) {
+                                              $$->addChild($2->Nth(i));
+                                          }
+                                          for(int i = 0; i < $3->NumElements(); i++) {
+                                              $$->addChild($3->Nth(i));
+                                          }
+                                          $$->addChild(new Node("}"));
+                                          $$->setNodeName("StmtBlock");
+                                        }
     ;
 
 VariableDeclList
     : /* Empty */ { $$=new List<VarDecl*>; }
     | VariableDeclList VariableDecl { ($$=$1)->Append($2); }
+    ;
 
 StmtList
     : /* Empty */ { $$=new List<Stmt*>; }
@@ -255,15 +350,37 @@ StmtList
     ;
 
 Stmt
-    : ';' { $$=new EmptyExpr(); }
-    | Expr ';' { $$=$1; }
-    | IfStmt { $$=$1; }
-    | WhileStmt { $$=$1; }
-    | ForStmt { $$=$1; }
-    | BreakStmt { $$=$1; }
-    | ReturnStmt { $$=$1; }
-    | PrintStmt { $$=$1; }
-    | StmtBlock { $$=$1; }
+    : ';' { $$=new EmptyExpr();
+            $$->addChild(new Node(";"));
+            $$->setNodeName("Stmt");
+          }
+    | Expr ';' { $$=$1; 
+                 $$->addChild($1);
+                 $$->addChild(new Node(";"));
+                 $$->setNodeName("Stmt");
+               }
+    | IfStmt { $$=$1; 
+               $$->addChild($1);
+               $$->setNodeName("Stmt");
+             }
+    | WhileStmt { $$=$1; $$->addChild($1);
+               $$->setNodeName("Stmt"); 
+               }
+    | ForStmt { $$=$1; $$->addChild($1);
+               $$->setNodeName("Stmt");
+               }
+    | BreakStmt { $$=$1; $$->addChild($1);
+               $$->setNodeName("Stmt");
+               }
+    | ReturnStmt { $$=$1; $$->addChild($1);
+               $$->setNodeName("Stmt");
+               }
+    | PrintStmt { $$=$1; $$->addChild($1);
+               $$->setNodeName("Stmt");
+               }
+    | StmtBlock { $$=$1; $$->addChild($1);
+               $$->setNodeName("Stmt");
+               }
     ;
 
 ExprList
@@ -272,32 +389,115 @@ ExprList
     ;
 
 IfStmt
-    : IF '(' Expr ')' Stmt %prec NOELSE { $$=new IfStmt($3, $5, NULL); }
-    | IF '(' Expr ')' Stmt ELSE Stmt { $$=new IfStmt($3, $5, $7); }
+    : IF '(' Expr ')' Stmt %prec NOELSE { $$=new IfStmt($3, $5, NULL); 
+                                          $$->addChild(new Node("IF"));
+                                          $$->addChild(new Node("("));
+                                          $$->addChild($3);
+                                          $$->addChild(new Node(")"));
+                                          $$->addChild($5);
+                                          $$->setNodeName("IfStmt");
+                                        }
+    | IF '(' Expr ')' Stmt ELSE Stmt { $$=new IfStmt($3, $5, $7); 
+                                       $$->addChild(new Node("IF"));
+                                          $$->addChild(new Node("("));
+                                          $$->addChild($3);
+                                          $$->addChild(new Node(")"));
+                                          $$->addChild($5);
+                                          $$->addChild(new Node("ELSE"));
+                                          $$->addChild($7);
+                                          $$->setNodeName("IfStmt");
+                                     }
     ;
 
 WhileStmt
-    : WHILE '(' Expr ')' Stmt { $$=new WhileStmt($3, $5); }
+    : WHILE '(' Expr ')' Stmt { $$=new WhileStmt($3, $5); 
+                                $$->addChild(new Node("WHILE"));
+                                $$->addChild(new Node("("));
+                                $$->addChild($3);
+                                $$->addChild(new Node(")"));
+                                $$->addChild($5);
+                                $$->setNodeName("WhileStmt");
+                              }
     ;
 
 ForStmt
-    : FOR '(' ';' Expr ';' ')' Stmt { $$=new ForStmt(new EmptyExpr(), $4, new EmptyExpr(), $7); }
-    | FOR '(' Expr ';' Expr ';' ')' Stmt { $$=new ForStmt($3, $5, new EmptyExpr(), $8); }
-    | FOR '(' ';' Expr ';' Expr ')' Stmt { $$=new ForStmt(new EmptyExpr(), $4, $6, $8); }
-    | FOR '(' Expr ';' Expr ';' Expr ')' Stmt { $$=new ForStmt($3, $5, $7, $9); }
+    : FOR '(' ';' Expr ';' ')' Stmt { $$=new ForStmt(new EmptyExpr(), $4, new EmptyExpr(), $7); 
+                                      $$->addChild(new Node("FOR"));
+                                      $$->addChild(new Node("("));
+                                      $$->addChild(new Node(";"));
+                                      $$->addChild($4);
+                                      $$->addChild(new Node(";"));
+                                      $$->addChild(new Node(")"));
+                                      $$->addChild($7);
+                                      $$->setNodeName("ForStmt");
+                                    }
+    | FOR '(' Expr ';' Expr ';' ')' Stmt { $$=new ForStmt($3, $5, new EmptyExpr(), $8); $$->addChild(new Node("FOR"));
+                                      $$->addChild(new Node("("));
+                                      $$->addChild($3);
+                                      $$->addChild(new Node(";"));
+                                      $$->addChild($5);
+                                      $$->addChild(new Node(";"));
+                                      $$->addChild(new Node(")"));
+                                      $$->addChild($8);
+                                      $$->setNodeName("ForStmt");}
+    | FOR '(' ';' Expr ';' Expr ')' Stmt { $$=new ForStmt(new EmptyExpr(), $4, $6, $8); $$->addChild(new Node("FOR"));
+                                      $$->addChild(new Node("("));
+                                      $$->addChild(new Node(";"));
+                                      $$->addChild($4);
+                                      $$->addChild(new Node(";"));
+                                      $$->addChild($6);
+                                      $$->addChild(new Node(")"));
+                                      $$->addChild($8);
+                                      $$->setNodeName("ForStmt");}
+    | FOR '(' Expr ';' Expr ';' Expr ')' Stmt { $$=new ForStmt($3, $5, $7, $9); $$->addChild(new Node("FOR"));
+                                      $$->addChild(new Node("("));
+                                      $$->addChild($3);
+                                      $$->addChild(new Node(";"));
+                                      $$->addChild($5);
+                                      $$->addChild(new Node(";"));
+                                      $$->addChild($7);
+                                      $$->addChild(new Node(")"));
+                                      $$->addChild($9);
+                                      $$->setNodeName("ForStmt");}
     ;
 
 ReturnStmt
-    : RETURN ';' { $$=new ReturnStmt(@$, new EmptyExpr()); }
-    | RETURN Expr ';' { $$=new ReturnStmt(@2, $2); }
+    : RETURN ';' { $$=new ReturnStmt(@$, new EmptyExpr()); 
+                   $$->addChild(new Node("RETURN"));
+                   $$->addChild(new Node(";"));
+                   $$->setNodeName("ReturnStmt");
+                 }
+    | RETURN Expr ';' { $$=new ReturnStmt(@2, $2); 
+                        $$->addChild(new Node("RETURN"));
+                        $$->addChild($2);
+                        $$->addChild(new Node(";"));
+                        $$->setNodeName("ReturnStmt");
+                      }
     ;
 
 BreakStmt
-    : BREAK ';' { $$=new BreakStmt(@1); }
+    : BREAK ';' { $$=new BreakStmt(@1); 
+                  $$->addChild(new Node("BREAK"));
+                  $$->addChild(new Node(";"));
+                  $$->setNodeName("BreakStmt");
+                }
     ;
 
 PrintStmt
-    : PRINT '(' ExprList ')' ';' { $$=new PrintStmt($3); }
+    : PRINT '(' ExprList ')' ';' { $$=new PrintStmt($3); 
+                                   $$->addChild(new Node("PRINT"));
+                                   $$->addChild(new Node("("));
+                                   if($3->NumElements() > 0) {
+                                       for(int i = 0; i < $3->NumElements()-1; i++) {
+                                           $$->addChild($3->Nth(i));
+                                           $$->addChild(new Node(","));
+                                       } 
+                                       $$->addChild($3->Nth($3->NumElements()-1));
+                                   }
+                                   $$->addChild(new Node(")"));
+                                   $$->addChild(new Node(";"));
+                                   $$->setNodeName("PrintStmt");
+                                 }
     ;
 
 Expr

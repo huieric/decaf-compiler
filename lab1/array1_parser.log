@@ -1,3 +1,9 @@
-(null)
-  (null)
-  (null)
+Program
+  FunctionDecl
+    VOID
+    Identifier
+    (
+    )
+    StmtBlock
+      {
+      }

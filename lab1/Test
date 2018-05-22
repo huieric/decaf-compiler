@@ -1,1 +1,1 @@
-./bin/parser ../samples/class2.decaf
+./bin/parser ../samples/array1.decaf
