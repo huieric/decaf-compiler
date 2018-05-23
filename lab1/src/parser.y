@@ -144,12 +144,12 @@ Program
                     program->SetParent(NULL);
                     for(int i = 0; i < $1->NumElements(); i++) {
                         program->addChild($1->Nth(i));
-                    }
-                    program->setNodeName("Program");
+                    }                    
+                    program->setNodeName("Program");                    
                     if(ReportError::NumErrors()==0)
-                        program->Check();
+                        program->Check();                    
                     if(ReportError::NumErrors()==0)
-                        program->Emit();
+                        program->Emit();                    
                     program->printTree(0);
                }
     ;
@@ -167,16 +167,12 @@ Decl
     ;
 
 VariableDecl
-    : Variable ';' { $$=$1; 
-                     $$->addChild($1);
-                     $$->addChild(new Node(";"));
-                     $$->setNodeName("VariableDecl");
-                   }
+    : Variable ';' { $$=$1; }
     ;
 
 Variable
     : Type Identifier { $$=new VarDecl($2, $1); 
-                        $$->addChild($1);
+                        $$->addChild($1);    
                         $$->addChild($2);
                         $$->setNodeName("Variable");
                       }
@@ -275,7 +271,7 @@ FunctionDecl
                                                     $$->addChild($4->Nth($4->NumElements()-1));
                                                   }                                            
                                                   $$->addChild(new Node(")"));
-                                                  $$->addChild($6);
+                                                  $$->addChild($6);                                                  
                                                   $$->setNodeName("FunctionDecl");
                                                 }
     ;
@@ -333,7 +329,7 @@ StmtBlock
                                           }
                                           for(int i = 0; i < $3->NumElements(); i++) {
                                               $$->addChild($3->Nth(i));
-                                          }
+                                          }                                          
                                           $$->addChild(new Node("}"));
                                           $$->setNodeName("StmtBlock");
                                         }
@@ -351,36 +347,18 @@ StmtList
 
 Stmt
     : ';' { $$=new EmptyExpr();
-            $$->addChild(new Node(";"));
-            $$->setNodeName("Stmt");
+            // $$->addChild(new Node(";"));
+            // $$->setNodeName("Stmt");
           }
-    | Expr ';' { $$=$1; 
-                 $$->addChild($1);
-                 $$->addChild(new Node(";"));
-                 $$->setNodeName("Stmt");
+    | Expr ';' { $$=$1;                  
                }
-    | IfStmt { $$=$1; 
-               $$->addChild($1);
-               $$->setNodeName("Stmt");
-             }
-    | WhileStmt { $$=$1; $$->addChild($1);
-               $$->setNodeName("Stmt"); 
-               }
-    | ForStmt { $$=$1; $$->addChild($1);
-               $$->setNodeName("Stmt");
-               }
-    | BreakStmt { $$=$1; $$->addChild($1);
-               $$->setNodeName("Stmt");
-               }
-    | ReturnStmt { $$=$1; $$->addChild($1);
-               $$->setNodeName("Stmt");
-               }
-    | PrintStmt { $$=$1; $$->addChild($1);
-               $$->setNodeName("Stmt");
-               }
-    | StmtBlock { $$=$1; $$->addChild($1);
-               $$->setNodeName("Stmt");
-               }
+    | IfStmt { $$=$1; }
+    | WhileStmt { $$=$1; }
+    | ForStmt { $$=$1; }
+    | BreakStmt { $$=$1; }
+    | ReturnStmt { $$=$1; }
+    | PrintStmt { $$=$1; }
+    | StmtBlock { $$=$1; }
     ;
 
 ExprList
@@ -501,36 +479,131 @@ PrintStmt
     ;
 
 Expr
-    : LValue '=' Expr { $$=new AssignExpr($1, new Operator(@2, "="), $3); }
+    : LValue '=' Expr { $$=new AssignExpr($1, new Operator(@2, "="), $3); 
+                        // $$->addChild($1);
+                        // $$->addChild(new Node("="));
+                        // $$->addChild($3);
+                        // $$->setNodeName("Expr");                        
+                      }
     | Constant { $$=$1; }
     | LValue { $$=$1; }
-    | THIS { $$=new This(@1); }
+    | THIS { $$=new This(@1); $$->addChild(new Node("THIS"));
+                 $$->setNodeName("Expr");}
     | Call { $$=$1; }
     | '(' Expr ')' { $$=$2; }
-    | Expr '+' Expr { $$=new ArithmeticExpr($1, new Operator(@2, "+"), $3); }
-    | Expr '-' Expr { $$=new ArithmeticExpr($1, new Operator(@2, "-"), $3); }
-    | Expr '*' Expr { $$=new ArithmeticExpr($1, new Operator(@2, "*"), $3); }
-    | Expr '/' Expr { $$=new ArithmeticExpr($1, new Operator(@2, "/"), $3); }
-    | Expr '%' Expr { $$=new ArithmeticExpr($1, new Operator(@2, "%"), $3); }
-    | '-' Expr %prec UMINUS { $$=new ArithmeticExpr(new Operator(@1, "-"), $2); }
-    | Expr '<' Expr { $$=new RelationalExpr($1, new Operator(@2, "<"), $3); }
-    | Expr LE_OP Expr { $$=new RelationalExpr($1, new Operator(@2, "<="), $3); }
-    | Expr '>' Expr { $$=new RelationalExpr($1, new Operator(@2, ">"), $3); }
-    | Expr GE_OP Expr { $$=new RelationalExpr($1, new Operator(@2, ">="), $3); }
-    | Expr EQ_OP Expr { $$=new EqualityExpr($1, new Operator(@2, "=="), $3); }
-    | Expr NE_OP Expr { $$=new EqualityExpr($1, new Operator(@2, "!="), $3); }
-    | Expr AND_OP Expr { $$=new LogicalExpr($1, new Operator(@2, "&&"), $3); }
-    | Expr OR_OP Expr { $$=new LogicalExpr($1, new Operator(@2, "||"), $3); }
-    | NOT_OP Expr { $$=new LogicalExpr(new Operator(@1, "!"), $2); }
-    | READINTEGER '(' ')' { $$=new ReadIntegerExpr(@$); }
-    | READLINE '(' ')' { $$=new ReadLineExpr(@$); }
-    | NEW Identifier { $$=new NewExpr(@$, new NamedType($2)); }
-    | NEWARRAY '(' Expr ',' Type ')' { $$=new NewArrayExpr(@$, $3, $5); }
+    | Expr '+' Expr { $$=new ArithmeticExpr($1, new Operator(@2, "+"), $3); 
+                      $$->addChild($1); 
+                      $$->addChild(new Node("+")); 
+                      $$->addChild($3); 
+                      $$->setNodeName("Expr"); }
+    | Expr '-' Expr { $$=new ArithmeticExpr($1, new Operator(@2, "-"), $3); 
+                      $$->addChild($1); 
+                      $$->addChild(new Node("-")); 
+                      $$->addChild($3); 
+                      $$->setNodeName("Expr");}
+    | Expr '*' Expr { $$=new ArithmeticExpr($1, new Operator(@2, "*"), $3); $$->addChild($1); 
+                      $$->addChild(new Node("*")); 
+                      $$->addChild($3); 
+                      $$->setNodeName("Expr");}
+    | Expr '/' Expr { $$=new ArithmeticExpr($1, new Operator(@2, "/"), $3); $$->addChild($1); 
+                      $$->addChild(new Node("/")); 
+                      $$->addChild($3); 
+                      $$->setNodeName("Expr");}
+    | Expr '%' Expr { $$=new ArithmeticExpr($1, new Operator(@2, "%"), $3); $$->addChild($1); 
+                      $$->addChild(new Node("%")); 
+                      $$->addChild($3); 
+                      $$->setNodeName("Expr");}
+    | '-' Expr %prec UMINUS { $$=new ArithmeticExpr(new Operator(@1, "-"), $2);
+                      $$->addChild(new Node("-")); 
+                      $$->addChild($2); 
+                      $$->setNodeName("Expr");}
+    | Expr '<' Expr { $$=new RelationalExpr($1, new Operator(@2, "<"), $3); $$->addChild($1); 
+                      $$->addChild(new Node("<")); 
+                      $$->addChild($3); 
+                      $$->setNodeName("Expr");}
+    | Expr LE_OP Expr { $$=new RelationalExpr($1, new Operator(@2, "<="), $3); $$->addChild($1); 
+                      $$->addChild(new Node("<=")); 
+                      $$->addChild($3); 
+                      $$->setNodeName("Expr");}
+    | Expr '>' Expr { $$=new RelationalExpr($1, new Operator(@2, ">"), $3); $$->addChild($1); 
+                      $$->addChild(new Node(">")); 
+                      $$->addChild($3); 
+                      $$->setNodeName("Expr");}
+    | Expr GE_OP Expr { $$=new RelationalExpr($1, new Operator(@2, ">="), $3); $$->addChild($1); 
+                      $$->addChild(new Node(">=")); 
+                      $$->addChild($3); 
+                      $$->setNodeName("Expr");}
+    | Expr EQ_OP Expr { $$=new EqualityExpr($1, new Operator(@2, "=="), $3); $$->addChild($1); 
+                      $$->addChild(new Node("==")); 
+                      $$->addChild($3); 
+                      $$->setNodeName("Expr");}
+    | Expr NE_OP Expr { $$=new EqualityExpr($1, new Operator(@2, "!="), $3); $$->addChild($1); 
+                      $$->addChild(new Node("!=")); 
+                      $$->addChild($3); 
+                      $$->setNodeName("Expr");}
+    | Expr AND_OP Expr { $$=new LogicalExpr($1, new Operator(@2, "&&"), $3); $$->addChild($1); 
+                      $$->addChild(new Node("&&")); 
+                      $$->addChild($3); 
+                      $$->setNodeName("Expr");}
+    | Expr OR_OP Expr { $$=new LogicalExpr($1, new Operator(@2, "||"), $3); $$->addChild($1); 
+                      $$->addChild(new Node("||")); 
+                      $$->addChild($3); 
+                      $$->setNodeName("Expr");}
+    | NOT_OP Expr { $$=new LogicalExpr(new Operator(@1, "!"), $2);
+                      $$->addChild(new Node("!")); 
+                      $$->addChild($2); 
+                      $$->setNodeName("Expr");}
+    | READINTEGER '(' ')' { $$=new ReadIntegerExpr(@$);
+                      $$->addChild(new Node("READINTEGER")); 
+                      $$->addChild(new Node("(")); 
+                      $$->addChild(new Node(")"));
+                      $$->setNodeName("Expr");}
+    | READLINE '(' ')' { $$=new ReadLineExpr(@$); $$->addChild(new Node("READLINE")); 
+                      $$->addChild(new Node("(")); 
+                      $$->addChild(new Node(")"));
+                      $$->setNodeName("Expr"); }
+    | NEW Identifier { $$=new NewExpr(@$, new NamedType($2)); $$->addChild(new Node("NEW")); 
+                      $$->addChild($2);
+                      $$->setNodeName("Expr");}
+    | NEWARRAY '(' Expr ',' Type ')' { $$=new NewArrayExpr(@$, $3, $5); 
+                      $$->addChild(new Node("NEWARRAY")); 
+                      $$->addChild(new Node("(")); 
+                      $$->addChild($3);
+                      $$->addChild(new Node(","));
+                      $$->addChild($5);                      
+                      $$->addChild(new Node(")"));
+                      $$->setNodeName("Expr"); }
     ;
 
 Call
-    : Identifier '(' Actuals ')' { $$=new Call(@$, NULL, $1, $3); }
-    | Expr '.' Identifier '(' Actuals ')' { $$=new Call(@$, $1, $3, $5); }
+    : Identifier '(' Actuals ')' { $$=new Call(@$, NULL, $1, $3); 
+                                   $$->addChild($1);
+                                   $$->addChild(new Node("("));
+                                   if($3->NumElements() > 0) {
+                                        for(int i = 0; i < $3->NumElements()-1; i++) {
+                                            $$->addChild($3->Nth(i));
+                                            $$->addChild(new Node(","));
+                                        } 
+                                        $$->addChild($3->Nth($3->NumElements()-1));
+                                    }
+                                   $$->addChild(new Node(")"));
+                                   $$->setNodeName("Call");
+                                 }
+    | Expr '.' Identifier '(' Actuals ')' { $$=new Call(@$, $1, $3, $5); 
+                                            $$->addChild($1);
+                                            $$->addChild(new Node("."));
+                                            $$->addChild($3);
+                                            $$->addChild(new Node("("));
+                                            if($5->NumElements() > 0) {
+                                                for(int i = 0; i < $5->NumElements()-1; i++) {
+                                                    $$->addChild($5->Nth(i));
+                                                    $$->addChild(new Node(","));
+                                                } 
+                                                $$->addChild($5->Nth($5->NumElements()-1));
+                                            }
+                                            $$->addChild(new Node(")"));
+                                            $$->setNodeName("Call");
+                                          }
     ;
 
 Actuals
@@ -539,11 +612,18 @@ Actuals
     ;
 
 Constant
-    : INTCONSTANT { $$=new IntConstant(@1, $1); }
-    | DOUBLECONSTANT { $$=new DoubleConstant(@1, $1); }
-    | BOOLCONSTANT { $$=new BoolConstant(@1, $1); }
-    | STRING_LITERAL { $$=new StringConstant(@1, $1); }
-    | NULLCONSTANT { $$=new NullConstant(@1); }
+    : INTCONSTANT { $$=new IntConstant(@1, $1); 
+                    $$->addChild(new Node("INTCONSTANT"));
+                    $$->setNodeName("Constant");                    
+                  }
+    | DOUBLECONSTANT { $$=new DoubleConstant(@1, $1); $$->addChild(new Node("DOUBLECONSTANT"));
+                    $$->setNodeName("Constant");}
+    | BOOLCONSTANT { $$=new BoolConstant(@1, $1); $$->addChild(new Node("BOOLCONSTANT"));
+                    $$->setNodeName("Constant");}
+    | STRING_LITERAL { $$=new StringConstant(@1, $1); $$->addChild(new Node("STRING_LITERAL"));
+                    $$->setNodeName("Constant");}
+    | NULLCONSTANT { $$=new NullConstant(@1); $$->addChild(new Node("NULLCONSTANT"));   
+                    $$->setNodeName("Constant");}
     ;
 
 %%

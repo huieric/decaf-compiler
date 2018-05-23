@@ -1,6 +1,0 @@
-(void, TYPEVOID)
-(main, IDENTIFIER)
-((, LEFTPAREN)
-(), RIGHTPAREN)
-({, LEFTBRACE)
-(}, RIGHTBRACE)

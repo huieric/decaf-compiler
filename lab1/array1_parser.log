@@ -1,9 +1,0 @@
-Program
-  FunctionDecl
-    VOID
-    Identifier
-    (
-    )
-    StmtBlock
-      {
-      }
