@@ -205,24 +205,22 @@ LValue
     
 Type
     : INT { $$=Type::intType; 
-            $$->addChild(new Node("INT"));
-            $$->setNodeName("Type");
+            $$->setNodeName("Type (int)");
           }
     | DOUBLE { $$=Type::doubleType; 
-               $$->addChild(new Node("DOUBLE"));
-               $$->setNodeName("Type");
+               $$->setNodeName("Type (double)");
              }
     | BOOL { $$=Type::boolType; 
-             $$->addChild(new Node("BOOL"));
-             $$->setNodeName("Type");
+             $$->setNodeName("Type (bool)");
            }
     | STRING { $$=Type::stringType; 
-               $$->addChild(new Node("STRING"));
-               $$->setNodeName("Type");
+               $$->setNodeName("Type (string)");
              }
     | Identifier { $$=new NamedType($1); 
-                   $$->addChild(new Node("Identifier"));
-                   $$->setNodeName("Type");
+                   char *node_name = new char[128];
+                   sprintf(node_name, "Type (Class %s)", $1->GetName());
+                   $$->setNodeName(node_name);
+                   delete node_name;
                  }
     | Type '[' ']' { $$=new ArrayType(@1, $1); 
                      $$->addChild($1);
@@ -348,7 +346,7 @@ StmtList
 Stmt
     : ';' { $$=new EmptyExpr();
             // $$->addChild(new Node(";"));
-            // $$->setNodeName("Stmt");
+            $$->setNodeName("Stmt");
           }
     | Expr ';' { $$=$1;                  
                }
@@ -480,15 +478,15 @@ PrintStmt
 
 Expr
     : LValue '=' Expr { $$=new AssignExpr($1, new Operator(@2, "="), $3); 
-                        // $$->addChild($1);
-                        // $$->addChild(new Node("="));
-                        // $$->addChild($3);
-                        // $$->setNodeName("Expr");                        
+                        $$->addChild($1);
+                        $$->addChild(new Node("="));
+                        $$->addChild($3);
+                        $$->setNodeName("Expr");                        
                       }
     | Constant { $$=$1; }
     | LValue { $$=$1; }
     | THIS { $$=new This(@1); $$->addChild(new Node("THIS"));
-                 $$->setNodeName("Expr");}
+                 $$->setNodeName("Expr"); }
     | Call { $$=$1; }
     | '(' Expr ')' { $$=$2; }
     | Expr '+' Expr { $$=new ArithmeticExpr($1, new Operator(@2, "+"), $3); 

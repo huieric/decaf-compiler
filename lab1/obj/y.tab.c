@@ -563,16 +563,16 @@ static const yytype_uint8 yytranslate[] =
 static const yytype_uint16 yyrline[] =
 {
        0,   142,   142,   158,   159,   163,   164,   165,   166,   170,
-     174,   182,   183,   187,   191,   197,   207,   211,   215,   219,
-     223,   227,   236,   242,   243,   247,   262,   280,   286,   287,
-     291,   292,   296,   297,   301,   302,   306,   307,   311,   315,
-     316,   320,   321,   325,   339,   340,   344,   345,   349,   353,
-     355,   356,   357,   358,   359,   360,   361,   365,   366,   370,
-     378,   391,   402,   412,   421,   430,   443,   448,   457,   465,
-     482,   488,   489,   490,   492,   493,   494,   499,   504,   508,
-     512,   516,   520,   524,   528,   532,   536,   540,   544,   548,
-     552,   556,   561,   565,   568,   579,   592,   610,   611,   615,
-     619,   621,   623,   625
+     174,   182,   183,   187,   191,   197,   207,   212,   216,   220,
+     224,   228,   237,   243,   244,   248,   263,   281,   287,   288,
+     292,   293,   297,   298,   302,   303,   307,   308,   312,   316,
+     317,   321,   322,   326,   340,   341,   345,   346,   350,   354,
+     356,   357,   358,   359,   360,   361,   362,   366,   367,   371,
+     379,   392,   403,   413,   422,   431,   444,   449,   458,   466,
+     483,   489,   490,   491,   493,   494,   495,   500,   505,   509,
+     513,   517,   521,   525,   529,   533,   537,   541,   545,   549,
+     553,   557,   562,   566,   569,   580,   593,   611,   612,   616,
+     620,   622,   624,   626
 };
 #endif
 
@@ -1809,81 +1809,82 @@ yyreduce:
   case 16:
 #line 207 "src/parser.y" /* yacc.c:1646  */
     { (yyval.type)=Type::intType; 
+            fprintf(stderr, "hhh\n");
             (yyval.type)->addChild(new Node("INT"));
             (yyval.type)->setNodeName("Type");
           }
-#line 1816 "obj/y.tab.c" /* yacc.c:1646  */
+#line 1817 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 211 "src/parser.y" /* yacc.c:1646  */
+#line 212 "src/parser.y" /* yacc.c:1646  */
     { (yyval.type)=Type::doubleType; 
                (yyval.type)->addChild(new Node("DOUBLE"));
                (yyval.type)->setNodeName("Type");
              }
-#line 1825 "obj/y.tab.c" /* yacc.c:1646  */
+#line 1826 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 215 "src/parser.y" /* yacc.c:1646  */
+#line 216 "src/parser.y" /* yacc.c:1646  */
     { (yyval.type)=Type::boolType; 
              (yyval.type)->addChild(new Node("BOOL"));
              (yyval.type)->setNodeName("Type");
            }
-#line 1834 "obj/y.tab.c" /* yacc.c:1646  */
+#line 1835 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 219 "src/parser.y" /* yacc.c:1646  */
+#line 220 "src/parser.y" /* yacc.c:1646  */
     { (yyval.type)=Type::stringType; 
                (yyval.type)->addChild(new Node("STRING"));
                (yyval.type)->setNodeName("Type");
              }
-#line 1843 "obj/y.tab.c" /* yacc.c:1646  */
+#line 1844 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 223 "src/parser.y" /* yacc.c:1646  */
+#line 224 "src/parser.y" /* yacc.c:1646  */
     { (yyval.type)=new NamedType((yyvsp[0].identObj)); 
                    (yyval.type)->addChild(new Node("Identifier"));
                    (yyval.type)->setNodeName("Type");
                  }
-#line 1852 "obj/y.tab.c" /* yacc.c:1646  */
+#line 1853 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 227 "src/parser.y" /* yacc.c:1646  */
+#line 228 "src/parser.y" /* yacc.c:1646  */
     { (yyval.type)=new ArrayType((yylsp[-2]), (yyvsp[-2].type)); 
                      (yyval.type)->addChild((yyvsp[-2].type));
                      (yyval.type)->addChild(new Node("["));
                      (yyval.type)->addChild(new Node("]"));
                      (yyval.type)->setNodeName("Type");
                    }
-#line 1863 "obj/y.tab.c" /* yacc.c:1646  */
+#line 1864 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 236 "src/parser.y" /* yacc.c:1646  */
+#line 237 "src/parser.y" /* yacc.c:1646  */
     { (yyval.identObj)=new Identifier((yylsp[0]), (yyvsp[0].identifier));
                    (yyval.identObj)->setNodeName("Identifier");
                  }
-#line 1871 "obj/y.tab.c" /* yacc.c:1646  */
+#line 1872 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 242 "src/parser.y" /* yacc.c:1646  */
+#line 243 "src/parser.y" /* yacc.c:1646  */
     { (yyval.varDecls)=new List<VarDecl*>; }
-#line 1877 "obj/y.tab.c" /* yacc.c:1646  */
+#line 1878 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 243 "src/parser.y" /* yacc.c:1646  */
+#line 244 "src/parser.y" /* yacc.c:1646  */
     { (yyval.varDecls)=(yyvsp[0].varDecls); }
-#line 1883 "obj/y.tab.c" /* yacc.c:1646  */
+#line 1884 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 247 "src/parser.y" /* yacc.c:1646  */
+#line 248 "src/parser.y" /* yacc.c:1646  */
     { (yyval.fnDecl)=new FnDecl((yyvsp[-4].identObj), (yyvsp[-5].type), (yyvsp[-2].varDecls)); (yyval.fnDecl)->SetFunctionBody((yyvsp[0].stmtBlock)); 
                                                   (yyval.fnDecl)->addChild((yyvsp[-5].type));
                                                   (yyval.fnDecl)->addChild((yyvsp[-4].identObj));
@@ -1899,11 +1900,11 @@ yyreduce:
                                                   (yyval.fnDecl)->addChild((yyvsp[0].stmtBlock));
                                                   (yyval.fnDecl)->setNodeName("FunctionDecl");
                                                 }
-#line 1903 "obj/y.tab.c" /* yacc.c:1646  */
+#line 1904 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 262 "src/parser.y" /* yacc.c:1646  */
+#line 263 "src/parser.y" /* yacc.c:1646  */
     { (yyval.fnDecl)=new FnDecl((yyvsp[-4].identObj), Type::voidType, (yyvsp[-2].varDecls)); (yyval.fnDecl)->SetFunctionBody((yyvsp[0].stmtBlock)); 
                                                   (yyval.fnDecl)->addChild(new Node("VOID"));
                                                   (yyval.fnDecl)->addChild((yyvsp[-4].identObj));
@@ -1919,109 +1920,109 @@ yyreduce:
                                                   (yyval.fnDecl)->addChild((yyvsp[0].stmtBlock));                                                  
                                                   (yyval.fnDecl)->setNodeName("FunctionDecl");
                                                 }
-#line 1923 "obj/y.tab.c" /* yacc.c:1646  */
+#line 1924 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 280 "src/parser.y" /* yacc.c:1646  */
+#line 281 "src/parser.y" /* yacc.c:1646  */
     { (yyval.classDecl)=new ClassDecl((yyvsp[-5].identObj), (yyvsp[-4].extendsClause), (yyvsp[-3].nTList), (yyvsp[-1].declList)); 
                                                                           
                                                                         }
-#line 1931 "obj/y.tab.c" /* yacc.c:1646  */
+#line 1932 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 286 "src/parser.y" /* yacc.c:1646  */
+#line 287 "src/parser.y" /* yacc.c:1646  */
     { (yyval.extendsClause)=NULL; }
-#line 1937 "obj/y.tab.c" /* yacc.c:1646  */
+#line 1938 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 287 "src/parser.y" /* yacc.c:1646  */
+#line 288 "src/parser.y" /* yacc.c:1646  */
     { (yyval.extendsClause)=new NamedType((yyvsp[0].identObj)); }
-#line 1943 "obj/y.tab.c" /* yacc.c:1646  */
+#line 1944 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 291 "src/parser.y" /* yacc.c:1646  */
+#line 292 "src/parser.y" /* yacc.c:1646  */
     { (yyval.nTList)=new List<NamedType*>; }
-#line 1949 "obj/y.tab.c" /* yacc.c:1646  */
+#line 1950 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 292 "src/parser.y" /* yacc.c:1646  */
+#line 293 "src/parser.y" /* yacc.c:1646  */
     { (yyval.nTList)=(yyvsp[0].nTList); }
-#line 1955 "obj/y.tab.c" /* yacc.c:1646  */
+#line 1956 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 296 "src/parser.y" /* yacc.c:1646  */
+#line 297 "src/parser.y" /* yacc.c:1646  */
     { ((yyval.nTList)=new List<NamedType*>)->Append(new NamedType((yyvsp[0].identObj))); }
-#line 1961 "obj/y.tab.c" /* yacc.c:1646  */
+#line 1962 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 33:
-#line 297 "src/parser.y" /* yacc.c:1646  */
+#line 298 "src/parser.y" /* yacc.c:1646  */
     { ((yyval.nTList)=(yyvsp[-2].nTList))->Append(new NamedType((yyvsp[0].identObj))); }
-#line 1967 "obj/y.tab.c" /* yacc.c:1646  */
+#line 1968 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 301 "src/parser.y" /* yacc.c:1646  */
+#line 302 "src/parser.y" /* yacc.c:1646  */
     { (yyval.declList)=new List<Decl*>; }
-#line 1973 "obj/y.tab.c" /* yacc.c:1646  */
+#line 1974 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 302 "src/parser.y" /* yacc.c:1646  */
+#line 303 "src/parser.y" /* yacc.c:1646  */
     { ((yyval.declList)=(yyvsp[-1].declList))->Append((yyvsp[0].decl)); }
-#line 1979 "obj/y.tab.c" /* yacc.c:1646  */
+#line 1980 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 306 "src/parser.y" /* yacc.c:1646  */
+#line 307 "src/parser.y" /* yacc.c:1646  */
     { (yyval.decl)=(yyvsp[0].varDecl); }
-#line 1985 "obj/y.tab.c" /* yacc.c:1646  */
+#line 1986 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 37:
-#line 307 "src/parser.y" /* yacc.c:1646  */
+#line 308 "src/parser.y" /* yacc.c:1646  */
     { (yyval.decl)=(yyvsp[0].fnDecl); }
-#line 1991 "obj/y.tab.c" /* yacc.c:1646  */
+#line 1992 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 38:
-#line 311 "src/parser.y" /* yacc.c:1646  */
+#line 312 "src/parser.y" /* yacc.c:1646  */
     { (yyval.ifaceDecl)=new InterfaceDecl((yyvsp[-3].identObj), (yyvsp[-1].declList)); }
-#line 1997 "obj/y.tab.c" /* yacc.c:1646  */
+#line 1998 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 39:
-#line 315 "src/parser.y" /* yacc.c:1646  */
+#line 316 "src/parser.y" /* yacc.c:1646  */
     { (yyval.declList)=new List<Decl*>; }
-#line 2003 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2004 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 40:
-#line 316 "src/parser.y" /* yacc.c:1646  */
+#line 317 "src/parser.y" /* yacc.c:1646  */
     { ((yyval.declList)=(yyvsp[-1].declList))->Append((yyvsp[0].decl)); }
-#line 2009 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2010 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 41:
-#line 320 "src/parser.y" /* yacc.c:1646  */
+#line 321 "src/parser.y" /* yacc.c:1646  */
     { (yyval.decl)=new FnDecl((yyvsp[-4].identObj), (yyvsp[-5].type), (yyvsp[-2].varDecls)); }
-#line 2015 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2016 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 42:
-#line 321 "src/parser.y" /* yacc.c:1646  */
+#line 322 "src/parser.y" /* yacc.c:1646  */
     { (yyval.decl)=new FnDecl((yyvsp[-4].identObj), NULL, (yyvsp[-2].varDecls)); }
-#line 2021 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2022 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 43:
-#line 325 "src/parser.y" /* yacc.c:1646  */
+#line 326 "src/parser.y" /* yacc.c:1646  */
     { (yyval.stmtBlock)=new StmtBlock((yyvsp[-2].varDecls), (yyvsp[-1].statements)); 
                                           (yyval.stmtBlock)->addChild(new Node("{"));
                                           for(int i = 0; i < (yyvsp[-2].varDecls)->NumElements(); i++) {
@@ -2033,105 +2034,105 @@ yyreduce:
                                           (yyval.stmtBlock)->addChild(new Node("}"));
                                           (yyval.stmtBlock)->setNodeName("StmtBlock");
                                         }
-#line 2037 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2038 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 44:
-#line 339 "src/parser.y" /* yacc.c:1646  */
+#line 340 "src/parser.y" /* yacc.c:1646  */
     { (yyval.varDecls)=new List<VarDecl*>; }
-#line 2043 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2044 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 45:
-#line 340 "src/parser.y" /* yacc.c:1646  */
+#line 341 "src/parser.y" /* yacc.c:1646  */
     { ((yyval.varDecls)=(yyvsp[-1].varDecls))->Append((yyvsp[0].varDecl)); }
-#line 2049 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2050 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 46:
-#line 344 "src/parser.y" /* yacc.c:1646  */
+#line 345 "src/parser.y" /* yacc.c:1646  */
     { (yyval.statements)=new List<Stmt*>; }
-#line 2055 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2056 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 47:
-#line 345 "src/parser.y" /* yacc.c:1646  */
+#line 346 "src/parser.y" /* yacc.c:1646  */
     { ((yyval.statements)=(yyvsp[0].statements))->InsertAt((yyvsp[-1].stmt), 0); }
-#line 2061 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2062 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 48:
-#line 349 "src/parser.y" /* yacc.c:1646  */
+#line 350 "src/parser.y" /* yacc.c:1646  */
     { (yyval.stmt)=new EmptyExpr();
             // $$->addChild(new Node(";"));
-            // $$->setNodeName("Stmt");
+            (yyval.stmt)->setNodeName("Stmt");
           }
-#line 2070 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2071 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 49:
-#line 353 "src/parser.y" /* yacc.c:1646  */
+#line 354 "src/parser.y" /* yacc.c:1646  */
     { (yyval.stmt)=(yyvsp[-1].expr);                  
                }
-#line 2077 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2078 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 50:
-#line 355 "src/parser.y" /* yacc.c:1646  */
+#line 356 "src/parser.y" /* yacc.c:1646  */
     { (yyval.stmt)=(yyvsp[0].ifStmt); }
-#line 2083 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2084 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 51:
-#line 356 "src/parser.y" /* yacc.c:1646  */
+#line 357 "src/parser.y" /* yacc.c:1646  */
     { (yyval.stmt)=(yyvsp[0].whileStmt); }
-#line 2089 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2090 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 52:
-#line 357 "src/parser.y" /* yacc.c:1646  */
+#line 358 "src/parser.y" /* yacc.c:1646  */
     { (yyval.stmt)=(yyvsp[0].forStmt); }
-#line 2095 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2096 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 53:
-#line 358 "src/parser.y" /* yacc.c:1646  */
+#line 359 "src/parser.y" /* yacc.c:1646  */
     { (yyval.stmt)=(yyvsp[0].breakStmt); }
-#line 2101 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2102 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 54:
-#line 359 "src/parser.y" /* yacc.c:1646  */
+#line 360 "src/parser.y" /* yacc.c:1646  */
     { (yyval.stmt)=(yyvsp[0].returnStmt); }
-#line 2107 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2108 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 55:
-#line 360 "src/parser.y" /* yacc.c:1646  */
+#line 361 "src/parser.y" /* yacc.c:1646  */
     { (yyval.stmt)=(yyvsp[0].printStmt); }
-#line 2113 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2114 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 56:
-#line 361 "src/parser.y" /* yacc.c:1646  */
+#line 362 "src/parser.y" /* yacc.c:1646  */
     { (yyval.stmt)=(yyvsp[0].stmtBlock); }
-#line 2119 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2120 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 57:
-#line 365 "src/parser.y" /* yacc.c:1646  */
+#line 366 "src/parser.y" /* yacc.c:1646  */
     { ((yyval.exprList)=new List<Expr*>)->Append((yyvsp[0].expr)); }
-#line 2125 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2126 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 58:
-#line 366 "src/parser.y" /* yacc.c:1646  */
+#line 367 "src/parser.y" /* yacc.c:1646  */
     { ((yyval.exprList)=(yyvsp[-2].exprList))->Append((yyvsp[0].expr)); }
-#line 2131 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2132 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 59:
-#line 370 "src/parser.y" /* yacc.c:1646  */
+#line 371 "src/parser.y" /* yacc.c:1646  */
     { (yyval.ifStmt)=new IfStmt((yyvsp[-2].expr), (yyvsp[0].stmt), NULL); 
                                           (yyval.ifStmt)->addChild(new Node("IF"));
                                           (yyval.ifStmt)->addChild(new Node("("));
@@ -2140,11 +2141,11 @@ yyreduce:
                                           (yyval.ifStmt)->addChild((yyvsp[0].stmt));
                                           (yyval.ifStmt)->setNodeName("IfStmt");
                                         }
-#line 2144 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2145 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 60:
-#line 378 "src/parser.y" /* yacc.c:1646  */
+#line 379 "src/parser.y" /* yacc.c:1646  */
     { (yyval.ifStmt)=new IfStmt((yyvsp[-4].expr), (yyvsp[-2].stmt), (yyvsp[0].stmt)); 
                                        (yyval.ifStmt)->addChild(new Node("IF"));
                                           (yyval.ifStmt)->addChild(new Node("("));
@@ -2155,11 +2156,11 @@ yyreduce:
                                           (yyval.ifStmt)->addChild((yyvsp[0].stmt));
                                           (yyval.ifStmt)->setNodeName("IfStmt");
                                      }
-#line 2159 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2160 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 61:
-#line 391 "src/parser.y" /* yacc.c:1646  */
+#line 392 "src/parser.y" /* yacc.c:1646  */
     { (yyval.whileStmt)=new WhileStmt((yyvsp[-2].expr), (yyvsp[0].stmt)); 
                                 (yyval.whileStmt)->addChild(new Node("WHILE"));
                                 (yyval.whileStmt)->addChild(new Node("("));
@@ -2168,11 +2169,11 @@ yyreduce:
                                 (yyval.whileStmt)->addChild((yyvsp[0].stmt));
                                 (yyval.whileStmt)->setNodeName("WhileStmt");
                               }
-#line 2172 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2173 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 62:
-#line 402 "src/parser.y" /* yacc.c:1646  */
+#line 403 "src/parser.y" /* yacc.c:1646  */
     { (yyval.forStmt)=new ForStmt(new EmptyExpr(), (yyvsp[-3].expr), new EmptyExpr(), (yyvsp[0].stmt)); 
                                       (yyval.forStmt)->addChild(new Node("FOR"));
                                       (yyval.forStmt)->addChild(new Node("("));
@@ -2183,11 +2184,11 @@ yyreduce:
                                       (yyval.forStmt)->addChild((yyvsp[0].stmt));
                                       (yyval.forStmt)->setNodeName("ForStmt");
                                     }
-#line 2187 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2188 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 63:
-#line 412 "src/parser.y" /* yacc.c:1646  */
+#line 413 "src/parser.y" /* yacc.c:1646  */
     { (yyval.forStmt)=new ForStmt((yyvsp[-5].expr), (yyvsp[-3].expr), new EmptyExpr(), (yyvsp[0].stmt)); (yyval.forStmt)->addChild(new Node("FOR"));
                                       (yyval.forStmt)->addChild(new Node("("));
                                       (yyval.forStmt)->addChild((yyvsp[-5].expr));
@@ -2197,11 +2198,11 @@ yyreduce:
                                       (yyval.forStmt)->addChild(new Node(")"));
                                       (yyval.forStmt)->addChild((yyvsp[0].stmt));
                                       (yyval.forStmt)->setNodeName("ForStmt");}
-#line 2201 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2202 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 64:
-#line 421 "src/parser.y" /* yacc.c:1646  */
+#line 422 "src/parser.y" /* yacc.c:1646  */
     { (yyval.forStmt)=new ForStmt(new EmptyExpr(), (yyvsp[-4].expr), (yyvsp[-2].expr), (yyvsp[0].stmt)); (yyval.forStmt)->addChild(new Node("FOR"));
                                       (yyval.forStmt)->addChild(new Node("("));
                                       (yyval.forStmt)->addChild(new Node(";"));
@@ -2211,11 +2212,11 @@ yyreduce:
                                       (yyval.forStmt)->addChild(new Node(")"));
                                       (yyval.forStmt)->addChild((yyvsp[0].stmt));
                                       (yyval.forStmt)->setNodeName("ForStmt");}
-#line 2215 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2216 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 65:
-#line 430 "src/parser.y" /* yacc.c:1646  */
+#line 431 "src/parser.y" /* yacc.c:1646  */
     { (yyval.forStmt)=new ForStmt((yyvsp[-6].expr), (yyvsp[-4].expr), (yyvsp[-2].expr), (yyvsp[0].stmt)); (yyval.forStmt)->addChild(new Node("FOR"));
                                       (yyval.forStmt)->addChild(new Node("("));
                                       (yyval.forStmt)->addChild((yyvsp[-6].expr));
@@ -2226,42 +2227,42 @@ yyreduce:
                                       (yyval.forStmt)->addChild(new Node(")"));
                                       (yyval.forStmt)->addChild((yyvsp[0].stmt));
                                       (yyval.forStmt)->setNodeName("ForStmt");}
-#line 2230 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2231 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 66:
-#line 443 "src/parser.y" /* yacc.c:1646  */
+#line 444 "src/parser.y" /* yacc.c:1646  */
     { (yyval.returnStmt)=new ReturnStmt((yyloc), new EmptyExpr()); 
                    (yyval.returnStmt)->addChild(new Node("RETURN"));
                    (yyval.returnStmt)->addChild(new Node(";"));
                    (yyval.returnStmt)->setNodeName("ReturnStmt");
                  }
-#line 2240 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2241 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 67:
-#line 448 "src/parser.y" /* yacc.c:1646  */
+#line 449 "src/parser.y" /* yacc.c:1646  */
     { (yyval.returnStmt)=new ReturnStmt((yylsp[-1]), (yyvsp[-1].expr)); 
                         (yyval.returnStmt)->addChild(new Node("RETURN"));
                         (yyval.returnStmt)->addChild((yyvsp[-1].expr));
                         (yyval.returnStmt)->addChild(new Node(";"));
                         (yyval.returnStmt)->setNodeName("ReturnStmt");
                       }
-#line 2251 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2252 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 68:
-#line 457 "src/parser.y" /* yacc.c:1646  */
+#line 458 "src/parser.y" /* yacc.c:1646  */
     { (yyval.breakStmt)=new BreakStmt((yylsp[-1])); 
                   (yyval.breakStmt)->addChild(new Node("BREAK"));
                   (yyval.breakStmt)->addChild(new Node(";"));
                   (yyval.breakStmt)->setNodeName("BreakStmt");
                 }
-#line 2261 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2262 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 69:
-#line 465 "src/parser.y" /* yacc.c:1646  */
+#line 466 "src/parser.y" /* yacc.c:1646  */
     { (yyval.printStmt)=new PrintStmt((yyvsp[-2].exprList)); 
                                    (yyval.printStmt)->addChild(new Node("PRINT"));
                                    (yyval.printStmt)->addChild(new Node("("));
@@ -2276,217 +2277,217 @@ yyreduce:
                                    (yyval.printStmt)->addChild(new Node(";"));
                                    (yyval.printStmt)->setNodeName("PrintStmt");
                                  }
-#line 2280 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2281 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 70:
-#line 482 "src/parser.y" /* yacc.c:1646  */
+#line 483 "src/parser.y" /* yacc.c:1646  */
     { (yyval.expr)=new AssignExpr((yyvsp[-2].lvalue), new Operator((yylsp[-1]), "="), (yyvsp[0].expr)); 
-                        // $$->addChild($1);
-                        // $$->addChild(new Node("="));
-                        // $$->addChild($3);
-                        // $$->setNodeName("Expr");                        
+                        (yyval.expr)->addChild((yyvsp[-2].lvalue));
+                        (yyval.expr)->addChild(new Node("="));
+                        (yyval.expr)->addChild((yyvsp[0].expr));
+                        (yyval.expr)->setNodeName("Expr");                        
                       }
-#line 2291 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2292 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 71:
-#line 488 "src/parser.y" /* yacc.c:1646  */
+#line 489 "src/parser.y" /* yacc.c:1646  */
     { (yyval.expr)=(yyvsp[0].expr); }
-#line 2297 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2298 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 72:
-#line 489 "src/parser.y" /* yacc.c:1646  */
+#line 490 "src/parser.y" /* yacc.c:1646  */
     { (yyval.expr)=(yyvsp[0].lvalue); }
-#line 2303 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2304 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 73:
-#line 490 "src/parser.y" /* yacc.c:1646  */
+#line 491 "src/parser.y" /* yacc.c:1646  */
     { (yyval.expr)=new This((yylsp[0])); (yyval.expr)->addChild(new Node("THIS"));
-                 (yyval.expr)->setNodeName("Expr");}
-#line 2310 "obj/y.tab.c" /* yacc.c:1646  */
+                 (yyval.expr)->setNodeName("Expr"); }
+#line 2311 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 74:
-#line 492 "src/parser.y" /* yacc.c:1646  */
+#line 493 "src/parser.y" /* yacc.c:1646  */
     { (yyval.expr)=(yyvsp[0].call); }
-#line 2316 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2317 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 75:
-#line 493 "src/parser.y" /* yacc.c:1646  */
+#line 494 "src/parser.y" /* yacc.c:1646  */
     { (yyval.expr)=(yyvsp[-1].expr); }
-#line 2322 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2323 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 76:
-#line 494 "src/parser.y" /* yacc.c:1646  */
+#line 495 "src/parser.y" /* yacc.c:1646  */
     { (yyval.expr)=new ArithmeticExpr((yyvsp[-2].expr), new Operator((yylsp[-1]), "+"), (yyvsp[0].expr)); 
                       (yyval.expr)->addChild((yyvsp[-2].expr)); 
                       (yyval.expr)->addChild(new Node("+")); 
                       (yyval.expr)->addChild((yyvsp[0].expr)); 
                       (yyval.expr)->setNodeName("Expr"); }
-#line 2332 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2333 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 77:
-#line 499 "src/parser.y" /* yacc.c:1646  */
+#line 500 "src/parser.y" /* yacc.c:1646  */
     { (yyval.expr)=new ArithmeticExpr((yyvsp[-2].expr), new Operator((yylsp[-1]), "-"), (yyvsp[0].expr)); 
                       (yyval.expr)->addChild((yyvsp[-2].expr)); 
                       (yyval.expr)->addChild(new Node("-")); 
                       (yyval.expr)->addChild((yyvsp[0].expr)); 
                       (yyval.expr)->setNodeName("Expr");}
-#line 2342 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2343 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 78:
-#line 504 "src/parser.y" /* yacc.c:1646  */
+#line 505 "src/parser.y" /* yacc.c:1646  */
     { (yyval.expr)=new ArithmeticExpr((yyvsp[-2].expr), new Operator((yylsp[-1]), "*"), (yyvsp[0].expr)); (yyval.expr)->addChild((yyvsp[-2].expr)); 
                       (yyval.expr)->addChild(new Node("*")); 
                       (yyval.expr)->addChild((yyvsp[0].expr)); 
                       (yyval.expr)->setNodeName("Expr");}
-#line 2351 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2352 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 79:
-#line 508 "src/parser.y" /* yacc.c:1646  */
+#line 509 "src/parser.y" /* yacc.c:1646  */
     { (yyval.expr)=new ArithmeticExpr((yyvsp[-2].expr), new Operator((yylsp[-1]), "/"), (yyvsp[0].expr)); (yyval.expr)->addChild((yyvsp[-2].expr)); 
                       (yyval.expr)->addChild(new Node("/")); 
                       (yyval.expr)->addChild((yyvsp[0].expr)); 
                       (yyval.expr)->setNodeName("Expr");}
-#line 2360 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2361 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 80:
-#line 512 "src/parser.y" /* yacc.c:1646  */
+#line 513 "src/parser.y" /* yacc.c:1646  */
     { (yyval.expr)=new ArithmeticExpr((yyvsp[-2].expr), new Operator((yylsp[-1]), "%"), (yyvsp[0].expr)); (yyval.expr)->addChild((yyvsp[-2].expr)); 
                       (yyval.expr)->addChild(new Node("%")); 
                       (yyval.expr)->addChild((yyvsp[0].expr)); 
                       (yyval.expr)->setNodeName("Expr");}
-#line 2369 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2370 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 81:
-#line 516 "src/parser.y" /* yacc.c:1646  */
+#line 517 "src/parser.y" /* yacc.c:1646  */
     { (yyval.expr)=new ArithmeticExpr(new Operator((yylsp[-1]), "-"), (yyvsp[0].expr));
                       (yyval.expr)->addChild(new Node("-")); 
                       (yyval.expr)->addChild((yyvsp[0].expr)); 
                       (yyval.expr)->setNodeName("Expr");}
-#line 2378 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2379 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 82:
-#line 520 "src/parser.y" /* yacc.c:1646  */
+#line 521 "src/parser.y" /* yacc.c:1646  */
     { (yyval.expr)=new RelationalExpr((yyvsp[-2].expr), new Operator((yylsp[-1]), "<"), (yyvsp[0].expr)); (yyval.expr)->addChild((yyvsp[-2].expr)); 
                       (yyval.expr)->addChild(new Node("<")); 
                       (yyval.expr)->addChild((yyvsp[0].expr)); 
                       (yyval.expr)->setNodeName("Expr");}
-#line 2387 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2388 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 83:
-#line 524 "src/parser.y" /* yacc.c:1646  */
+#line 525 "src/parser.y" /* yacc.c:1646  */
     { (yyval.expr)=new RelationalExpr((yyvsp[-2].expr), new Operator((yylsp[-1]), "<="), (yyvsp[0].expr)); (yyval.expr)->addChild((yyvsp[-2].expr)); 
                       (yyval.expr)->addChild(new Node("<=")); 
                       (yyval.expr)->addChild((yyvsp[0].expr)); 
                       (yyval.expr)->setNodeName("Expr");}
-#line 2396 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2397 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 84:
-#line 528 "src/parser.y" /* yacc.c:1646  */
+#line 529 "src/parser.y" /* yacc.c:1646  */
     { (yyval.expr)=new RelationalExpr((yyvsp[-2].expr), new Operator((yylsp[-1]), ">"), (yyvsp[0].expr)); (yyval.expr)->addChild((yyvsp[-2].expr)); 
                       (yyval.expr)->addChild(new Node(">")); 
                       (yyval.expr)->addChild((yyvsp[0].expr)); 
                       (yyval.expr)->setNodeName("Expr");}
-#line 2405 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2406 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 85:
-#line 532 "src/parser.y" /* yacc.c:1646  */
+#line 533 "src/parser.y" /* yacc.c:1646  */
     { (yyval.expr)=new RelationalExpr((yyvsp[-2].expr), new Operator((yylsp[-1]), ">="), (yyvsp[0].expr)); (yyval.expr)->addChild((yyvsp[-2].expr)); 
                       (yyval.expr)->addChild(new Node(">=")); 
                       (yyval.expr)->addChild((yyvsp[0].expr)); 
                       (yyval.expr)->setNodeName("Expr");}
-#line 2414 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2415 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 86:
-#line 536 "src/parser.y" /* yacc.c:1646  */
+#line 537 "src/parser.y" /* yacc.c:1646  */
     { (yyval.expr)=new EqualityExpr((yyvsp[-2].expr), new Operator((yylsp[-1]), "=="), (yyvsp[0].expr)); (yyval.expr)->addChild((yyvsp[-2].expr)); 
                       (yyval.expr)->addChild(new Node("==")); 
                       (yyval.expr)->addChild((yyvsp[0].expr)); 
                       (yyval.expr)->setNodeName("Expr");}
-#line 2423 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2424 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 87:
-#line 540 "src/parser.y" /* yacc.c:1646  */
+#line 541 "src/parser.y" /* yacc.c:1646  */
     { (yyval.expr)=new EqualityExpr((yyvsp[-2].expr), new Operator((yylsp[-1]), "!="), (yyvsp[0].expr)); (yyval.expr)->addChild((yyvsp[-2].expr)); 
                       (yyval.expr)->addChild(new Node("!=")); 
                       (yyval.expr)->addChild((yyvsp[0].expr)); 
                       (yyval.expr)->setNodeName("Expr");}
-#line 2432 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2433 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 88:
-#line 544 "src/parser.y" /* yacc.c:1646  */
+#line 545 "src/parser.y" /* yacc.c:1646  */
     { (yyval.expr)=new LogicalExpr((yyvsp[-2].expr), new Operator((yylsp[-1]), "&&"), (yyvsp[0].expr)); (yyval.expr)->addChild((yyvsp[-2].expr)); 
                       (yyval.expr)->addChild(new Node("&&")); 
                       (yyval.expr)->addChild((yyvsp[0].expr)); 
                       (yyval.expr)->setNodeName("Expr");}
-#line 2441 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2442 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 89:
-#line 548 "src/parser.y" /* yacc.c:1646  */
+#line 549 "src/parser.y" /* yacc.c:1646  */
     { (yyval.expr)=new LogicalExpr((yyvsp[-2].expr), new Operator((yylsp[-1]), "||"), (yyvsp[0].expr)); (yyval.expr)->addChild((yyvsp[-2].expr)); 
                       (yyval.expr)->addChild(new Node("||")); 
                       (yyval.expr)->addChild((yyvsp[0].expr)); 
                       (yyval.expr)->setNodeName("Expr");}
-#line 2450 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2451 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 90:
-#line 552 "src/parser.y" /* yacc.c:1646  */
+#line 553 "src/parser.y" /* yacc.c:1646  */
     { (yyval.expr)=new LogicalExpr(new Operator((yylsp[-1]), "!"), (yyvsp[0].expr));
                       (yyval.expr)->addChild(new Node("!")); 
                       (yyval.expr)->addChild((yyvsp[0].expr)); 
                       (yyval.expr)->setNodeName("Expr");}
-#line 2459 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2460 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 91:
-#line 556 "src/parser.y" /* yacc.c:1646  */
+#line 557 "src/parser.y" /* yacc.c:1646  */
     { (yyval.expr)=new ReadIntegerExpr((yyloc));
                       (yyval.expr)->addChild(new Node("READINTEGER")); 
                       (yyval.expr)->addChild(new Node("(")); 
                       (yyval.expr)->addChild(new Node(")"));
                       (yyval.expr)->setNodeName("Expr");}
-#line 2469 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2470 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 92:
-#line 561 "src/parser.y" /* yacc.c:1646  */
+#line 562 "src/parser.y" /* yacc.c:1646  */
     { (yyval.expr)=new ReadLineExpr((yyloc)); (yyval.expr)->addChild(new Node("READLINE")); 
                       (yyval.expr)->addChild(new Node("(")); 
                       (yyval.expr)->addChild(new Node(")"));
                       (yyval.expr)->setNodeName("Expr"); }
-#line 2478 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2479 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 93:
-#line 565 "src/parser.y" /* yacc.c:1646  */
+#line 566 "src/parser.y" /* yacc.c:1646  */
     { (yyval.expr)=new NewExpr((yyloc), new NamedType((yyvsp[0].identObj))); (yyval.expr)->addChild(new Node("NEW")); 
                       (yyval.expr)->addChild((yyvsp[0].identObj));
                       (yyval.expr)->setNodeName("Expr");}
-#line 2486 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2487 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 94:
-#line 568 "src/parser.y" /* yacc.c:1646  */
+#line 569 "src/parser.y" /* yacc.c:1646  */
     { (yyval.expr)=new NewArrayExpr((yyloc), (yyvsp[-3].expr), (yyvsp[-1].type)); 
                       (yyval.expr)->addChild(new Node("NEWARRAY")); 
                       (yyval.expr)->addChild(new Node("(")); 
@@ -2495,11 +2496,11 @@ yyreduce:
                       (yyval.expr)->addChild((yyvsp[-1].type));                      
                       (yyval.expr)->addChild(new Node(")"));
                       (yyval.expr)->setNodeName("Expr"); }
-#line 2499 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2500 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 95:
-#line 579 "src/parser.y" /* yacc.c:1646  */
+#line 580 "src/parser.y" /* yacc.c:1646  */
     { (yyval.call)=new Call((yyloc), NULL, (yyvsp[-3].identObj), (yyvsp[-1].exprList)); 
                                    (yyval.call)->addChild((yyvsp[-3].identObj));
                                    (yyval.call)->addChild(new Node("("));
@@ -2513,11 +2514,11 @@ yyreduce:
                                    (yyval.call)->addChild(new Node(")"));
                                    (yyval.call)->setNodeName("Call");
                                  }
-#line 2517 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2518 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 96:
-#line 592 "src/parser.y" /* yacc.c:1646  */
+#line 593 "src/parser.y" /* yacc.c:1646  */
     { (yyval.call)=new Call((yyloc), (yyvsp[-5].expr), (yyvsp[-3].identObj), (yyvsp[-1].exprList)); 
                                             (yyval.call)->addChild((yyvsp[-5].expr));
                                             (yyval.call)->addChild(new Node("."));
@@ -2533,60 +2534,60 @@ yyreduce:
                                             (yyval.call)->addChild(new Node(")"));
                                             (yyval.call)->setNodeName("Call");
                                           }
-#line 2537 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2538 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 97:
-#line 610 "src/parser.y" /* yacc.c:1646  */
+#line 611 "src/parser.y" /* yacc.c:1646  */
     { (yyval.exprList)=new List<Expr*>; }
-#line 2543 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2544 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 98:
-#line 611 "src/parser.y" /* yacc.c:1646  */
+#line 612 "src/parser.y" /* yacc.c:1646  */
     { (yyval.exprList)=(yyvsp[0].exprList); }
-#line 2549 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2550 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 99:
-#line 615 "src/parser.y" /* yacc.c:1646  */
+#line 616 "src/parser.y" /* yacc.c:1646  */
     { (yyval.expr)=new IntConstant((yylsp[0]), (yyvsp[0].intConstant)); 
                     (yyval.expr)->addChild(new Node("INTCONSTANT"));
                     (yyval.expr)->setNodeName("Constant");                    
                   }
-#line 2558 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2559 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 100:
-#line 619 "src/parser.y" /* yacc.c:1646  */
+#line 620 "src/parser.y" /* yacc.c:1646  */
     { (yyval.expr)=new DoubleConstant((yylsp[0]), (yyvsp[0].doubleConstant)); (yyval.expr)->addChild(new Node("DOUBLECONSTANT"));
                     (yyval.expr)->setNodeName("Constant");}
-#line 2565 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2566 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 101:
-#line 621 "src/parser.y" /* yacc.c:1646  */
+#line 622 "src/parser.y" /* yacc.c:1646  */
     { (yyval.expr)=new BoolConstant((yylsp[0]), (yyvsp[0].boolConstant)); (yyval.expr)->addChild(new Node("BOOLCONSTANT"));
                     (yyval.expr)->setNodeName("Constant");}
-#line 2572 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2573 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 102:
-#line 623 "src/parser.y" /* yacc.c:1646  */
+#line 624 "src/parser.y" /* yacc.c:1646  */
     { (yyval.expr)=new StringConstant((yylsp[0]), (yyvsp[0].stringConstant)); (yyval.expr)->addChild(new Node("STRING_LITERAL"));
                     (yyval.expr)->setNodeName("Constant");}
-#line 2579 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2580 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
   case 103:
-#line 625 "src/parser.y" /* yacc.c:1646  */
+#line 626 "src/parser.y" /* yacc.c:1646  */
     { (yyval.expr)=new NullConstant((yylsp[0])); (yyval.expr)->addChild(new Node("NULLCONSTANT"));   
                     (yyval.expr)->setNodeName("Constant");}
-#line 2586 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2587 "obj/y.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 2590 "obj/y.tab.c" /* yacc.c:1646  */
+#line 2591 "obj/y.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2821,7 +2822,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 629 "src/parser.y" /* yacc.c:1906  */
+#line 630 "src/parser.y" /* yacc.c:1906  */
 
 
 /* Function: InitParser
