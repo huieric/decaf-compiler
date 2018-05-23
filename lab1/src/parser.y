@@ -360,5 +360,5 @@ Constant
  */
 void InitParser() {
     PrintDebug("parser", "Initializing parser");
-    yydebug = true;
+    yydebug = false;
 }
