@@ -1,0 +1,65 @@
+Program
+  FunctionDecl
+    VOID
+    Identifier (main)
+    (
+    )
+    StmtBlock
+      {
+      Variable
+        Type (int)
+        Identifier (i)
+      Expr
+        LValue
+          Identifier (i)
+        =
+        Constant
+          INTCONSTANT (0)
+      IfStmt
+        IF
+        (
+        Expr
+          Expr
+            Expr
+              LValue
+                Identifier (i)
+              >
+              Constant
+                INTCONSTANT (12)
+            ||
+            Expr
+              LValue
+                Identifier (i)
+              <
+              Constant
+                INTCONSTANT (12)
+          ||
+          Expr
+            Expr
+              Constant
+                INTCONSTANT (3)
+              ==
+              Constant
+                INTCONSTANT (5)
+            &&
+            Constant
+              BOOLCONSTANT (true)
+        )
+        StmtBlock
+          {
+          PrintStmt
+            PRINT
+            (
+            Constant
+              INTCONSTANT (1)
+            )
+            ;
+          }
+      PrintStmt
+        PRINT
+        (
+        Constant
+          INTCONSTANT (2)
+        )
+        ;
+      }

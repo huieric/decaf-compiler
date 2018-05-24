@@ -1,0 +1,154 @@
+Program
+  ClassDecl
+    CLASS
+    Identifier (B)
+    IMPLEMENTS
+    {
+    Variable
+      Type (int)
+      Identifier (z)
+    FunctionDecl
+      Type (int)
+      Identifier (GetZ)
+      (
+      )
+      StmtBlock
+        {
+        ReturnStmt
+          RETURN
+          LValue
+            Identifier (z)
+          ;
+        }
+    }
+  FunctionDecl
+    VOID
+    Identifier (binky)
+    (
+    Variable
+      Type (Class B)
+      Identifier (x)
+    )
+    StmtBlock
+      {
+      PrintStmt
+        PRINT
+        (
+        Constant
+          STRING_LITERAL ("x = ")
+        ,
+        Call
+          LValue
+            Identifier (x)
+          .
+          Identifier (GetZ)
+          (
+          )
+        ,
+        Constant
+          STRING_LITERAL ("\n")
+        )
+        ;
+      }
+  ClassDecl
+    CLASS
+    Identifier (X)
+    ExtendsClause
+      EXTENDS
+      Identifier (B)
+    IMPLEMENTS
+    {
+    FunctionDecl
+      VOID
+      Identifier (f)
+      (
+      )
+      StmtBlock
+        {
+        Expr
+          LValue
+            Identifier (z)
+          =
+          Constant
+            INTCONSTANT (3)
+        Call
+          Identifier (binky)
+          (
+          Expr
+            THIS
+          )
+        }
+    FunctionDecl
+      Type (bool)
+      Identifier (compare)
+      (
+      Variable
+        Type (Class X)
+        Identifier (other)
+      )
+      StmtBlock
+        {
+        ReturnStmt
+          RETURN
+          Expr
+            Expr
+              THIS
+            ==
+            LValue
+              Identifier (other)
+          ;
+        }
+    }
+  FunctionDecl
+    VOID
+    Identifier (main)
+    (
+    )
+    StmtBlock
+      {
+      Variable
+        Type (Class X)
+        Identifier (d)
+      Expr
+        LValue
+          Identifier (d)
+        =
+        Expr
+          NEW
+          Identifier (X)
+      Call
+        LValue
+          Identifier (d)
+        .
+        Identifier (f)
+        (
+        )
+      IfStmt
+        IF
+        (
+        Call
+          LValue
+            Identifier (d)
+          .
+          Identifier (compare)
+          (
+          LValue
+            Identifier (d)
+          )
+        )
+        PrintStmt
+          PRINT
+          (
+          Constant
+            STRING_LITERAL ("Same")
+          )
+          ;
+        ELSE
+        PrintStmt
+          PRINT
+          (
+          Constant
+            STRING_LITERAL ("Different")
+          )
+          ;
+      }

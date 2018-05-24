@@ -223,16 +223,19 @@ Type
                    delete node_name;
                  }
     | Type '[' ']' { $$=new ArrayType(@1, $1); 
-                     $$->addChild($1);
-                     $$->addChild(new Node("["));
-                     $$->addChild(new Node("]"));
-                     $$->setNodeName("Type");
+                     char *node_name = new char[128];
+                     sprintf(node_name, "Type (%s array)", $1->GetName());
+                     $$->setNodeName(node_name);
+                     delete node_name;
                    }
     ;
 
 Identifier
     : IDENTIFIER { $$=new Identifier(@1, $1);
-                   $$->setNodeName("Identifier");
+                    char *node_name = new char[128];
+                     sprintf(node_name, "Identifier (%s)", $1);
+                     $$->setNodeName(node_name);
+                     delete node_name;
                  }
     ;
     
@@ -275,19 +278,39 @@ FunctionDecl
     ;
 
 ClassDecl
-    : CLASS Identifier ExtendsClause ImplementsClause '{' FieldList '}' { $$=new ClassDecl($2, $3, $4, $6); 
-                                                                          
+    : CLASS Identifier ExtendsClause ImplementsClause '{' FieldList '}' {   $$=new ClassDecl($2, $3, $4, $6);     
+                                                                            $$->addChild(new Node("CLASS"));
+                                                                            $$->addChild($2);                                                                            
+                                                                            if($3!=NULL) $$->addChild($3);                                                                            
+                                                                            if($4->NumElements() > 0) {
+                                                                                $$->addChild(new Node("IMPLEMENTS"));
+                                                                                for(int i = 0; i < $4->NumElements()-1; i++) {
+                                                                                    $$->addChild($4->Nth(i));
+                                                                                    $$->addChild(new Node(","));
+                                                                                }
+                                                                                $$->addChild($4->Nth($4->NumElements()-1));
+                                                                            }
+                                                                            $$->addChild(new Node("{"));
+                                                                            for(int i = 0; i < $6->NumElements(); i++) {
+                                                                                $$->addChild($6->Nth(i));
+                                                                            }
+                                                                            $$->addChild(new Node("}"));
+                                                                            $$->setNodeName("ClassDecl");
                                                                         }
     ;
 
 ExtendsClause
     : /* Empty */ { $$=NULL; }
-    | EXTENDS Identifier { $$=new NamedType($2); }
+    | EXTENDS Identifier { $$=new NamedType($2); 
+                           $$->addChild(new Node("EXTENDS"));
+                           $$->addChild($2);
+                           $$->setNodeName("ExtendsClause");
+                         }
     ;
 
 ImplementsClause
-    : /* Empty */ { $$=new List<NamedType*>; }
-    | IMPLEMENTS InterfaceList { $$=$2; }
+    : /* Empty */   { $$=new List<NamedType*>; }
+    | IMPLEMENTS InterfaceList { $$=$2;  }
     ;
 
 InterfaceList
@@ -306,7 +329,16 @@ Field
     ;
 
 InterfaceDecl
-    : INTERFACE Identifier '{' PrototypeList '}' { $$=new InterfaceDecl($2, $4); }
+    : INTERFACE Identifier '{' PrototypeList '}' { $$=new InterfaceDecl($2, $4); 
+                                                   $$->addChild(new Node("INTERFACE"));
+                                                   $$->addChild($2);
+                                                   $$->addChild(new Node("{"));
+                                                   for(int i = 0; i < $4->NumElements(); i++) {
+                                                       $$->addChild($4->Nth(i));
+                                                   }
+                                                   $$->addChild(new Node("}"));                                                                                                       
+                                                   $$->setNodeName("InterfaceDecl");
+                                                 }
     ;
 
 PrototypeList
@@ -315,8 +347,36 @@ PrototypeList
     ;
 
 Prototype
-    : Type Identifier '(' Formals ')' ';' { $$=new FnDecl($2, $1, $4); }
-    | VOID Identifier '(' Formals ')' ';' { $$=new FnDecl($2, NULL, $4); }
+    : Type Identifier '(' Formals ')' ';' { $$=new FnDecl($2, $1, $4); 
+                                            $$->addChild($1);
+                                            $$->addChild($2);
+                                            $$->addChild(new Node("("));
+                                            if($4->NumElements() > 0) {
+                                                for(int i = 0; i < $4->NumElements()-1; i++) {
+                                                    $$->addChild($4->Nth(i));
+                                                    $$->addChild(new Node(","));
+                                                }
+                                                $$->addChild($4->Nth($4->NumElements()-1));
+                                            }    
+                                            $$->addChild(new Node(")"));
+                                            $$->addChild(new Node(";"));
+                                            $$->setNodeName("Prototype");
+                                          }
+    | VOID Identifier '(' Formals ')' ';' { $$=new FnDecl($2, NULL, $4); 
+                                            $$->addChild(new Node("VOID"));
+                                            $$->addChild($2);
+                                            $$->addChild(new Node("("));
+                                            if($4->NumElements() > 0) {
+                                                for(int i = 0; i < $4->NumElements()-1; i++) {
+                                                    $$->addChild($4->Nth(i));
+                                                    $$->addChild(new Node(","));
+                                                }
+                                                $$->addChild($4->Nth($4->NumElements()-1));
+                                            }    
+                                            $$->addChild(new Node(")"));
+                                            $$->addChild(new Node(";"));
+                                            $$->setNodeName("Prototype");
+                                          }
     ;
 
 StmtBlock
@@ -611,17 +671,45 @@ Actuals
 
 Constant
     : INTCONSTANT { $$=new IntConstant(@1, $1); 
-                    $$->addChild(new Node("INTCONSTANT"));
-                    $$->setNodeName("Constant");                    
+                    char *node_name = new char[128];
+                     sprintf(node_name, "INTCONSTANT (%d)", $1);
+                     $$->setNodeName(node_name);                    
+                    $$->addChild(new Node(node_name));
+                    $$->setNodeName("Constant");
+                    delete node_name;                    
                   }
-    | DOUBLECONSTANT { $$=new DoubleConstant(@1, $1); $$->addChild(new Node("DOUBLECONSTANT"));
-                    $$->setNodeName("Constant");}
-    | BOOLCONSTANT { $$=new BoolConstant(@1, $1); $$->addChild(new Node("BOOLCONSTANT"));
-                    $$->setNodeName("Constant");}
-    | STRING_LITERAL { $$=new StringConstant(@1, $1); $$->addChild(new Node("STRING_LITERAL"));
-                    $$->setNodeName("Constant");}
-    | NULLCONSTANT { $$=new NullConstant(@1); $$->addChild(new Node("NULLCONSTANT"));   
-                    $$->setNodeName("Constant");}
+    | DOUBLECONSTANT { $$=new DoubleConstant(@1, $1); 
+                       char *node_name = new char[128];
+                       sprintf(node_name, "DOUBLECONSTANT (%lf)", $1);
+                       $$->setNodeName(node_name);                    
+                       $$->addChild(new Node(node_name));
+                       $$->setNodeName("Constant");
+                       delete node_name;   
+                     }
+    | BOOLCONSTANT  {   $$=new BoolConstant(@1, $1); 
+                        char *node_name = new char[128];
+                        sprintf(node_name, "BOOLCONSTANT (%s)", $1 ? "true" : "false");
+                        $$->setNodeName(node_name);                    
+                        $$->addChild(new Node(node_name));
+                        $$->setNodeName("Constant");
+                        delete node_name;   
+                    }
+    | STRING_LITERAL    {   $$=new StringConstant(@1, $1); 
+                            char *node_name = new char[128];
+                            sprintf(node_name, "STRING_LITERAL (%s)", $1);
+                            $$->setNodeName(node_name);                    
+                            $$->addChild(new Node(node_name));
+                            $$->setNodeName("Constant");
+                            delete node_name;
+                        }
+    | NULLCONSTANT  {   $$=new NullConstant(@1); 
+                        char *node_name = new char[128];
+                        sprintf(node_name, "NULLCONSTANT (null)");
+                        $$->setNodeName(node_name);                    
+                        $$->addChild(new Node(node_name));
+                        $$->setNodeName("Constant");
+                        delete node_name;
+                    }
     ;
 
 %%

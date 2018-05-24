@@ -1,0 +1,137 @@
+Program
+  FunctionDecl
+    VOID
+    Identifier (main)
+    (
+    )
+    StmtBlock
+      {
+      Variable
+        Type (int)
+        Identifier (i)
+      Variable
+        Type (int)
+        Identifier (j)
+      ForStmt
+        FOR
+        (
+        Expr
+          LValue
+            Identifier (i)
+          =
+          Constant
+            INTCONSTANT (2)
+        ;
+        Expr
+          LValue
+            Identifier (i)
+          <
+          Constant
+            INTCONSTANT (7)
+        ;
+        Expr
+          LValue
+            Identifier (i)
+          =
+          Expr
+            LValue
+              Identifier (i)
+            +
+            Constant
+              INTCONSTANT (1)
+        )
+        StmtBlock
+          {
+          ForStmt
+            FOR
+            (
+            Expr
+              LValue
+                Identifier (j)
+              =
+              Constant
+                INTCONSTANT (2)
+            ;
+            Expr
+              LValue
+                Identifier (j)
+              <
+              Constant
+                INTCONSTANT (6)
+            ;
+            Expr
+              LValue
+                Identifier (j)
+              =
+              Expr
+                LValue
+                  Identifier (j)
+                +
+                Constant
+                  INTCONSTANT (1)
+            )
+            StmtBlock
+              {
+              IfStmt
+                IF
+                (
+                Expr
+                  Expr
+                    LValue
+                      Identifier (i)
+                    *
+                    LValue
+                      Identifier (j)
+                  ==
+                  Constant
+                    INTCONSTANT (10)
+                )
+                BreakStmt
+                  BREAK
+                  ;
+              PrintStmt
+                PRINT
+                (
+                LValue
+                  Identifier (i)
+                ,
+                LValue
+                  Identifier (j)
+                ,
+                Constant
+                  STRING_LITERAL ("\n")
+                )
+                ;
+              }
+          IfStmt
+            IF
+            (
+            Expr
+              LValue
+                Identifier (i)
+              ==
+              Constant
+                INTCONSTANT (5)
+            )
+            BreakStmt
+              BREAK
+              ;
+          }
+      PrintStmt
+        PRINT
+        (
+        Constant
+          STRING_LITERAL ("done")
+        )
+        ;
+      PrintStmt
+        PRINT
+        (
+        LValue
+          Identifier (i)
+        ,
+        LValue
+          Identifier (j)
+        )
+        ;
+      }

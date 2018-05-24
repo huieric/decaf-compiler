@@ -1,0 +1,49 @@
+Program
+  ClassDecl
+    CLASS
+    Identifier (Binky)
+    IMPLEMENTS
+    {
+    FunctionDecl
+      VOID
+      Identifier (Method)
+      (
+      )
+      StmtBlock
+        {
+        }
+    }
+  FunctionDecl
+    VOID
+    Identifier (main)
+    (
+    )
+    StmtBlock
+      {
+      Variable
+        Type (Class Binky)
+        Identifier (d)
+      Variable
+        Type (Class Binky)
+        Identifier (a)
+      Expr
+        LValue
+          Identifier (d)
+        =
+        Expr
+          NEW
+          Identifier (Binky)
+      Expr
+        LValue
+          Identifier (a)
+        =
+        Expr
+          NEW
+          Identifier (Binky)
+      Expr
+        LValue
+          Identifier (a)
+        =
+        LValue
+          Identifier (d)
+      }

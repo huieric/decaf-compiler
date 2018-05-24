@@ -1,39 +1,119 @@
 Program
   FunctionDecl
     VOID
-    Identifier
+    Identifier (main)
     (
     )
     StmtBlock
       {
       Variable
-        Type
-          Type
-            INT
-            INT
-          [
-          ]
-        Identifier
+        Type (int array)
+        Identifier (b)
       Variable
-        Type
-          Type
-            BOOL
-          [
-          ]
-        Identifier
+        Type (bool array)
+        Identifier (c)
       Variable
-        Type
-          Type
-            INT
-            INT
-          [
-          ]
-        Identifier
+        Type (int array)
+        Identifier (d)
       Variable
-        Type
-          Type
-            STRING
+        Type (string array)
+        Identifier (s)
+      Expr
+        LValue
+          Identifier (b)
+        =
+        Expr
+          NEWARRAY
+          (
+          Constant
+            INTCONSTANT (10)
+          ,
+          Type (int)
+          )
+      Expr
+        LValue
+          Identifier (c)
+        =
+        Expr
+          NEWARRAY
+          (
+          Constant
+            INTCONSTANT (20)
+          ,
+          Type (bool)
+          )
+      Expr
+        LValue
+          Identifier (s)
+        =
+        Expr
+          NEWARRAY
+          (
+          Constant
+            INTCONSTANT (3)
+          ,
+          Type (string)
+          )
+      Expr
+        LValue
+          LValue
+            Identifier (b)
           [
+          Constant
+            INTCONSTANT (3)
           ]
-        Identifier
+        =
+        Constant
+          INTCONSTANT (5)
+      Expr
+        LValue
+          LValue
+            Identifier (c)
+          [
+          Constant
+            INTCONSTANT (6)
+          ]
+        =
+        Constant
+          BOOLCONSTANT (true)
+      Expr
+        LValue
+          Identifier (d)
+        =
+        LValue
+          Identifier (b)
+      Expr
+        LValue
+          LValue
+            Identifier (s)
+          [
+          Constant
+            INTCONSTANT (2)
+          ]
+        =
+        Constant
+          STRING_LITERAL ("hello")
+      PrintStmt
+        PRINT
+        (
+        LValue
+          LValue
+            Identifier (b)
+          [
+          Constant
+            INTCONSTANT (3)
+          ]
+        ,
+        Call
+          LValue
+            Identifier (b)
+          .
+          Identifier (length)
+          (
+          )
+        ,
+        Constant
+          STRING_LITERAL ("\n")
+        )
+        ;
       }

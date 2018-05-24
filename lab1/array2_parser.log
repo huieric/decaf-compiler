@@ -1,0 +1,178 @@
+Program
+  FunctionDecl
+    VOID
+    Identifier (TakeArray)
+    (
+    Variable
+      Type (int array)
+      Identifier (x)
+    )
+    StmtBlock
+      {
+      PrintStmt
+        PRINT
+        (
+        LValue
+          LValue
+            Identifier (x)
+          [
+          Constant
+            INTCONSTANT (4)
+          ]
+        ,
+        LValue
+          LValue
+            Identifier (x)
+          [
+          Constant
+            INTCONSTANT (5)
+          ]
+        ,
+        Call
+          LValue
+            Identifier (x)
+          .
+          Identifier (length)
+          (
+          )
+        )
+        ;
+      }
+  FunctionDecl
+    Type (int array)
+    Identifier (MakeArray)
+    (
+    Variable
+      Type (int)
+      Identifier (size)
+    )
+    StmtBlock
+      {
+      Variable
+        Type (int array)
+        Identifier (b)
+      Expr
+        LValue
+          Identifier (b)
+        =
+        Expr
+          NEWARRAY
+          (
+          LValue
+            Identifier (size)
+          ,
+          Type (int)
+          )
+      Expr
+        LValue
+          LValue
+            Identifier (b)
+          [
+          Constant
+            INTCONSTANT (0)
+          ]
+        =
+        Constant
+          INTCONSTANT (5)
+      ReturnStmt
+        RETURN
+        LValue
+          Identifier (b)
+        ;
+      }
+  FunctionDecl
+    VOID
+    Identifier (main)
+    (
+    )
+    StmtBlock
+      {
+      Variable
+        Type (int array)
+        Identifier (y)
+      Variable
+        Type (int array)
+        Identifier (b)
+      Expr
+        LValue
+          Identifier (y)
+        =
+        Expr
+          NEWARRAY
+          (
+          Constant
+            INTCONSTANT (10)
+          ,
+          Type (int)
+          )
+      Expr
+        LValue
+          LValue
+            Identifier (y)
+          [
+          Constant
+            INTCONSTANT (4)
+          ]
+        =
+        Constant
+          INTCONSTANT (3)
+      Expr
+        LValue
+          LValue
+            Identifier (y)
+          [
+          Constant
+            INTCONSTANT (5)
+          ]
+        =
+        Constant
+          INTCONSTANT (4)
+      Call
+        Identifier (TakeArray)
+        (
+        LValue
+          Identifier (y)
+        )
+      Expr
+        LValue
+          Identifier (b)
+        =
+        Call
+          Identifier (MakeArray)
+          (
+          Constant
+            INTCONSTANT (10)
+          )
+      PrintStmt
+        PRINT
+        (
+        LValue
+          LValue
+            Identifier (b)
+          [
+          Constant
+            INTCONSTANT (0)
+          ]
+        ,
+        Call
+          LValue
+            Identifier (b)
+          .
+          Identifier (length)
+          (
+          )
+        ,
+        Call
+          Call
+            Identifier (MakeArray)
+            (
+            Constant
+              INTCONSTANT (5)
+            )
+          .
+          Identifier (length)
+          (
+          )
+        )
+        ;
+      }

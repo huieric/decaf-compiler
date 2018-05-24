@@ -1,0 +1,238 @@
+Program
+  ClassDecl
+    CLASS
+    Identifier (Animal)
+    IMPLEMENTS
+    {
+    FunctionDecl
+      VOID
+      Identifier (Method)
+      (
+      )
+      StmtBlock
+        {
+        PrintStmt
+          PRINT
+          (
+          Constant
+            STRING_LITERAL ("Hello from Animal\n")
+          )
+          ;
+        }
+    FunctionDecl
+      VOID
+      Identifier (Method1)
+      (
+      )
+      StmtBlock
+        {
+        PrintStmt
+          PRINT
+          (
+          Constant
+            STRING_LITERAL ("Animal")
+          )
+          ;
+        }
+    FunctionDecl
+      VOID
+      Identifier (AMethod)
+      (
+      )
+      StmtBlock
+        {
+        PrintStmt
+          PRINT
+          (
+          Constant
+            STRING_LITERAL ("not overridden\n")
+          )
+          ;
+        }
+    }
+  ClassDecl
+    CLASS
+    Identifier (Cow)
+    ExtendsClause
+      EXTENDS
+      Identifier (Animal)
+    IMPLEMENTS
+    {
+    FunctionDecl
+      VOID
+      Identifier (Method)
+      (
+      )
+      StmtBlock
+        {
+        PrintStmt
+          PRINT
+          (
+          Constant
+            STRING_LITERAL ("Hello from Cow")
+          )
+          ;
+        }
+    FunctionDecl
+      VOID
+      Identifier (Method2)
+      (
+      )
+      StmtBlock
+        {
+        PrintStmt
+          PRINT
+          (
+          Constant
+            STRING_LITERAL ("Cow2")
+          )
+          ;
+        Call
+          Identifier (Method1)
+          (
+          )
+        }
+    FunctionDecl
+      VOID
+      Identifier (Method1)
+      (
+      )
+      StmtBlock
+        {
+        PrintStmt
+          PRINT
+          (
+          Constant
+            STRING_LITERAL ("Cow")
+          )
+          ;
+        }
+    FunctionDecl
+      VOID
+      Identifier (AMethod)
+      (
+      )
+      StmtBlock
+        {
+        }
+    }
+  ClassDecl
+    CLASS
+    Identifier (Jersey)
+    ExtendsClause
+      EXTENDS
+      Identifier (Cow)
+    IMPLEMENTS
+    {
+    FunctionDecl
+      VOID
+      Identifier (Method)
+      (
+      )
+      StmtBlock
+        {
+        PrintStmt
+          PRINT
+          (
+          Constant
+            STRING_LITERAL ("Hello from Jersey.")
+          )
+          ;
+        }
+    FunctionDecl
+      VOID
+      Identifier (Method3)
+      (
+      )
+      StmtBlock
+        {
+        PrintStmt
+          PRINT
+          (
+          Constant
+            STRING_LITERAL ("Jersey3")
+          )
+          ;
+        Call
+          Identifier (Method2)
+          (
+          )
+        }
+    FunctionDecl
+      VOID
+      Identifier (Method1)
+      (
+      )
+      StmtBlock
+        {
+        PrintStmt
+          PRINT
+          (
+          Constant
+            STRING_LITERAL ("Jersey")
+          )
+          ;
+        }
+    }
+  FunctionDecl
+    VOID
+    Identifier (main)
+    (
+    )
+    StmtBlock
+      {
+      Variable
+        Type (Class Cow)
+        Identifier (a)
+      Variable
+        Type (Class Jersey)
+        Identifier (j)
+      Expr
+        LValue
+          Identifier (a)
+        =
+        Expr
+          NEW
+          Identifier (Cow)
+      Call
+        LValue
+          Identifier (a)
+        .
+        Identifier (Method2)
+        (
+        )
+      Expr
+        LValue
+          Identifier (j)
+        =
+        Expr
+          NEW
+          Identifier (Jersey)
+      Expr
+        LValue
+          Identifier (a)
+        =
+        LValue
+          Identifier (j)
+      Call
+        LValue
+          Identifier (a)
+        .
+        Identifier (Method2)
+        (
+        )
+      Call
+        LValue
+          Identifier (j)
+        .
+        Identifier (Method3)
+        (
+        )
+      Call
+        LValue
+          Identifier (a)
+        .
+        Identifier (Method)
+        (
+        )
+      }
