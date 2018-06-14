@@ -665,7 +665,6 @@ Location* ReadLineExpr::Emit(CodeGenerator *cg) {
 Type* AssignExpr::Check(Hashtable<Decl*>* parentST) {
     Type* l = leftType = left->Check(parentST);
     Type* r = rightType = right->Check(parentST);
-
     if(!Type::TypeEquivalence(r, l, false, parentST)) {
         ReportError::IncompatibleOperands(op, l, r);
         return Type::errorType;

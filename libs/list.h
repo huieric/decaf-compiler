@@ -64,7 +64,9 @@ template<class Element> class List {
 
           // Adds element to list end
     void Append(const Element &elem)
-	{ elems.push_back(elem); }
+	{ 
+        elems.push_back(elem); 
+    }
 
          // Removes element at index, shuffling down others
          // Raises assert if index out of range
@@ -83,7 +85,6 @@ template<class Element> class List {
     void SetParentAll(Node *p)
         { for (int i = 0; i < NumElements(); i++)
              Nth(i)->SetParent(p); }
-
 };
 
 #endif

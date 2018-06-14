@@ -10,7 +10,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-extern FILE* scanner_log;
+extern FILE *scanner_log;
+extern FILE *parser_log;
 /**
  * Function: Failure()
  * Usage: Failure("Out of memory!");

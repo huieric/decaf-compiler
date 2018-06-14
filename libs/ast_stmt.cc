@@ -11,6 +11,7 @@
 #include "list.h"
 #include "hashtable.h"
 #include "errors.h"
+#include <string.h>
 
 Hashtable<Decl *>* __globalST;
 
@@ -24,8 +25,7 @@ void Program::Check() {
 
     /* Insert and check for identifier consistency */
     for(int i = 0; i < decls->NumElements(); i++) {
-        const char* declName = decls->Nth(i)->GetName();
-
+        const char* declName = decls->Nth(i)->GetName();         
         /* Checks whether the id exists and if it does, if the id is at the same level */
         if(symbolTable->Lookup(declName) == NULL || symbolTable->Lookup(declName)->GetParent() != this) {
             symbolTable->Enter(declName, decls->Nth(i));
@@ -33,7 +33,6 @@ void Program::Check() {
             ReportError::DeclConflict(decls->Nth(i), symbolTable->Lookup(declName));
         }
     }
-
     __globalST = symbolTable->MakeCopy();
 
     /* Recursively check subcomponents */

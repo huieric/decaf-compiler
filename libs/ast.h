@@ -36,6 +36,7 @@
 #include "list.h"
 #include "hashtable.h"
 
+extern FILE *parser_log;
 using namespace std;
 
 class Decl;
@@ -44,15 +45,36 @@ class Node  {
   protected:
     yyltype *location;
     Node *parent;
+    char *node_name;
+    List<Node *> *children;
 
   public:
     Node(yyltype loc);
+    Node(const char *node_type);
     Node();
     virtual ~Node() {}
     
     yyltype *GetLocation()   { return location; }
-    void SetParent(Node *p)  { parent = p; }
+    void SetParent(Node *p)  { 
+      parent = p;       
+    }
+    void addChild(Node *child) {
+      children -> Append(child);
+    }
+    void setNodeName(const char *node_name) {
+      this->node_name = strdup(node_name);
+    }
+    char* GetNodeName() {return node_name; }
     Node *GetParent()        { return parent; }
+    void printTree(int depth) {
+      for(int i = 0; i < depth; i++)
+        fprintf(parser_log, "  ");
+      fprintf(parser_log, "%s\n", node_name);
+      if(children==NULL) return;
+      for(int i = 0; i < children->NumElements(); i++) {        
+        children->Nth(i)->printTree(depth+1);
+      }
+    }
 };
    
 

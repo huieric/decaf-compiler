@@ -157,7 +157,6 @@ bool Type::Equivalence(Type* other, bool strict, Hashtable<Decl *>* parentST, bo
 
     if(dynamic_cast<NamedType*>(other) != NULL || dynamic_cast<ArrayType*>(other) != NULL)
         return false;
-
     return strcmp(this->typeName, other->typeName) == 0;
 }
 

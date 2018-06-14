@@ -80,8 +80,10 @@ void ParseCommandLine(int argc, char *argv[]) {
   unsigned to = source_file.find_last_of(".");
   string object_file = source_file.substr(from, to-from) + ".S";
   string scanner_log_name = source_file.substr(from, to - from) + "_scanner.log";
+  string parser_log_name = source_file.substr(from, to - from) + "_parser.log";
   
   scanner_log = fopen(scanner_log_name.c_str(), "w");
+  parser_log = fopen(parser_log_name.c_str(), "w");
   freopen(argv[1], "r", stdin);
   freopen(object_file.c_str(), "w", stdout);
 }

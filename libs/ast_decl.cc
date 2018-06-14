@@ -419,7 +419,7 @@ void FnDecl::Check(Hashtable<Decl *>* parentST) {
     }
 
     /* Check statement block */
-    if(body != NULL) {
+    if(body != NULL) {        
         body->Check(symbolTable);
     }
     

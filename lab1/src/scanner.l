@@ -19,18 +19,18 @@ static void DoBeforeEachAction();
 FILE *scanner_log;
 %}
 
-/* States
+ /* States
  * ------
  * A little winkle on states is the COPY exclusive state which 
  * I added to first match each line and copy it to the list of lines 
  * read before reprocessing it. This allows us to print the entire 
  * line later to provide context on errors.
-*/
+ */
 %s N
 %x COPY COMM 
 %option stack
 
-/* Definition */
+ /* Definition */
 WHITESPACE          ([ \t]+)
 NEWLINE             (\r|\n|\r\n)
 COMMENT             ("//"[^\r\n]*{NEWLINE})
@@ -180,4 +180,4 @@ const char *GetLineNumbered(int num) {
     if(num<=0 || num>savedLines.size())
         return NULL;
     return savedLines[num-1];
- }
+}
