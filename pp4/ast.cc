@@ -22,6 +22,3 @@ Identifier::Identifier(yyltype loc, const char *n) : Node(loc) {
     name = strdup(n);
 } 
 
-bool Identifier::operator==(const Identifier& rhs) {
-    return strcmp(name, rhs.name)==0;
-}

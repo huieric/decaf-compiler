@@ -10,12 +10,6 @@
 
 %{
 
-/* Just like lex, the text within this first region delimited by %{ and %}
- * is assumed to be C/C++ code and will be copied verbatim to the y.tab.c
- * file ahead of the definitions of the yyparse() function. Add other header
- * file inclusions or C++ variable declarations/prototypes that are needed
- * by your code here.
- */
 #include "scanner.h" // for yylex
 #include "parser.h"
 #include "errors.h"
@@ -24,20 +18,6 @@ void yyerror(const char *msg); // standard error-handling routine
 
 %}
 
-/* The section before the first %% is the Definitions section of the yacc
- * input file. Here is where you declare tokens and types, add precedence
- * and associativity options, and so on.
- */
- 
-/* yylval 
- * ------
- * Here we define the type of the yylval global variable that is used by
- * the scanner to store attibute information about the token just scanned
- * and thus communicate that information to the parser. 
- *
- * pp2: You will need to add new fields to this union as you add different 
- *      attributes to your non-terminal symbols.
- */
 %union {
     int integerConstant;
     bool boolConstant;

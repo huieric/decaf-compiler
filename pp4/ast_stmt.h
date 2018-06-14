@@ -5,8 +5,8 @@
  * language (for, if, return, etc.) there is a corresponding
  * node class for that construct. 
  *
- * pp3: You will need to extend the Stmt classes to implement
- * semantic analysis for rules pertaining to statements.
+ * pp4: You will need to extend the Stmt classes to implement
+ * code generation for statements.
  */
 
 
@@ -15,71 +15,28 @@
 
 #include "list.h"
 #include "ast.h"
-#include "hashtable.h"
 
 class Decl;
 class VarDecl;
 class Expr;
-class IntConstant; // for SwitchStmt
-class LoopStmt;
-class ClassDecl;
-class FnDecl;
-
-class Scope
-{
-  private:
-    Scope* parent;
-
-  public:
-    Hashtable<Decl*> *table;
-    ClassDecl* classDecl;
-    FnDecl* fnDecl;
-    LoopStmt* loopStmt;
-
-  public:
-    Scope() : table(new Hashtable<Decl*>), classDecl(NULL), fnDecl(NULL) {}
-
-    void SetParent(Scope* p) { parent = p; }
-    Scope* GetParent() { return parent; }
-
-    void SetClassDecl(ClassDecl* c) { classDecl = c; }
-    ClassDecl* GetClassDecl() { return classDecl; }
-
-    void SetFnDecl(FnDecl* f) { fnDecl = f; }
-    FnDecl* GetFnDecl() { return fnDecl; }
-
-    void SetLoopStmt(LoopStmt* l) { loopStmt = l; }
-    LoopStmt* GetLoopStmt() { return loopStmt; }
-
-    int AddDecl(Decl* d);
-};
-
+class IntConstant; // for SwitchLabel
+  
 class Program : public Node
 {
-  public:
-    static Scope* gScope;
-
   protected:
      List<Decl*> *decls;
      
   public:
      Program(List<Decl*> *declList);
      void Check();
-
-     void BuildScope();
+     void Emit();
 };
 
 class Stmt : public Node
 {
-  protected:
-    Scope* scope;
-
   public:
-     Stmt() : Node(), scope(new Scope) {}
-     Stmt(yyltype loc) : Node(loc), scope(new Scope) {}
-
-     virtual void BuildScope(Scope* p);
-     virtual void Check() = 0;
+     Stmt() : Node() {}
+     Stmt(yyltype loc) : Node(loc) {}
 };
 
 class StmtBlock : public Stmt 
@@ -90,10 +47,8 @@ class StmtBlock : public Stmt
     
   public:
     StmtBlock(List<VarDecl*> *variableDeclarations, List<Stmt*> *statements);
-
-    void BuildScope(Scope* parent);
-    void Check();
 };
+
   
 class ConditionalStmt : public Stmt
 {
@@ -103,9 +58,6 @@ class ConditionalStmt : public Stmt
   
   public:
     ConditionalStmt(Expr *testExpr, Stmt *body);
-
-    virtual void BuildScope(Scope* parent);
-    virtual void Check();
 };
 
 class LoopStmt : public ConditionalStmt 
@@ -113,8 +65,6 @@ class LoopStmt : public ConditionalStmt
   public:
     LoopStmt(Expr *testExpr, Stmt *body)
             : ConditionalStmt(testExpr, body) {}
-
-    virtual void BuildScope(Scope* parent);
 };
 
 class ForStmt : public LoopStmt 
@@ -139,17 +89,12 @@ class IfStmt : public ConditionalStmt
   
   public:
     IfStmt(Expr *test, Stmt *thenBody, Stmt *elseBody);
-
-    void BuildScope(Scope* parent);
-    void Check();
 };
 
 class BreakStmt : public Stmt 
 {
   public:
     BreakStmt(yyltype loc) : Stmt(loc) {}
-
-    void Check();
 };
 
 class ReturnStmt : public Stmt  
@@ -159,9 +104,6 @@ class ReturnStmt : public Stmt
   
   public:
     ReturnStmt(yyltype loc, Expr *expr);
-
-    void BuildScope(Scope* parent);
-    void Check();
 };
 
 class PrintStmt : public Stmt
@@ -171,9 +113,6 @@ class PrintStmt : public Stmt
     
   public:
     PrintStmt(List<Expr*> *arguments);
-
-    void BuildScope(Scope* parent);
-    void Check();
 };
 
 class SwitchLabel : public Stmt
@@ -186,9 +125,6 @@ class SwitchLabel : public Stmt
     SwitchLabel() { label = NULL; stmts = NULL; }
     SwitchLabel(IntConstant *label, List<Stmt*> *stmts);
     SwitchLabel(List<Stmt*> *stmts);
-
-    virtual void BuildScope(Scope* parent);
-    virtual void Check();
 };
 
 class CaseStmt : public SwitchLabel
@@ -212,9 +148,6 @@ class SwitchStmt : public Stmt
 
   public:
     SwitchStmt(Expr *num, List<CaseStmt*> *caseStmts, DefaultStmt *defaultStmt);
-
-    void BuildScope(Scope* parent);
-    void Check();
 };
 
 #endif
