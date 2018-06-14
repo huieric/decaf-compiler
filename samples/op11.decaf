@@ -1,4 +1,0 @@
-void main() {
-  Print(!true);
-  Print(!false);
-}
