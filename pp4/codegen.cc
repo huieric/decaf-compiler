@@ -9,10 +9,22 @@
 #include <string.h>
 #include "tac.h"
 #include "mips.h"
+#include "errors.h"
   
 CodeGenerator::CodeGenerator()
 {
   code = new List<Instruction*>();
+  localOffset = OffsetToFirstLocal; 
+  mainDefined = false;
+
+  code->Append(new _Alloc);
+  code->Append(new _ReadLine);
+  code->Append(new _ReadInteger);
+  code->Append(new _StringEqual);
+  code->Append(new _PrintInt);
+  code->Append(new _PrintString);
+  code->Append(new _PrintBool);
+  code->Append(new _Halt);
 }
 
 char *CodeGenerator::NewLabel()
@@ -34,11 +46,18 @@ Location *CodeGenerator::GenTempVar()
      in stack frame for use as temporary. Until you
      do that, the assert below will always fail to remind
      you this needs to be implemented  */
+  result = new Location(fpRelative, localOffset, temp);
+  localOffset -= VarSize;
   Assert(result != NULL);
   return result;
 }
 
- 
+Location* CodeGenerator::GenLocalVar(const char* name, int size) {
+  Location* result = new Location(fpRelative, localOffset, name);
+  localOffset -= size;
+  return result;
+}
+
 Location *CodeGenerator::GenLoadConstant(int value)
 {
   Location *result = GenTempVar();
@@ -92,6 +111,8 @@ Location *CodeGenerator::GenBinaryOp(const char *opName, Location *op1,
 void CodeGenerator::GenLabel(const char *label)
 {
   code->Append(new Label(label));
+  if(strcmp(label, "main")==0)
+    mainDefined = true;
 }
 
 void CodeGenerator::GenIfZ(Location *test, const char *label)
@@ -181,7 +202,6 @@ Location *CodeGenerator::GenBuiltInCall(BuiltIn bn,Location *arg1, Location *arg
   return result;
 }
 
-
 void CodeGenerator::GenVTable(const char *className, List<const char *> *methodLabels)
 {
   code->Append(new VTable(className, methodLabels));
@@ -190,6 +210,9 @@ void CodeGenerator::GenVTable(const char *className, List<const char *> *methodL
 
 void CodeGenerator::DoFinalCodeGen()
 {
+  if(!mainDefined)
+    ReportError::NoMainFound();
+
   if (IsDebugOn("tac")) { // if debug don't translate to mips, just print Tac
     for (int i = 0; i < code->NumElements(); i++)
 	code->Nth(i)->Print();

@@ -26,8 +26,13 @@ for _, _, files in os.walk(TEST_DIRECTORY):
       continue
     refName = os.path.join(TEST_DIRECTORY, '%s.out' % file.split('.')[0])
     testName = os.path.join(TEST_DIRECTORY, file)
+    inputName = os.path.join(TEST_DIRECTORY, '%s.in' % file.split('.')[0])
 
-    result = Popen('./dcc < ' + testName, shell = True, stderr = STDOUT, stdout = PIPE)
+    if os.path.exists(inputName):
+      result = Popen('./run ' + testName + ' < ' + inputName, shell = True, stderr = STDOUT, stdout = PIPE)
+    else:
+      result = Popen('./run ' + testName, shell = True, stderr = STDOUT, stdout = PIPE)
+
     result = Popen('diff -w - ' + refName, shell = True, stdin = result.stdout, stdout = PIPE)
     print 'Executing test "%s"' % testName
     print ''.join(result.stdout.readlines())

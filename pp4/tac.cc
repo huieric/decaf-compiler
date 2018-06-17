@@ -222,3 +222,121 @@ void VTable::EmitSpecific(Mips *mips) {
   mips->EmitVTable(label, methodLabels);
 }
 
+_PrintInt::_PrintInt() {
+  sprintf(printed, "PrintInt (BuiltIn)");
+}
+void _PrintInt::EmitSpecific(Mips* mips) {
+  mips->EmitLabel("_PrintInt");
+  // mips->Emit("subu $sp, $sp, 8\t# decrement sp to make space to save v0, a0");
+  // mips->Emit("sw $v0, 8($sp)\t# save v0");
+  // mips->Emit("sw $a0, 4($sp)\t# save a0");
+  mips->Emit("li $v0, 1\t\t# set syscall code");
+  mips->Emit("lw $a0, 4($sp)\t# load argument");
+  mips->Emit("syscall\t\t# execute syscall");
+  // mips->Emit("lw $a0, 4($sp)\t# restore a0");
+  // mips->Emit("lw $v0, 8($sp)\t# restore v0");
+  // mips->Emit("addu $sp, $sp, 8\t# pop params off stack");
+  mips->Emit("jr $ra\t\t# return from function");
+}
+
+_PrintString::_PrintString() {
+  sprintf(printed, "PrintString (BuiltIn)");
+}
+void _PrintString::EmitSpecific(Mips* mips) {
+  mips->EmitLabel("_PrintString");
+  // mips->Emit("subu $sp, $sp, 8\t# decrement sp to make space to save v0, a0");
+  // mips->Emit("sw $v0, 8($sp)\t# save v0");
+  // mips->Emit("sw $a0, 4($sp)\t# save a0");
+  mips->Emit("li $v0, 4\t\t# set syscall code");
+  mips->Emit("lw $a0, 4($sp)\t# load argument");
+  mips->Emit("syscall\t\t# execute syscall");
+  // mips->Emit("lw $a0, 4($sp)\t# restore a0");
+  // mips->Emit("lw $v0, 8($sp)\t# restore v0");
+  // mips->Emit("addu $sp, $sp, 8\t# pop params off stack");
+  mips->Emit("jr $ra\t\t# return from function");
+}
+
+_PrintBool::_PrintBool() {
+  sprintf(printed, "PrintBool (BuiltIn)");
+}
+void _PrintBool::EmitSpecific(Mips* mips) {
+  mips->EmitLabel("_PrintBool");
+  mips->Emit(".data\t\t\t# create string constant marked with label");
+  mips->Emit("_string_true: .asciiz \"true\"");
+  mips->Emit("_string_false: .asciiz \"false\"");
+  mips->Emit(".text");
+  // mips->Emit("subu $sp, $sp, 8\t# decrement sp to make space to save v0, a0");
+  // mips->Emit("sw $v0, 8($sp)\t# save v0");
+  // mips->Emit("sw $a0, 4($sp)\t# save a0");
+  mips->Emit("li $v0, 4\t\t# set syscall code");
+  mips->Emit("beqz $t0, _false\t# test bool value");
+  mips->Emit("la $a0, _string_true\t# print true");
+  mips->Emit("b _PrintBoolStr\t# go on to call syscall");
+  mips->EmitLabel("_false");
+  mips->Emit("la $a0, _string_false\t# print false");
+  mips->EmitLabel("_PrintBoolStr");
+  mips->Emit("syscall\t\t# execute syscall");
+  // mips->Emit("lw $a0, 4($sp)\t# restore a0");
+  // mips->Emit("lw $v0, 8($sp)\t# restore v0");
+  // mips->Emit("addu $sp, $sp, 8\t# pop params off stack");
+  mips->Emit("jr $ra\t\t# return from function");
+}
+
+_Halt::_Halt() {
+  sprintf(printed, "Halt (BuiltIn)");  
+}
+void _Halt::EmitSpecific(Mips* mips) {
+  mips->EmitLabel("_Halt");
+
+  mips->Emit("jr $ra\t\t# return from function");
+}
+
+_Alloc::_Alloc() {
+  sprintf(printed, "Alloc (BuiltIn)");
+}
+void _Alloc::EmitSpecific(Mips* mips) {
+  mips->EmitLabel("_Alloc");
+
+  mips->Emit("jr $ra\t\t# return from function");
+}
+
+_ReadLine::_ReadLine() {
+  sprintf(printed, "ReadLine (BuiltIn)");
+}
+void _ReadLine::EmitSpecific(Mips* mips) {
+  mips->EmitLabel("_ReadLine"); 
+  mips->Emit(".data\t\t\t# create buffer marked with label");
+  mips->Emit("buffer: .space 80");
+  mips->Emit(".text");
+  mips->Emit("li $v0, 8\t\t# set syscall code");
+  mips->Emit("la $a0, buffer\t# load byte space into address");
+  mips->Emit("li $a1, 80\t# allot the byte space for string");
+  mips->Emit("syscall\t\t# execute syscall");
+  mips->Emit("move $v0, $a0\t# return address to buffer");
+  mips->Emit("jr $ra\t\t# return from function");
+}
+
+_ReadInteger::_ReadInteger() {
+  sprintf(printed, "ReadInteger (BuiltIn)");
+}
+void _ReadInteger::EmitSpecific(Mips* mips) {
+  mips->EmitLabel("_ReadInteger");
+  // mips->Emit("subu $sp, $sp, 4\t# decrement sp to make space to save v0, a0");
+  // mips->Emit("sw $v0, 4($sp)\t# save v0");
+  mips->Emit("li $v0, 5\t\t# set syscall code");
+  mips->Emit("syscall\t\t# execute syscall");
+  // mips->Emit("sw $v0, -8($fp)\t# write integer read to memory");
+  // mips->Emit("lw $v0, 4($sp)\t# restore v0");
+  // mips->Emit("addu $sp, $sp, 4\t# pop params off stack");
+  mips->Emit("jr $ra\t\t# return from function");
+}
+
+_StringEqual::_StringEqual() {
+  sprintf(printed, "StringEqual (BuiltIn)");  
+}
+void _StringEqual::EmitSpecific(Mips* mips) {
+  mips->EmitLabel("_StringEqual");
+
+  mips->Emit("jr $ra\t\t# return from function");
+}
+

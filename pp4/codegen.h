@@ -26,6 +26,8 @@ typedef enum { Alloc, ReadLine, ReadInteger, StringEqual,
 class CodeGenerator {
   private:
     List<Instruction*> *code;
+    int localOffset;
+    bool mainDefined;
 
   public:
            // Here are some class constants to remind you of the offsets
@@ -53,6 +55,7 @@ class CodeGenerator {
          // Creates and returns a Location for a new uniquely named
          // temp variable. Does not generate any Tac instructions
     Location *GenTempVar();
+    Location* GenLocalVar(const char* name, int size);
 
          // Generates Tac instructions to load a constant value. Creates
          // a new temp var to hold the result. The constant 

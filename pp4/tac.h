@@ -90,6 +90,7 @@ class Instruction {
   class LCall;
   class ACall;
   class VTable;
+  class _PrintInt;
 
 
 
@@ -239,5 +240,52 @@ class VTable: public Instruction {
     void EmitSpecific(Mips *mips);
 };
 
+class _Alloc: public Instruction {
+  public:
+    _Alloc();
+    void EmitSpecific(Mips* mips);
+};
+
+class _ReadLine: public Instruction {
+  public:
+    _ReadLine();
+    void EmitSpecific(Mips* mips);
+};
+
+class _ReadInteger: public Instruction {
+  public:
+    _ReadInteger();
+    void EmitSpecific(Mips* mips);
+};
+
+class _StringEqual: public Instruction {
+  public:
+    _StringEqual();
+    void EmitSpecific(Mips* mips);
+};
+
+class _PrintInt: public Instruction {
+  public:
+    _PrintInt();
+    void EmitSpecific(Mips* mips);
+};
+
+class _PrintString: public Instruction {
+  public:
+    _PrintString();
+    void EmitSpecific(Mips* mips);
+};
+
+class _PrintBool: public Instruction {
+  public:
+    _PrintBool();
+    void EmitSpecific(Mips* mips);
+};
+
+class _Halt: public Instruction {
+  public:
+    _Halt();
+    void EmitSpecific(Mips* mips);
+};
 
 #endif

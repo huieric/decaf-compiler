@@ -16,7 +16,7 @@ SRCS = ast.cc ast_decl.cc ast_expr.cc ast_stmt.cc ast_type.cc codegen.cc tac.cc 
 # OBJS can deal with either .cc or .c files listed in SRCS
 OBJS = y.tab.o lex.yy.o $(patsubst %.cc, %.o, $(filter %.cc,$(SRCS))) $(patsubst %.c, %.o, $(filter %.c, $(SRCS)))
 
-JUNK =  *.o lex.yy.c dpp.yy.c y.tab.c y.tab.h *.core core *~
+JUNK =  *.o lex.yy.c dpp.yy.c y.tab.c y.tab.h *.core core *~ *.asm *.errors
 
 # Define the tools we are going to use
 CC= g++
