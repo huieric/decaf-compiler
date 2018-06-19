@@ -57,6 +57,7 @@ class VarDecl : public Decl
     Type* GetType() { return type; }
     int GetMemBytes();
     void SetMemLoc(Location* l) { memLoc = l; }
+    Location* GetMemLoc() { return memLoc; }
 
     Location* Emit(CodeGenerator* cg);
 };
@@ -105,6 +106,7 @@ class FnDecl : public Decl
     Type *returnType;
     Stmt *body;
     std::string* label;
+    int localOffset;
     
   public:
     FnDecl(Identifier *name, Type *returnType, List<VarDecl*> *formals);
@@ -116,6 +118,8 @@ class FnDecl : public Decl
     Type* GetReturnType() { return returnType; }
     int GetMemBytes() { return 0; }
     const char* GetLabel();
+    int GetLocalOffset() { return localOffset; }
+    void SetLocalOffset(int offset) { localOffset = offset; }
 
     Location* Emit(CodeGenerator* cg);
     void BuildScope(Scope* parent);

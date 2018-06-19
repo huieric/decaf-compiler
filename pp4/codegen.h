@@ -46,6 +46,13 @@ class CodeGenerator {
     static const int VarSize = 4;
 
     CodeGenerator();
+
+         // Interfaces to retrieve and set localOffset of function currently called.
+         // When caller call a function, we can save current localOffset in the FnDecl so that we can 
+         // restore localOffset of caller when callee return.
+    int GetLocalOffset() { return localOffset; }
+    void SetLocalOffset(int offset) { localOffset = offset; }
+    void resetLocalOffset() { localOffset = OffsetToFirstLocal; }
     
          // Assigns a new unique label name and returns it. Does not
          // generate any Tac instructions (see GenLabel below if needed)

@@ -114,52 +114,131 @@ Location* CompoundExpr::Emit(CodeGenerator* cg) {
 }  
 
 Location* ArithmeticExpr::Emit(CodeGenerator* cg) {
-    op->Emit(cg);
-    if(left)
-        left->Emit(cg);
-    if(right)
-        right->Emit(cg);
-    return NULL;
+    if(left) 
+        return EmitBinary(cg, left, right);
+    else 
+        return EmitUnary(cg, right);
+}
+
+Location* ArithmeticExpr::EmitBinary(CodeGenerator* cg, Expr* left, Expr* right) {
+    Location* lhs = left->Emit(cg);
+    Location* rhs = right->Emit(cg);
+    return cg->GenBinaryOp(op->GetName(), lhs, rhs);
+}
+
+Location* ArithmeticExpr::EmitUnary(CodeGenerator* cg, Expr* right) {
+    Location* zero = cg->GenLoadConstant(0);
+    Location* rhs = right->Emit(cg);
+    return cg->GenBinaryOp(op->GetName(), zero, rhs);
 }
 
 Location* RelationalExpr::Emit(CodeGenerator* cg) {
-    op->Emit(cg);
-    if(left)
-        left->Emit(cg);
-    if(right)
-        right->Emit(cg);
+    const char* op_tok = op->GetName();
+    if(strcmp(op_tok, "<")==0)
+        return EmitLess(cg, left, right);
+    else if(strcmp(op_tok, "<=")==0) 
+        return EmitLessEqual(cg, left, right);
+    else if(strcmp(op_tok, ">")==0) 
+        return EmitLess(cg, right, left);
+    else if(strcmp(op_tok, ">=")==0) 
+        return EmitLessEqual(cg, right, left);
+    else 
+        Assert(0);
     return NULL;
+}
+
+Location* RelationalExpr::EmitLess(CodeGenerator* cg, Expr* left, Expr* right) {
+    Location* lhs = left->Emit(cg);
+    Location* rhs = right->Emit(cg);
+    return cg->GenBinaryOp("<", lhs, rhs);
+}
+
+Location* RelationalExpr::EmitLessEqual(CodeGenerator* cg, Expr* left, Expr* right) {
+    Location* lhs = left->Emit(cg);
+    Location* rhs = right->Emit(cg);
+    Location* less = cg->GenBinaryOp("<", lhs, rhs);
+    Location* equal = cg->GenBinaryOp("==", lhs, rhs);
+    return cg->GenBinaryOp("||", less, equal);
 }
 
 Location* EqualityExpr::Emit(CodeGenerator* cg) {
-    op->Emit(cg);
-    if(left)
-        left->Emit(cg);
-    if(right)
-        right->Emit(cg);
+    const char* op_tok = op->GetName();
+    if(strcmp(op_tok, "==")==0)
+        return EmitEqual(cg, left, right);
+    else if(strcmp(op_tok, "!=")==0)
+        return EmitNotEqual(cg, left, right);
+    else 
+        Assert(0);
     return NULL;
+}
+
+Location* EqualityExpr::EmitEqual(CodeGenerator* cg, Expr* left, Expr* right) {
+    Location* lhs = left->Emit(cg);
+    Location* rhs = right->Emit(cg);
+    if(left->GetType()->IsEquivalentTo(Type::stringType)) 
+        return cg->GenBuiltInCall(StringEqual, lhs, rhs);
+    else
+        return cg->GenBinaryOp("==", lhs, rhs);
+}
+
+Location* EqualityExpr::EmitNotEqual(CodeGenerator* cg, Expr* left, Expr* right) {
+    const char* zero = cg->NewLabel();
+    const char* one = cg->NewLabel();
+    Location* result = cg->GenTempVar();
+    Location* equal = EmitEqual(cg, left, right);
+    cg->GenIfZ(equal, zero);
+    cg->GenAssign(result, cg->GenLoadConstant(0));
+    cg->GenGoto(one);
+    cg->GenLabel(zero);
+    cg->GenAssign(result, cg->GenLoadConstant(1));
+    cg->GenLabel(one);
+    return result;
 }
 
 Location* LogicalExpr::Emit(CodeGenerator* cg) {
-    op->Emit(cg);
-    if(left)
-        left->Emit(cg);
-    if(right)
-        right->Emit(cg);
+    const char* op_tok = op->GetName();
+    if(strcmp(op_tok, "&&")==0) 
+        return EmitAnd(cg, left, right);
+    else if(strcmp(op_tok, "||")==0)
+        return EmitOr(cg, left, right);
+    else if(strcmp(op_tok, "!")==0)
+        return EmitNot(cg, right);
+    else 
+        Assert(0);
     return NULL;
+}
+
+Location* LogicalExpr::EmitAnd(CodeGenerator* cg, Expr* left, Expr* right) {
+    Location* lhs = left->Emit(cg);
+    Location* rhs = right->Emit(cg);
+    return cg->GenBinaryOp("&&", lhs, rhs);
+}
+
+Location* LogicalExpr::EmitOr(CodeGenerator* cg, Expr* left, Expr* right) {
+    Location* lhs = left->Emit(cg);
+    Location* rhs = right->Emit(cg);
+    return cg->GenBinaryOp("||", lhs, rhs);
+}
+
+Location* LogicalExpr::EmitNot(CodeGenerator* cg, Expr* right) {
+    const char* one = cg->NewLabel();
+    const char* zero = cg->NewLabel();
+    Location* result = cg->GenTempVar();
+    Location* rhs = right->Emit(cg);
+    cg->GenIfZ(rhs, zero);
+    cg->GenAssign(result, cg->GenLoadConstant(0));
+    cg->GenGoto(one);
+    cg->GenLabel(zero);
+    cg->GenAssign(result, cg->GenLoadConstant(1));
+    cg->GenLabel(one);
+    return result;
 }
 
 Location* AssignExpr::Emit(CodeGenerator* cg) {
-    op->Emit(cg);
-    if(left)
-        left->Emit(cg);
-    if(right)
-        right->Emit(cg);
-    return NULL;
-}
-
-Location* LValue::Emit(CodeGenerator* cg) {
-    return NULL;
+    Location* lhs = left->Emit(cg);
+    Location* rhs = right->Emit(cg);
+    cg->GenAssign(lhs, rhs);
+    return lhs;
 }
 
 Location* This::Emit(CodeGenerator* cg) {
@@ -187,9 +266,15 @@ FieldAccess::FieldAccess(Expr *b, Identifier *f)
 }
 
 Location* FieldAccess::Emit(CodeGenerator* cg) {
-    if(base)
-        base->Emit(cg);
-    // field->Emit();
+    if(base) {
+
+    }
+    else {
+        Decl* d = GetFieldDecl(field, scope);
+        VarDecl* v = dynamic_cast<VarDecl*>(d);
+        Assert(v != NULL);
+        return v->GetMemLoc();
+    }
     return NULL;
 }
 
@@ -202,11 +287,23 @@ Call::Call(yyltype loc, Expr *b, Identifier *f, List<Expr*> *a) : Expr(loc)  {
 }
  
 Location* Call::Emit(CodeGenerator* cg) {
-    if(base)
-        base->Emit(cg);
-    // field->Emit();
-    for(int i = 0, n = actuals->NumElements(); i < n; i++)
-        actuals->Nth(i)->Emit(cg);    
+    if(base) {
+
+    }
+    else {
+        Decl* d = Program::gScope->table->Lookup(field->GetName());
+        FnDecl* f = dynamic_cast<FnDecl*>(d);
+        Assert(f != NULL);
+        int n = actuals->NumElements();
+        for(int i = 0; i < n; i++) {
+            Expr* actual = actuals->Nth(i);
+            cg->GenPushParam(actual->Emit(cg));
+        }
+        bool hasReturnValue = !f->GetReturnType()->IsEquivalentTo(Type::voidType);
+        Location* returnValue = cg->GenLCall(f->GetLabel(), hasReturnValue);
+        cg->GenPopParams(n * CodeGenerator::VarSize);
+        return returnValue;
+    }
     return NULL;
 }
 
@@ -451,23 +548,89 @@ Decl* Expr::GetFieldDecl(Identifier* id, Scope* s) {
 }
 
 int ArithmeticExpr::GetMemBytes() {
-    return 0;
+    if(left)
+        return GetMemBytesBinary();
+    else
+        return GetMemBytesUnary();
+}
+
+int ArithmeticExpr::GetMemBytesBinary() {
+    return left->GetMemBytes() + right->GetMemBytes() + CodeGenerator::VarSize;
+}
+
+int ArithmeticExpr::GetMemBytesUnary() {
+    return right->GetMemBytes() + 2 * CodeGenerator::VarSize;
 }
 
 int RelationalExpr::GetMemBytes() {
+    const char* op_tok = op->GetName();
+    if(strcmp(op_tok, "<")==0)
+        return GetMemBytesLess();
+    else if(strcmp(op_tok, "<=")==0) 
+        return GetMemBytesLessEqual();
+    else if(strcmp(op_tok, ">")==0) 
+        return GetMemBytesLess();
+    else if(strcmp(op_tok, ">=")==0) 
+        return GetMemBytesLessEqual();
+    else 
+        Assert(0);
     return 0;
+}
+
+int RelationalExpr::GetMemBytesLess() {
+    return left->GetMemBytes() + right->GetMemBytes() + CodeGenerator::VarSize;
+}
+
+int RelationalExpr::GetMemBytesLessEqual() {
+    return left->GetMemBytes() + right->GetMemBytes() + 3 * CodeGenerator::VarSize;
 }
 
 int EqualityExpr::GetMemBytes() {
+    const char* op_tok = op->GetName();
+    if(strcmp(op_tok, "==")==0)
+        return GetMemBytesEqual();
+    else if(strcmp(op_tok, "!=")==0)
+        return GetMemBytesNotEqual();
+    else 
+        Assert(0);
     return 0;
+}
+
+int EqualityExpr::GetMemBytesEqual() {
+    return left->GetMemBytes() + right->GetMemBytes() + CodeGenerator::VarSize;
+}
+
+int EqualityExpr::GetMemBytesNotEqual() {
+    return left->GetMemBytes() + right->GetMemBytes() + 4 * CodeGenerator::VarSize;
 }
 
 int LogicalExpr::GetMemBytes() {
+    const char* op_tok = op->GetName();
+    if(strcmp(op_tok, "&&")==0) 
+        return GetMemBytesAnd();
+    else if(strcmp(op_tok, "||")==0)
+        return GetMemBytesOr();
+    else if(strcmp(op_tok, "!")==0)
+        return GetMemBytesNot();
+    else 
+        Assert(0);
     return 0;
 }
 
+int LogicalExpr::GetMemBytesAnd() {
+    return left->GetMemBytes() + right->GetMemBytes() + CodeGenerator::VarSize;
+}
+
+int LogicalExpr::GetMemBytesOr() {
+    return left->GetMemBytes() + right->GetMemBytes() + CodeGenerator::VarSize;
+}
+
+int LogicalExpr::GetMemBytesNot() {
+    return right->GetMemBytes() + 3 * CodeGenerator::VarSize;
+}
+
 int AssignExpr::GetMemBytes() {
-    return 0;
+    return right->GetMemBytes();
 }
 
 int This::GetMemBytes() {
@@ -483,7 +646,21 @@ int FieldAccess::GetMemBytes() {
 }
 
 int Call::GetMemBytes() {
-    return 0;
+    Decl* d = Program::gScope->table->Lookup(field->GetName());
+    FnDecl* f = dynamic_cast<FnDecl*>(d);
+    Assert(f != NULL);
+    bool hasReturnValue = !f->GetReturnType()->IsEquivalentTo(Type::voidType);
+    if(hasReturnValue) 
+        return GetMemBytesActuals() + CodeGenerator::VarSize;
+    else
+        return GetMemBytesActuals();
+}
+
+int Call::GetMemBytesActuals() {
+    int memBytes = 0;
+    for(int i = 0, n = actuals->NumElements(); i < n; i++)
+        memBytes += actuals->Nth(i)->GetMemBytes();
+    return memBytes;
 }
 
 int NewExpr::GetMemBytes() {

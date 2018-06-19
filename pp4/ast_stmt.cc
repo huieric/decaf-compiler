@@ -61,6 +61,16 @@ void LoopStmt::BuildScope(Scope* p) {
     body->BuildScope(scope);
 }
 
+void ForStmt::BuildScope(Scope* p) {
+    scope->SetParent(p);
+    scope->SetLoopStmt(this);
+
+    init->BuildScope(scope);
+    test->BuildScope(scope);
+    step->BuildScope(scope);
+    body->BuildScope(scope);
+}
+
 void IfStmt::BuildScope(Scope* p) {
     scope->SetParent(p);
 
@@ -142,12 +152,13 @@ StmtBlock::StmtBlock(List<VarDecl*> *d, List<Stmt*> *s) {
     (stmts=s)->SetParentAll(this);
 }
 
-Location* StmtBlock::Emit(CodeGenerator* cg) {
+Location* StmtBlock::Emit(CodeGenerator* cg) {    
     for(int i = 0, n = decls->NumElements(); i < n; i++) {
         VarDecl* v = dynamic_cast<VarDecl*>(decls->Nth(i));
         if(v != NULL) {
             Location* l = cg->GenLocalVar(v->GetName(), v->GetMemBytes());
-            v->SetMemLoc(l);            
+            // Location* l = new Location(fpRelative, offset, v->GetName());
+            v->SetMemLoc(l);
         }
     }
     for(int i = 0, n = stmts->NumElements(); i < n; i++)
@@ -178,12 +189,28 @@ ForStmt::ForStmt(Expr *i, Expr *t, Expr *s, Stmt *b): LoopStmt(t, b) {
 }
 
 Location* ForStmt::Emit(CodeGenerator* cg) {
+    const char* loop = cg->NewLabel();
+    const char* done = cg->NewLabel();
+    SetBreak(done);
     init->Emit(cg);
+    cg->GenLabel(loop);
+    cg->GenIfZ(test->Emit(cg), done);
+    body->Emit(cg);
     step->Emit(cg);
+    cg->GenGoto(loop);
+    cg->GenLabel(done);    
     return NULL;
 }
 
 Location* WhileStmt::Emit(CodeGenerator* cg) {
+    const char* loop = cg->NewLabel();
+    const char* done = cg->NewLabel();
+    SetBreak(done);
+    cg->GenLabel(loop);
+    cg->GenIfZ(test->Emit(cg), done);
+    body->Emit(cg);
+    cg->GenGoto(loop);
+    cg->GenLabel(done); 
     return NULL;
 }
 
@@ -195,11 +222,42 @@ IfStmt::IfStmt(Expr *t, Stmt *tb, Stmt *eb): ConditionalStmt(t, tb) {
 
 Location* IfStmt::Emit(CodeGenerator* cg) {
     if(elseBody)
-        elseBody->Emit(cg);
-        return NULL;
+        EmitElse(cg);
+    else
+        EmitNoElse(cg);
+    return NULL;
+}
+
+Location* IfStmt::EmitNoElse(CodeGenerator* cg) {
+    const char* not_do = cg->NewLabel();
+    cg->GenIfZ(test->Emit(cg), not_do);
+    body->Emit(cg);
+    cg->GenLabel(not_do);
+    return NULL;
+}
+
+Location* IfStmt::EmitElse(CodeGenerator* cg) {
+    const char* then_label = cg->NewLabel();
+    const char* else_label = cg->NewLabel();
+    cg->GenIfZ(test->Emit(cg), else_label);
+    body->Emit(cg);
+    cg->GenGoto(then_label);
+    cg->GenLabel(else_label);
+    elseBody->Emit(cg);
+    cg->GenLabel(then_label);
+    return NULL;
 }
 
 Location* BreakStmt::Emit(CodeGenerator* cg) {
+    Scope* s = scope;
+    LoopStmt* l = NULL;
+    while(s != NULL) {
+        if((l=s->GetLoopStmt()) != NULL) 
+            break;
+        s = s->GetParent();
+    }
+    Assert(l != NULL);
+    cg->GenGoto(l->GetBreak());
     return NULL;
 }
 
@@ -210,7 +268,9 @@ ReturnStmt::ReturnStmt(yyltype loc, Expr *e) : Stmt(loc) {
 
 Location* ReturnStmt::Emit(CodeGenerator* cg) {
     if(expr)
-        expr->Emit(cg);
+        cg->GenReturn(expr->Emit(cg));
+    else
+        cg->GenReturn();
     return NULL;      
 }
 
@@ -287,19 +347,25 @@ int StmtBlock::GetMemBytes() {
 }
 
 int ForStmt::GetMemBytes() {
-    return 0;
+    return init->GetMemBytes() + test->GetMemBytes() + step->GetMemBytes() + body->GetMemBytes();
 }
 
 int WhileStmt::GetMemBytes() {
-    return 0;
+    return test->GetMemBytes() + body->GetMemBytes();
 }
 
 int IfStmt::GetMemBytes() {
-    return 0;
+    if(elseBody)
+        return test->GetMemBytes() + body->GetMemBytes() + elseBody->GetMemBytes();
+    else
+        return test->GetMemBytes() + body->GetMemBytes();
 }
 
 int ReturnStmt::GetMemBytes() {
-    return 0;
+    if(expr)
+        return expr->GetMemBytes();
+    else
+        return 0;
 }
 
 int PrintStmt::GetMemBytes() {

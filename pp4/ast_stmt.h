@@ -116,24 +116,30 @@ class ConditionalStmt : public Stmt
 
 class LoopStmt : public ConditionalStmt 
 {
+  protected:
+    const char* break_label;
+
   public:
     LoopStmt(Expr *testExpr, Stmt *body)
             : ConditionalStmt(testExpr, body) {}
 
     virtual Location* Emit(CodeGenerator* cg);
     virtual void BuildScope(Scope* parent);
+    void SetBreak(const char* b) { break_label = b; }
+    const char* GetBreak() { return break_label; }
 };
 
 class ForStmt : public LoopStmt 
 {
   protected:
-    Expr *init, *step;
+    Expr *init, *step;    
   
   public:
     ForStmt(Expr *init, Expr *test, Expr *step, Stmt *body);
 
     Location* Emit(CodeGenerator* cg);
     int GetMemBytes();
+    void BuildScope(Scope* parent);    
 };
 
 class WhileStmt : public LoopStmt 
@@ -154,6 +160,8 @@ class IfStmt : public ConditionalStmt
     IfStmt(Expr *test, Stmt *thenBody, Stmt *elseBody);
 
     Location* Emit(CodeGenerator* cg);
+    Location* EmitNoElse(CodeGenerator* cg);
+    Location* EmitElse(CodeGenerator* cg);
     void BuildScope(Scope* parent);
     int GetMemBytes();
 };

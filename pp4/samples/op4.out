@@ -1,6 +1,6 @@
-SPIM Version 7.4 of January 1, 2009
-Copyright 1990-2004 by James R. Larus (larus@cs.wisc.edu).
+SPIM Version 8.0 of January 8, 2010
+Copyright 1990-2010, James R. Larus.
 All Rights Reserved.
 See the file README for a full copyright notice.
-Loaded: /usr/class/cs143/bin/exceptions.s
+Loaded: /usr/lib/spim/exceptions.s
 truefalsefalsetrue

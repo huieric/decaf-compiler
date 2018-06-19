@@ -227,16 +227,11 @@ _PrintInt::_PrintInt() {
 }
 void _PrintInt::EmitSpecific(Mips* mips) {
   mips->EmitLabel("_PrintInt");
-  // mips->Emit("subu $sp, $sp, 8\t# decrement sp to make space to save v0, a0");
-  // mips->Emit("sw $v0, 8($sp)\t# save v0");
-  // mips->Emit("sw $a0, 4($sp)\t# save a0");
+  mips->EmitBeginFunction(0);  
   mips->Emit("li $v0, 1\t\t# set syscall code");
-  mips->Emit("lw $a0, 4($sp)\t# load argument");
+  mips->Emit("lw $a0, 4($fp)\t# load argument");
   mips->Emit("syscall\t\t# execute syscall");
-  // mips->Emit("lw $a0, 4($sp)\t# restore a0");
-  // mips->Emit("lw $v0, 8($sp)\t# restore v0");
-  // mips->Emit("addu $sp, $sp, 8\t# pop params off stack");
-  mips->Emit("jr $ra\t\t# return from function");
+  mips->EmitEndFunction();
 }
 
 _PrintString::_PrintString() {
@@ -244,17 +239,12 @@ _PrintString::_PrintString() {
 }
 void _PrintString::EmitSpecific(Mips* mips) {
   mips->EmitLabel("_PrintString");
-  // mips->Emit("subu $sp, $sp, 8\t# decrement sp to make space to save v0, a0");
-  // mips->Emit("sw $v0, 8($sp)\t# save v0");
-  // mips->Emit("sw $a0, 4($sp)\t# save a0");
+  mips->EmitBeginFunction(0);
   mips->Emit("li $v0, 4\t\t# set syscall code");
-  mips->Emit("lw $a0, 4($sp)\t# load argument");
+  mips->Emit("lw $a0, 4($fp)\t# load argument");
   mips->Emit("syscall\t\t# execute syscall");
-  // mips->Emit("lw $a0, 4($sp)\t# restore a0");
-  // mips->Emit("lw $v0, 8($sp)\t# restore v0");
-  // mips->Emit("addu $sp, $sp, 8\t# pop params off stack");
-  mips->Emit("jr $ra\t\t# return from function");
-}
+  mips->EmitEndFunction();
+} 
 
 _PrintBool::_PrintBool() {
   sprintf(printed, "PrintBool (BuiltIn)");
@@ -265,10 +255,9 @@ void _PrintBool::EmitSpecific(Mips* mips) {
   mips->Emit("_string_true: .asciiz \"true\"");
   mips->Emit("_string_false: .asciiz \"false\"");
   mips->Emit(".text");
-  // mips->Emit("subu $sp, $sp, 8\t# decrement sp to make space to save v0, a0");
-  // mips->Emit("sw $v0, 8($sp)\t# save v0");
-  // mips->Emit("sw $a0, 4($sp)\t# save a0");
+  mips->EmitBeginFunction(0);
   mips->Emit("li $v0, 4\t\t# set syscall code");
+  mips->Emit("lw $t0, 4($fp)\t# load argument");
   mips->Emit("beqz $t0, _false\t# test bool value");
   mips->Emit("la $a0, _string_true\t# print true");
   mips->Emit("b _PrintBoolStr\t# go on to call syscall");
@@ -276,10 +265,7 @@ void _PrintBool::EmitSpecific(Mips* mips) {
   mips->Emit("la $a0, _string_false\t# print false");
   mips->EmitLabel("_PrintBoolStr");
   mips->Emit("syscall\t\t# execute syscall");
-  // mips->Emit("lw $a0, 4($sp)\t# restore a0");
-  // mips->Emit("lw $v0, 8($sp)\t# restore v0");
-  // mips->Emit("addu $sp, $sp, 8\t# pop params off stack");
-  mips->Emit("jr $ra\t\t# return from function");
+  mips->EmitEndFunction();
 }
 
 _Halt::_Halt() {
@@ -304,16 +290,27 @@ _ReadLine::_ReadLine() {
   sprintf(printed, "ReadLine (BuiltIn)");
 }
 void _ReadLine::EmitSpecific(Mips* mips) {
+  const char* done = "_ReadLine_done";
+  const char* loop = "_ReadLine_loop";
   mips->EmitLabel("_ReadLine"); 
   mips->Emit(".data\t\t\t# create buffer marked with label");
   mips->Emit("buffer: .space 80");
   mips->Emit(".text");
+  mips->EmitBeginFunction(0);
   mips->Emit("li $v0, 8\t\t# set syscall code");
   mips->Emit("la $a0, buffer\t# load byte space into address");
   mips->Emit("li $a1, 80\t# allot the byte space for string");
-  mips->Emit("syscall\t\t# execute syscall");
+  mips->Emit("syscall\t\t# execute syscall");  
   mips->Emit("move $v0, $a0\t# return address to buffer");
-  mips->Emit("jr $ra\t\t# return from function");
+  mips->EmitLabel(loop);
+  mips->Emit("lb $t0, 0($a0)\t\t# load character from string");
+  mips->Emit("seq $t1, $t0, 10\t# compare character to newline");
+  mips->Emit("bnez $t1, %s\t# if equal to newline, loop done", done);
+  mips->Emit("addu $a0, $a0, 1\t# increment pointer");
+  mips->EmitGoto(loop);
+  mips->EmitLabel(done);
+  mips->Emit("sb $0, 0($a0)\t# change newline to null");
+  mips->EmitEndFunction();
 }
 
 _ReadInteger::_ReadInteger() {
@@ -321,22 +318,32 @@ _ReadInteger::_ReadInteger() {
 }
 void _ReadInteger::EmitSpecific(Mips* mips) {
   mips->EmitLabel("_ReadInteger");
-  // mips->Emit("subu $sp, $sp, 4\t# decrement sp to make space to save v0, a0");
-  // mips->Emit("sw $v0, 4($sp)\t# save v0");
+  mips->EmitBeginFunction(0);
   mips->Emit("li $v0, 5\t\t# set syscall code");
   mips->Emit("syscall\t\t# execute syscall");
-  // mips->Emit("sw $v0, -8($fp)\t# write integer read to memory");
-  // mips->Emit("lw $v0, 4($sp)\t# restore v0");
-  // mips->Emit("addu $sp, $sp, 4\t# pop params off stack");
-  mips->Emit("jr $ra\t\t# return from function");
+  mips->EmitEndFunction();
 }
 
 _StringEqual::_StringEqual() {
   sprintf(printed, "StringEqual (BuiltIn)");  
 }
 void _StringEqual::EmitSpecific(Mips* mips) {
-  mips->EmitLabel("_StringEqual");
-
-  mips->Emit("jr $ra\t\t# return from function");
+  const char* done = "_StringEqual_done";
+  const char* loop = "_StringEqual_loop";
+  mips->EmitLabel("_StringEqual");  
+  mips->EmitBeginFunction(0);
+  mips->Emit("lw $t0, 4($fp)\t\t# load string1");
+  mips->Emit("lw $t1, 8($fp)\t\t# load string2");
+  mips->EmitLabel(loop);
+  mips->Emit("lb $t2, 0($t0)\t\t# load character from string1");
+  mips->Emit("lb $t3, 0($t1)\t\t# load character from string2");
+  mips->Emit("seq $v0, $t2, $t3\t# compare characters");
+  mips->Emit("beqz $v0, %s\t# if not equal, done", done);
+  mips->Emit("beqz $t2, %s\t# if null, terminate", done);
+  mips->Emit("addu $t0, $t0, 1\t# increment pointer1");
+  mips->Emit("addu $t1, $t1, 1\t# increment pointer2");
+  mips->EmitGoto(loop);
+  mips->EmitLabel(done);
+  mips->EmitEndFunction();
 }
 

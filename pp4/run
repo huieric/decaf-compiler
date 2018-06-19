@@ -23,7 +23,7 @@ if [ ! -r $1 ]; then
   exit 1;
 fi
 
-echo "-- $COMPILER <$1 >tmp.asm"
+# echo "-- $COMPILER <$1 >tmp.asm"
 ./$COMPILER < $1 > tmp.asm 2>tmp.errors
 if [ $? -ne 0 -o -s tmp.errors ]; then
   echo "Run script error: errors reported from $COMPILER compiling '$1'."
@@ -32,10 +32,10 @@ if [ $? -ne 0 -o -s tmp.errors ]; then
   exit 1;
 fi
 
-echo "-- spim -file tmp.asm"
-echo " "
+# echo "-- spim -file tmp.asm"
+# echo " "
 $SPIM -file tmp.asm
 
-echo " "
-echo " "
+# echo " "
+# echo " "
 exit 0;

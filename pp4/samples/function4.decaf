@@ -15,7 +15,7 @@ int one(int a, int b)
 
 int two(int c, bool b)
 {
-	int d;
+	int d;	
 	c = one(c, 3);
       d = one(4, 5);
 	Print(c, d, "\n");

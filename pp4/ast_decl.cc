@@ -87,7 +87,8 @@ FnDecl::FnDecl(Identifier *n, Type *r, List<VarDecl*> *d) : Decl(n) {
     body = NULL;
     label = new std::string(n->GetName());
     if(*label != "main")
-        label->insert(0, "__");    
+        label->insert(0, "__");
+    localOffset = CodeGenerator::OffsetToFirstLocal;
 }
 
 void FnDecl::SetFunctionBody(Stmt *b) { 
@@ -101,12 +102,13 @@ const char* FnDecl::GetLabel() {
 Location* FnDecl::Emit(CodeGenerator* cg) {
     int offset = CodeGenerator::OffsetToFirstParam;    
     for(int i = 0, n = formals->NumElements(); i < n; i++) {
-        VarDecl* v = formals->Nth(i);
+        VarDecl* v = formals->Nth(n-i-1);
         Location* l = new Location(fpRelative, offset, v->GetName());
         v->SetMemLoc(l);
         offset += v->GetMemBytes();
     }
     if(body) {
+        cg->resetLocalOffset();
         cg->GenLabel(GetLabel());
         cg->GenBeginFunc()->SetFrameSize(body->GetMemBytes());
         body->Emit(cg);

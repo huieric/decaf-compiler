@@ -24,7 +24,7 @@ class Location;
 class CodeGenerator;
 
 class Expr : public Stmt 
-{
+{ 
   public:
     Expr(yyltype loc) : Stmt(loc) {}
     Expr() : Stmt() {}
@@ -121,6 +121,7 @@ class Operator : public Node
     friend ostream& operator<<(ostream& out, Operator *o) { return out << o->tokenString; }
 
     Location* Emit(CodeGenerator* cg);
+    const char* GetName() { return tokenString; }
  };
  
 class CompoundExpr : public Expr
@@ -146,8 +147,12 @@ class ArithmeticExpr : public CompoundExpr
     ArithmeticExpr(Operator *op, Expr *rhs) : CompoundExpr(op,rhs) {}
 
     Location* Emit(CodeGenerator* cg);
+    Location* EmitBinary(CodeGenerator* cg, Expr* left, Expr* right);
+    Location* EmitUnary(CodeGenerator* cg, Expr* right);
     Type* GetType();
     int GetMemBytes();
+    int GetMemBytesBinary();
+    int GetMemBytesUnary();
 };
 
 class RelationalExpr : public CompoundExpr 
@@ -156,8 +161,12 @@ class RelationalExpr : public CompoundExpr
     RelationalExpr(Expr *lhs, Operator *op, Expr *rhs) : CompoundExpr(lhs,op,rhs) {}
 
     Location* Emit(CodeGenerator* cg);
+    Location* EmitLess(CodeGenerator* cg, Expr* left, Expr* right);
+    Location* EmitLessEqual(CodeGenerator* cg, Expr* left, Expr* right);
     Type* GetType();
     int GetMemBytes();
+    int GetMemBytesLess();
+    int GetMemBytesLessEqual();
 };
 
 class EqualityExpr : public CompoundExpr 
@@ -167,8 +176,12 @@ class EqualityExpr : public CompoundExpr
     const char *GetPrintNameForNode() { return "EqualityExpr"; }
 
     Location* Emit(CodeGenerator* cg);
+    Location* EmitEqual(CodeGenerator* cg, Expr* left, Expr* right);
+    Location* EmitNotEqual(CodeGenerator* cg, Expr* left, Expr* right);
     Type* GetType();
     int GetMemBytes();
+    int GetMemBytesEqual();
+    int GetMemBytesNotEqual();
 };
 
 class LogicalExpr : public CompoundExpr 
@@ -179,8 +192,14 @@ class LogicalExpr : public CompoundExpr
     const char *GetPrintNameForNode() { return "LogicalExpr"; }
 
     Location* Emit(CodeGenerator* cg);
+    Location* EmitAnd(CodeGenerator* cg, Expr* left, Expr* right);
+    Location* EmitOr(CodeGenerator* cg, Expr* left, Expr* right);
+    Location* EmitNot(CodeGenerator* cg, Expr* right);
     Type* GetType();
     int GetMemBytes();
+    int GetMemBytesAnd();
+    int GetMemBytesOr();
+    int GetMemBytesNot();
 };
 
 class AssignExpr : public CompoundExpr 
@@ -198,8 +217,6 @@ class LValue : public Expr
 {
   public:
     LValue(yyltype loc) : Expr(loc) {}
-
-    Location* Emit(CodeGenerator* cg);
 };
 
 class This : public Expr 
@@ -263,7 +280,8 @@ class Call : public Expr
     Location* Emit(CodeGenerator* cg);
     void BuildScope(Scope* parent);
     Type* GetType();
-    int GetMemBytes();
+    int GetMemBytes(); 
+    int GetMemBytesActuals();
 };
 
 class NewExpr : public Expr
