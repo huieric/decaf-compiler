@@ -238,9 +238,17 @@ class ArrayAccess : public LValue
     ArrayAccess(yyltype loc, Expr *base, Expr *subscript);
 
     Location* Emit(CodeGenerator* cg);
+    Location* EmitLoad(CodeGenerator* cg);
+    Location* EmitAddr(CodeGenerator* cg);
+    Location* EmitStore(CodeGenerator* cg, Location* val);
+    void EmitRuntimeCheck(CodeGenerator* cg, Location* addr, Location* subscript);
     void BuildScope(Scope* parent);
     Type* GetType();
     int GetMemBytes();
+    int GetMemBytesLoad();
+    int GetMemBytesAddr();
+    int GetMemBytesRuntimeCheck();
+    int GetMemBytesStore();
 };
 
 /* Note that field access is used both for qualified names

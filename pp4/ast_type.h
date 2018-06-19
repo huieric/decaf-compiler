@@ -40,6 +40,7 @@ class Type : public Node
     virtual bool IsPrimitive() { return true; }
 
     virtual BuiltIn GetPrint();
+    virtual int GetMemBytes() { return CodeGenerator::VarSize; }
 };
 
 class NamedType : public Type 

@@ -8,6 +8,7 @@
 #include "ast_type.h"
 #include "ast_decl.h"
 #include "codegen.h"
+#include "errors.h"
 
 void CompoundExpr::BuildScope(Scope* p) {
     scope->SetParent(p);
@@ -235,8 +236,9 @@ Location* LogicalExpr::EmitNot(CodeGenerator* cg, Expr* right) {
 }
 
 Location* AssignExpr::Emit(CodeGenerator* cg) {
-    Location* lhs = left->Emit(cg);
     Location* rhs = right->Emit(cg);
+    ArrayAccess* arrayAccess = dynamic_cast<ArrayAccess*>(left);
+    Location* lhs = arrayAccess ? arrayAccess->EmitStore(cg, rhs) : left->Emit(cg);
     cg->GenAssign(lhs, rhs);
     return lhs;
 }
@@ -246,15 +248,48 @@ Location* This::Emit(CodeGenerator* cg) {
 }
 
 ArrayAccess::ArrayAccess(yyltype loc, Expr *b, Expr *s) : LValue(loc) {
-    Assert(base!=NULL && subscript!=NULL);
+    Assert(b!=NULL && s!=NULL);
     (base=b)->SetParent(this); 
     (subscript=s)->SetParent(this);
 }
 
-Location* ArrayAccess::Emit(CodeGenerator* cg) {
-    base->Emit(cg);
-    subscript->Emit(cg);
-    return NULL;
+Location* ArrayAccess::Emit(CodeGenerator* cg) {  
+    return EmitLoad(cg);
+}
+
+Location* ArrayAccess::EmitLoad(CodeGenerator* cg) {
+    return cg->GenLoad(EmitAddr(cg), CodeGenerator::VarSize);
+}
+
+Location* ArrayAccess::EmitAddr(CodeGenerator* cg) {
+    Location* addr = base->Emit(cg);
+    Location* sub = subscript->Emit(cg);
+    EmitRuntimeCheck(cg, addr, sub);
+    Location* elemSize = cg->GenLoadConstant(CodeGenerator::VarSize);
+    Location* offset = cg->GenBinaryOp("*", sub, elemSize);
+    return cg->GenBinaryOp("+", addr, offset);
+}
+
+void ArrayAccess::EmitRuntimeCheck(CodeGenerator* cg, Location* addr, Location* sub) {
+    const char* passCheck = cg->NewLabel();
+    Location* zero = cg->GenLoadConstant(0);
+    Location* size = cg->GenLoad(addr);
+    Location* lessThanZero = cg->GenBinaryOp("<", sub, zero);
+    Location* greaterThanSize = cg->GenBinaryOp("<", size, sub);
+    Location* equalToSize = cg->GenBinaryOp("==", size, sub);
+    Location* geSize = cg->GenBinaryOp("||", greaterThanSize, equalToSize);
+    Location* outOfBounds = cg->GenBinaryOp("||", lessThanZero, geSize);
+    cg->GenIfZ(outOfBounds, passCheck);
+    Location* error = cg->GenLoadConstant(err_arr_out_of_bounds);
+    cg->GenBuiltInCall(PrintString, error);
+    cg->GenBuiltInCall(Halt);
+    cg->GenLabel(passCheck);    
+}
+
+Location* ArrayAccess::EmitStore(CodeGenerator* cg, Location* val) {
+    Location* addr = EmitAddr(cg);
+    cg->GenStore(addr, val, CodeGenerator::VarSize);
+    return cg->GenLoad(addr, CodeGenerator::VarSize);
 }
 
 FieldAccess::FieldAccess(Expr *b, Identifier *f) 
@@ -288,7 +323,13 @@ Call::Call(yyltype loc, Expr *b, Identifier *f, List<Expr*> *a) : Expr(loc)  {
  
 Location* Call::Emit(CodeGenerator* cg) {
     if(base) {
-
+        ArrayType* array = dynamic_cast<ArrayType*>(base->GetType());
+        if(array != NULL && strcmp(field->GetName(), "length")==0) {
+            Type* elemType = array->GetElemType();
+            Location* sizeOfType = cg->GenLoadConstant(elemType->GetMemBytes());
+            Location* memBytes = cg->GenLoad(base->Emit(cg));
+            return cg->GenBinaryOp("/", memBytes, sizeOfType);
+        }
     }
     else {
         Decl* d = Program::gScope->table->Lookup(field->GetName());
@@ -324,9 +365,9 @@ NewArrayExpr::NewArrayExpr(yyltype loc, Expr *sz, Type *et) : Expr(loc) {
 }
 
 Location* NewArrayExpr::Emit(CodeGenerator* cg) {
-    size->Emit(cg);
-    // elemType->Emit();
-    return NULL;
+    Location* sizeOfType = cg->GenLoadConstant(elemType->GetMemBytes());
+    Location* memBytes = cg->GenBinaryOp("*", size->Emit(cg), sizeOfType);    
+    return cg->GenBuiltInCall(Alloc, memBytes);
 }
 
 CompoundExpr::CompoundExpr(Expr *l, Operator *o) 
@@ -630,15 +671,36 @@ int LogicalExpr::GetMemBytesNot() {
 }
 
 int AssignExpr::GetMemBytes() {
-    return right->GetMemBytes();
+    ArrayAccess* arrayAccess = dynamic_cast<ArrayAccess*>(left);
+    if(arrayAccess)
+        return arrayAccess->GetMemBytesStore() + right->GetMemBytes();
+    else
+        return right->GetMemBytes();
 }
 
 int This::GetMemBytes() {
     return 0;
 }
 
-int ArrayAccess::GetMemBytes() {
-    return 0;    
+int ArrayAccess::GetMemBytes() {    
+    return GetMemBytesLoad();
+}
+
+int ArrayAccess::GetMemBytesLoad() {
+    return GetMemBytesAddr() + CodeGenerator::VarSize;
+}
+
+int ArrayAccess::GetMemBytesAddr() {
+    return base->GetMemBytes() + subscript->GetMemBytes() + 
+    GetMemBytesRuntimeCheck() + 3 * CodeGenerator::VarSize;
+}
+
+int ArrayAccess::GetMemBytesRuntimeCheck() {
+    return 8 * CodeGenerator::VarSize;
+}
+
+int ArrayAccess::GetMemBytesStore() {
+    return GetMemBytesAddr() + CodeGenerator::VarSize;
 }
 
 int FieldAccess::GetMemBytes() {
@@ -646,14 +708,22 @@ int FieldAccess::GetMemBytes() {
 }
 
 int Call::GetMemBytes() {
-    Decl* d = Program::gScope->table->Lookup(field->GetName());
-    FnDecl* f = dynamic_cast<FnDecl*>(d);
-    Assert(f != NULL);
-    bool hasReturnValue = !f->GetReturnType()->IsEquivalentTo(Type::voidType);
-    if(hasReturnValue) 
-        return GetMemBytesActuals() + CodeGenerator::VarSize;
-    else
-        return GetMemBytesActuals();
+    if(base) {
+        ArrayType* array = dynamic_cast<ArrayType*>(base->GetType());
+        if(array != NULL && strcmp(field->GetName(), "length")==0) 
+            return base->GetMemBytes() + 3 * CodeGenerator::VarSize;       
+    }
+    else {
+        Decl* d = Program::gScope->table->Lookup(field->GetName());
+        FnDecl* f = dynamic_cast<FnDecl*>(d);
+        Assert(f != NULL);
+        bool hasReturnValue = !f->GetReturnType()->IsEquivalentTo(Type::voidType);
+        if(hasReturnValue) 
+            return GetMemBytesActuals() + CodeGenerator::VarSize;
+        else
+            return GetMemBytesActuals();
+    }
+    return 0;
 }
 
 int Call::GetMemBytesActuals() {
@@ -668,7 +738,7 @@ int NewExpr::GetMemBytes() {
 }
 
 int NewArrayExpr::GetMemBytes() {
-    return 0;
+    return size->GetMemBytes() + 3 * CodeGenerator::VarSize;
 }
 
 int ReadIntegerExpr::GetMemBytes() {

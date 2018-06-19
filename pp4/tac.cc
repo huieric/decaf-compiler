@@ -5,6 +5,7 @@
   
 #include "tac.h"
 #include "mips.h"
+#include "errors.h"
 #include <string.h>
 
 Location::Location(Segment s, int o, const char *name) :
@@ -273,17 +274,37 @@ _Halt::_Halt() {
 }
 void _Halt::EmitSpecific(Mips* mips) {
   mips->EmitLabel("_Halt");
-
-  mips->Emit("jr $ra\t\t# return from function");
+  mips->EmitBeginFunction(0);
+  mips->Emit("li $v0, 10\t\t# halt execution when runtime error occur");
+  mips->Emit("syscall\t\t# execute syscall");
+  mips->EmitEndFunction();
 }
 
 _Alloc::_Alloc() {
   sprintf(printed, "Alloc (BuiltIn)");
 }
 void _Alloc::EmitSpecific(Mips* mips) {
+  const char* good_size = "_Alloc_syscall";
   mips->EmitLabel("_Alloc");
-
-  mips->Emit("jr $ra\t\t# return from function");
+  mips->EmitBeginFunction(0);
+  mips->Emit("li $v0, 9\t# set syscall code");
+  mips->Emit("lw $a0, 4($fp)\t# load argument");
+  mips->Emit("sle $t0, $a0, 0\t# compare size to zero");
+  mips->Emit("beqz $t0, %s\t# if size greater than zero, execute alloc", good_size);
+  mips->Emit(".data\t\t\t# create string constant marked with label");
+  mips->Emit("bad_size: .asciiz \"%s\"", err_arr_bad_size);
+  mips->Emit(".text");
+  mips->Emit("li $v0, 4\t\t# set syscall code");
+  mips->Emit("la $a0, bad_size\t# load address to string of runtime error");
+  mips->Emit("syscall\t\t# execute syscall");
+  mips->Emit("li $v0, 10\t\t# halt execution when runtime error occur");
+  mips->Emit("syscall\t\t# execute syscall");
+  mips->EmitLabel(good_size);
+  mips->Emit("addu $a0, $a0, 4\t# add space for length storage");
+  mips->Emit("syscall\t\t# execute syscall");
+  mips->Emit("subu $a0, $a0, 4\t# compute bytes for array storage");
+  mips->Emit("sw $a0, 0($v0)\t# store array length");
+  mips->EmitEndFunction();
 }
 
 _ReadLine::_ReadLine() {

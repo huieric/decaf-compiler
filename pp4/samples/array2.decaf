@@ -1,4 +1,4 @@
-void TakeArray(int[] x) {
+  void TakeArray(int[] x) {
   Print(x[4],x[5],x.length());
 }
 
